@@ -66,13 +66,28 @@ commitments (§7).
 That is what it means for an indexer to be untrusted rather than merely
 monitored. And note the last line: wrong by one stroop, and still caught.
 
+### Two endpoints, two operators
+
+§7 asks deployments to run "at least two" independent archives, because two
+instances on one provider share an outage — which is the failure the
+requirement exists to prevent. So there are two, on different providers, and the
+demo page checks both the same way:
+
+```bash
+curl https://confidential-token-archive.aaguilar1x.workers.dev/v1/health
+# {"latest_ledger":…,"ingested_through":…,"ingested_from":3976100,"lag_seconds":0}
+```
+
+It answers C1 through C4, and correctly refuses a range below its ingestion
+floor — verified with the published client, not with curl alone.
+
 ## What's here
 
 | | |
 |---|---|
 | `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. |
 | `packages/conformance` | The `SDK.md` §6 suite: OpenZeppelin's fixtures byte-for-byte, circuit-execution parity with tamper cases, and the §6.3 vectors. |
-| `apps/indexer` | An `INDEXER.md` archive (C1–C4) as a Web-standard `fetch` handler, so one implementation serves from Node, Cloudflare, Deno or Vercel. |
+| `apps/indexer` | An `INDEXER.md` archive (C1–C4) as a Web-standard `fetch` handler, so one implementation serves from Node, Cloudflare, Deno or Vercel. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). |
 | `examples/` | The live payment and the sabotage, both against real testnet contracts. |
 
 214 tests, run in CI on every push and weekly.

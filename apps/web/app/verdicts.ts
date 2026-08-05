@@ -22,7 +22,14 @@ import {
   IncompleteHistoryError,
 } from "stellar-confidential-token-sdk/chain";
 
-import { CONTRACTS, DEMO, NETWORK_PASSPHRASE, RPC_URL, type ArchiveId } from "@/lib/demo";
+import {
+  CONTRACTS,
+  DEMO,
+  EXTERNAL_ARCHIVE,
+  NETWORK_PASSPHRASE,
+  RPC_URL,
+  type ArchiveId,
+} from "@/lib/demo";
 
 export interface Verdict {
   archive: ArchiveId;
@@ -70,8 +77,10 @@ export async function judge(archive: ArchiveId, origin: string): Promise<Verdict
   const { sk, addrF } = deriveSk(root, CONTRACTS.token, address);
   const keys = deriveKeys(sk, addrF);
 
+  // The independent archive is a real, separately-deployed service; the rest are
+  // served by this deployment. Same client either way — that is the point.
   const client = new IndexerV1Client({
-    baseUrl: `${origin}/api/archive/${archive}`,
+    baseUrl: archive === "independent" ? EXTERNAL_ARCHIVE : `${origin}/api/archive/${archive}`,
     label: archive,
   });
 

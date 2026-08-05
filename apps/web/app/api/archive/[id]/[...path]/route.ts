@@ -52,7 +52,14 @@ function ingestOnce() {
 
 type TamperOptions = Parameters<typeof dishonestStore>[1];
 
-const ADVERSARIES: Record<Exclude<ArchiveId, "honest">, TamperOptions> = {
+/**
+ * Archives this deployment serves itself. `honest` needs no transform, and
+ * `independent` is not served here at all — it is a separately-deployed Worker
+ * on another provider, which is the whole point of it.
+ */
+type LocalAdversary = Exclude<ArchiveId, "honest" | "independent">;
+
+const ADVERSARIES: Record<LocalAdversary, TamperOptions> = {
   lagging: { mode: "honest-gap" },
   omitting: { mode: "omit", eventName: "merge" },
   corrupting: { mode: "corrupt", eventName: "transfer", field: "b_tilde" },
@@ -75,7 +82,7 @@ export async function GET(
   }
 
   if (id !== "honest") {
-    const opts = ADVERSARIES[id as Exclude<ArchiveId, "honest">];
+    const opts = ADVERSARIES[id as LocalAdversary];
     if (!opts) return Response.json({ error: `unknown archive "${id}"` }, { status: 404 });
     store = dishonestStore(store, opts) as Store;
   }

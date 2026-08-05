@@ -63,7 +63,24 @@ export const CONTRACTS = {
 
 export const EXPLORER = "https://stellar.expert/explorer/testnet/tx";
 
-/** The four archives the page points the client at, in the order shown. */
+/**
+ * A second archive, independently deployed on a different provider.
+ *
+ * INDEXER.md §7 asks wallets to support multiple independent archive endpoints,
+ * "with deployments running or contracting at least two". Independent means
+ * different operators — two instances on one provider share an outage, which is
+ * the failure the requirement exists to prevent. This one is a Cloudflare
+ * Worker; the page itself runs on Vercel.
+ *
+ * Empty disables the card, so a Worker outage degrades the page instead of
+ * breaking it. The four archives below are served by this deployment and always
+ * work.
+ */
+export const EXTERNAL_ARCHIVE =
+  process.env.NEXT_PUBLIC_EXTERNAL_ARCHIVE ??
+  "https://confidential-token-archive.aaguilar1x.workers.dev";
+
+/** The archives the page points the client at, in the order shown. */
 export const ARCHIVES = [
   {
     id: "honest",
@@ -84,6 +101,12 @@ export const ARCHIVES = [
     id: "corrupting",
     title: "Corrupting",
     blurb: "Alters your balance ciphertext, while still claiming complete: true.",
+  },
+  {
+    id: "independent",
+    title: "Independent (Cloudflare)",
+    blurb:
+      "A second archive, deployed separately on another provider — what §7 means by two independent endpoints.",
   },
 ] as const;
 
