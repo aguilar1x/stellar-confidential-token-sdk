@@ -15,9 +15,6 @@ Cloudflare, Deno Deploy, Vercel or plain Node. Only the entry file differs.
 
 ## The page → Vercel
 
-The repository is a monorepo, so Vercel needs to be told which directory the app
-lives in. Everything else is default.
-
 1. **New Project** → import `aguilar1x/stellar-confidential-token-sdk`
 2. **Root Directory**: `apps/web`
 3. Deploy.
@@ -25,6 +22,21 @@ lives in. Everything else is default.
 No environment variables are required — the demo account and contract IDs are
 committed in `apps/web/lib/demo.ts`, deliberately, since they are testnet
 values that hold nothing.
+
+`apps/web/vercel.json` overrides the install and build commands, and both
+overrides are load-bearing. A default Vercel build of this directory fails, for
+two reasons that only appear on a clean clone:
+
+- **Installing inside `apps/web` does not link the workspace sibling.** npm
+  installs that directory's own dependencies and leaves
+  `stellar-confidential-token-sdk` unresolved, so the build dies on
+  `Module not found`. The install therefore runs from the repository root.
+- **`dist/` is gitignored, so a fresh clone has no built SDK.** The package's
+  `main` points into `dist/`, which does not exist until `tsup` has run. The
+  build command builds the SDK before building the page.
+
+Both were reproduced against a clean `git clone` before being fixed, rather
+than inferred from the failure message.
 
 Optional, if the page should read a remote archive instead of serving its own:
 
