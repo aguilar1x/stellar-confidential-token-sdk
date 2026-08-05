@@ -2,8 +2,14 @@
  * What a resident can check about the building's books.
  *
  * The building publishes one number: what it collected this month. Everyone
- * else gets to verify that number against the chain without learning a single
- * neighbour's payment.
+ * else gets to verify that number against the chain without any individual
+ * payment appearing on it.
+ *
+ * Worth being precise about who that hides amounts from: the chain, the
+ * archive, and any third party. Not a quorum of the payers themselves — an
+ * opened total minus n-1 known contributions leaves the nth, and no commitment
+ * scheme can prevent that. The guarantee is against observers, not against
+ * everyone you transact with.
  *
  * That works because Pedersen commitments add. Each confidential payment
  * contributes `commit(vᵢ, rᵢ) = vᵢ·G + rᵢ·H` to the building's receiving
@@ -47,6 +53,13 @@ export interface AuditResult {
   ok: boolean;
   /** How many payments were folded into it. */
   paymentCount: number;
+  /**
+   * The summed blinding, decimal. Published deliberately: without it a reader
+   * can only be told the commitment opens correctly, and this page exists so
+   * they can redo the opening themselves in their own browser instead. It is a
+   * testnet account whose signing secret is in the repo already.
+   */
+  blinding: string;
   error?: string;
 }
 
@@ -96,6 +109,7 @@ export async function auditBuilding(): Promise<AuditResult> {
         recomputedCommitment: "",
         ok: false,
         paymentCount: 0,
+        blinding: "0",
         error: "the building account is not registered on this contract",
       };
     }
@@ -118,6 +132,7 @@ export async function auditBuilding(): Promise<AuditResult> {
       recomputedCommitment: hex(recomputed),
       ok: hex(onchainC) === hex(recomputed),
       paymentCount: BUILDING.units.length,
+      blinding: receiving.r.toString(),
     };
   } catch (e) {
     return {
@@ -128,6 +143,7 @@ export async function auditBuilding(): Promise<AuditResult> {
       recomputedCommitment: "",
       ok: false,
       paymentCount: 0,
+      blinding: "0",
       error: String((e as Error)?.message ?? e),
     };
   }

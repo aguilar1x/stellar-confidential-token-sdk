@@ -11,8 +11,8 @@ import { firstPaymentAnatomy } from "./anatomy";
 import { Lifecycle } from "./lifecycle";
 import { PaymentAnatomy } from "./anatomy-view";
 import LIFECYCLE_TXS from "./lifecycle-txs.json";
-import { payDues } from "./pay";
 import { PayButton } from "./pay-button";
+import { Tamper } from "./tamper";
 
 export const metadata: Metadata = {
   title: "A building collects its dues",
@@ -217,9 +217,22 @@ export default async function Demo() {
 
       <Reveal delay={0.05}>
         <div className="mt-6">
-          <PayButton pay={payDues} />
+          <PayButton />
         </div>
       </Reveal>
+
+      {/* The reader's turn to disbelieve it. Runs entirely in their browser. */}
+      {!audit.error && (
+        <Reveal delay={0.05}>
+          <div className="mt-6">
+            <Tamper
+              total={audit.published}
+              blinding={audit.blinding}
+              onchainCommitment={audit.onchainCommitment}
+            />
+          </div>
+        </Reveal>
+      )}
 
       {/* Why it works — shown, not asserted. */}
       <StaggerGroup className="mt-14">
