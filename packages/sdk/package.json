@@ -1,0 +1,63 @@
+{
+  "name": "stellar-confidential-sdk",
+  "version": "0.1.0",
+  "description": "Conformant TypeScript client for OpenZeppelin Confidential Tokens on Stellar — implements the SDK.md client obligations (key derivation, witness building, UltraHonk proving, local state, selective disclosure).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "keywords": [
+    "stellar",
+    "soroban",
+    "confidential-tokens",
+    "openzeppelin",
+    "zero-knowledge",
+    "ultrahonk",
+    "noir"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "import": "./dist/node.js",
+      "require": "./dist/node.cjs"
+    },
+    "./chain": {
+      "types": "./dist/chain.d.ts",
+      "import": "./dist/chain.js",
+      "require": "./dist/chain.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "circuits"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "@aztec/bb.js": "0.87.0",
+    "@noble/ciphers": "^1.2.0",
+    "@noble/curves": "^1.9.4",
+    "@noble/hashes": "^1.8.0",
+    "@noir-lang/noir_js": "1.0.0-beta.9",
+    "@stellar/stellar-sdk": "16.2.0",
+    "@zkpassport/poseidon2": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.7"
+  }
+}

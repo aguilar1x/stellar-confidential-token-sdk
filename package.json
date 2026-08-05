@@ -1,0 +1,25 @@
+{
+  "name": "stellar-confidential-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Conformant client layer for OpenZeppelin Confidential Tokens on Stellar",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "conformance": "npm run test --workspace=@stellar-confidential/conformance"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.2.7"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
