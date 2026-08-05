@@ -88,7 +88,7 @@ export default async function Landing() {
 
             {/* Right: the claim, checked. Beside the headline rather than under
                 it, so the evidence and the assertion are read together. */}
-            <Reveal delay={0.18}>
+            <Reveal delay={0.18} className="lg:pl-10">
               <figure className="rounded-2xl border border-white/12 bg-white/[0.06] p-6 backdrop-blur-md">
                 <figcaption className="flex flex-wrap items-baseline justify-between gap-3">
                   <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/45">
