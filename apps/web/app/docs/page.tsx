@@ -149,7 +149,7 @@ export default function Docs() {
               <div className="mt-5 flex flex-wrap gap-3">
                 <Link
                   href="/verify"
-                  className="btn-raised inline-block rounded-full px-4 py-2 text-sm font-medium text-white"
+                  className="inline-block rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
                 >
                   Break the archive
                 </Link>
