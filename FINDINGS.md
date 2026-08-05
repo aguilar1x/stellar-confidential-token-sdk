@@ -61,11 +61,39 @@ the suite fails if our value drifts, if the spec moves again, **or if the two
 converge** — the last meaning the circuits were regenerated and the divergence
 should be deleted rather than left standing as a stale excuse.
 
-### 3 · `δ_ecdh` and `DISCLOSURE` both claim domain tag 13
+### 3 · This client derived `r_e` under the wrong domain tag
 
-`δ_ecdh` is `13` — [#778][pr778] assigns it, and the `ecdh` fixture
-independently confirms it, since no other tag reproduces the vector. This
-codebase already assigns 13 to `DISCLOSURE`, so the two collide.
+**Ours, not theirs, and the specification predicts exactly how it would hide.**
+
+`DESIGN_cont.md` §13 assigns `δ_eph = 14`. This client used **15**, chosen by
+continuing its own tag list rather than reading that table. Tags 1–12 were
+correct; 13 upwards had drifted, because upstream later inserted `δ_ecdh` (13)
+and `δ_eph` (14) and pushed the disclosure tags to 15 and 16.
+
+Nothing catches this. `SDK.md` §6.3 says why:
+
+> No circuit constrains `r_e`, so a fixture is the only mechanism keeping a
+> user's clients in agreement; where two disagree, transfers sent from one are
+> not disclosable from the other.
+
+Only `R_e = r_e·H` and `r_e ≠ 0` are constrained, so proofs built with the wrong
+tag verify exactly like proofs built with the right one. A conformant client
+would derive a different `r_e` for the same `(vk, σ)`, and neither could open
+the other's transfers. Because it is unconstrained, correcting it costs nothing
+against the deployed verifier.
+
+Fixed: `EPHEMERAL_KEY` is now `14`, and the §6.3 vector below was regenerated —
+it had been produced with the wrong tag, so contributing it would have
+propagated the defect it exists to prevent.
+
+`δ_ecdh = 13` is confirmed twice over: [#778][pr778] assigns it, and sweeping
+tags 11–16 against OpenZeppelin's `ecdh` fixture shows only 13 reproduces it.
+This client needs no tag for it, since it computes the x-only form the deployed
+circuits use.
+
+`δ_disc` remains at 13 here against §13's 16 — see Known limitations in the
+[README](./README.md#known-limitations). Unlike `δ_eph`, that one *is* absorbed
+by this project's own disclosure circuits, so moving it means recompiling them.
 
 ### 4 · The bug the condominium found
 

@@ -75,7 +75,7 @@ upstream audit findings.
 |---|---|---|
 | 1 | Deployed testnet verifier predates OpenZeppelin's [L-03][l03] ECDH fix ([#778][pr778], merged 17 Jul) | reproducible via `examples/drift.mjs` |
 | 2 | Deployed testnet verifier predates their [N-07][n07] pad fix ([#792][pr792], merged 16 Jul) | same |
-| 3 | `δ_ecdh` and `DISCLOSURE` both claim domain tag 13 | pinned in `divergences.js` |
+| 3 | This client derived `r_e` under domain tag 15; `DESIGN_cont.md` §13 says 14 | ours — silent by construction, fixed |
 | 4 | Blinding factors accumulated mod `r`, not mod `p` | found by the condominium, fixed in 0.1.1 |
 | 5 | Two of §6.3's three required vectors did not exist | generated, in OpenZeppelin's testdata format |
 
@@ -83,6 +83,10 @@ Neither vulnerability in 1 or 2 is our discovery — both are OpenZeppelin's own
 audit findings, already fixed upstream. What this project adds is that **the
 deployed verifier still behaves the pre-fix way.** The fixtures moved on 16–17
 July; the deployment did not follow.
+
+Two of the five are defects in this client, and both were silent: nothing in a
+test suite or a passing proof would have shown either. That is the argument for
+doing conformance work against someone else's fixtures rather than your own.
 
 **→ [FINDINGS.md](./FINDINGS.md)** for all five in full, with the reproduction
 for each.
@@ -429,6 +433,12 @@ self-refuting:
   surface, the completeness accounting and the client-side verification are all
   real and independent of the store; persistence is the missing piece, and the
   store interface is the seam it plugs into.
+- **The disclosure domain tags are stale against `DESIGN_cont.md` §13.** It
+  assigns `δ_disc = 16` and `δ_disc_bind = 15`; this client uses 13 and 15.
+  `δ_disc_bind` is reserved and unused, so it was moved. `δ_disc` is absorbed by
+  this project's own disclosure circuits, so moving it means recompiling them —
+  the same shape as the two divergences above, and tracked the same way. It does
+  not affect the core transfer path, whose tags 1–12 match the table exactly.
 - **Deposits and withdrawals are public by design.** Only transfers hide amounts.
 - **The two divergences are not fixable from the client side** without breaking
   compatibility with the deployed verifier.
