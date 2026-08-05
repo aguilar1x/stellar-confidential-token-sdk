@@ -97,8 +97,13 @@ export default async function Landing() {
                 has no page behind it to sample and renders as nothing, then
                 snaps back when the animation settles. Do not wrap this in
                 Reveal; the credit below it can animate because it has no
-                filter of its own. */}
-            <div className="lg:pl-10">
+                filter of its own.
+
+                Shifted right with padding and a negative margin rather than a
+                translate, for the same reason: a transform on an ancestor
+                establishes a backdrop root too, static or not, and the card
+                would lose the page it is sampling. */}
+            <div className="lg:-mr-4 lg:pl-20">
               <figure className="rounded-2xl border border-white/12 bg-white/[0.07] p-6 backdrop-blur-md">
                 <figcaption className="flex flex-wrap items-baseline justify-between gap-3">
                   <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/45">
@@ -212,7 +217,9 @@ export default async function Landing() {
       </section>
 
       {/* ── Findings ─────────────────────────────────────────────────────── */}
-      <section className="border-y border-rule bg-paper-sunk">
+      {/* `scroll-mt` keeps the heading clear of the fixed nav pill when /how
+          links straight here. */}
+      <section id="defects" className="scroll-mt-24 border-y border-rule bg-paper-sunk">
         <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
           <Reveal>
             <p className="eyebrow">What conformance actually caught</p>
@@ -270,9 +277,12 @@ export default async function Landing() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <pre className="overflow-x-auto rounded-2xl bg-ink p-6 font-mono text-[0.78rem] leading-relaxed text-white/85">
+            <pre className="overflow-x-auto rounded-2xl bg-code p-6 font-mono text-[0.78rem] leading-relaxed text-white/85">
               <code>
-                <span className="text-white/40">
+                {/* Lifted off /40, which lands at about 3.6:1 on this surface —
+                    under the 4.5:1 that small text needs to be legible to
+                    everyone. /55 clears it and still reads as subordinate. */}
+                <span className="text-white/55">
                   {"// The account secret comes from a signature, not from disk."}
                 </span>
                 {"\n"}
