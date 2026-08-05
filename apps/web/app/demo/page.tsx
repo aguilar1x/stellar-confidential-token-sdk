@@ -25,7 +25,7 @@ export default async function Demo() {
   const [audit, homo] = await Promise.all([auditBuilding(), demonstrateHomomorphism()]);
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-16">
+    <main className="mx-auto max-w-4xl px-6 pb-24 pt-32">
       <Reveal>
         <p className="eyebrow">A month of dues · Stellar testnet</p>
         <h1 className="mt-4 max-w-2xl text-[2.1rem] font-bold leading-[1.1] tracking-tight sm:text-5xl">
@@ -33,7 +33,7 @@ export default async function Demo() {
           <br />
           <span className="text-accent">Nobody sees your payment.</span>
         </h1>
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
           Eight units paid this month. A studio does not pay what the penthouse pays, and none
           of those amounts exist on-chain. Yet any resident can check that the building
           collected exactly what it says it did — not by trusting the treasurer, and not by
@@ -43,25 +43,25 @@ export default async function Demo() {
 
       {/* The ledger. The point of this table is the column that has nothing in it. */}
       <Reveal delay={0.08}>
-        <section className="mt-12 overflow-hidden rounded-xl border border-hairline bg-surface">
+        <section className="mt-12 overflow-hidden rounded-xl border border-rule bg-paper">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-hairline">
+              <tr className="border-b border-rule">
                 {["Unit", "Type", "Paid", "On-chain"].map((h) => (
                   <th
                     key={h}
-                    className="px-5 py-3 text-left font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-muted"
+                    className="px-5 py-3 text-left font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-ink-soft"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-hairline">
+            <tbody className="divide-y divide-rule">
               {BUILDING.units.map((u) => (
                 <tr key={u.id}>
                   <td className="px-5 py-3 font-semibold">{u.id}</td>
-                  <td className="px-5 py-3 text-muted">{u.label}</td>
+                  <td className="px-5 py-3 text-ink-soft">{u.label}</td>
                   <td className="px-5 py-3">
                     <span className="font-mono text-sealed">
                       <span aria-hidden className="mr-1.5 opacity-50 tracking-[0.1em]">
@@ -76,20 +76,20 @@ export default async function Demo() {
                         href={`${EXPLORER}/${u.tx}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 font-mono text-xs text-muted hover:text-accent"
+                        className="inline-flex items-center gap-1 font-mono text-xs text-ink-soft hover:text-accent"
                       >
                         {u.tx.slice(0, 10)}…
                         <ExternalLink className="size-3" />
                       </a>
                     ) : (
-                      <span className="text-muted">—</span>
+                      <span className="text-ink-soft">—</span>
                     )}
                   </td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
-              <tr className="border-t border-hairline bg-surface-raised">
+              <tr className="border-t border-rule bg-paper-sunk">
                 <td colSpan={2} className="px-5 py-4 font-semibold">
                   Collected this month
                 </td>
@@ -100,7 +100,7 @@ export default async function Demo() {
             </tfoot>
           </table>
         </section>
-        <p className="mt-3 text-xs leading-relaxed text-muted">
+        <p className="mt-3 text-xs leading-relaxed text-ink-soft">
           &ldquo;Sealed&rdquo; is not a display choice. Those amounts are published nowhere —
           each is inside a commitment only the payer and the building can open.
         </p>
@@ -109,14 +109,14 @@ export default async function Demo() {
       {/* The audit. */}
       <Reveal delay={0.05}>
         <section
-          className={`mt-10 rounded-xl border bg-surface p-6 ${
+          className={`mt-10 rounded-xl border bg-paper p-6 ${
             audit.ok ? "border-verified/40" : "border-refused/40"
           }`}
         >
           <div className="flex flex-wrap items-center gap-3">
             <span
               className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] ${
-                audit.ok ? "bg-verified/12 text-verified" : "bg-refused/12 text-refused"
+                audit.ok ? "bg-emerald-50 text-verified" : "bg-red-50 text-refused"
               }`}
             >
               {audit.ok ? <ShieldCheck className="size-3" /> : <ShieldAlert className="size-3" />}
@@ -129,7 +129,7 @@ export default async function Demo() {
             <p className="mt-4 text-sm text-refused">{audit.error}</p>
           ) : (
             <>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">
                 The chain holds one commitment for everything the building received. Opening it
                 to the published total and recomputing the commitment gives back the point the
                 chain already stores — which it could not, had the building overstated or
@@ -138,7 +138,7 @@ export default async function Demo() {
 
               <dl className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div>
-                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                     The building says it collected
                   </dt>
                   <dd className="mt-1.5 font-mono text-base font-semibold">
@@ -146,7 +146,7 @@ export default async function Demo() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                     The chain&rsquo;s commitment opens to
                   </dt>
                   <dd
@@ -159,7 +159,7 @@ export default async function Demo() {
                 </div>
               </dl>
 
-              <div className="mt-6 grid gap-4 border-t border-hairline pt-5 sm:grid-cols-2">
+              <div className="mt-6 grid gap-4 border-t border-rule pt-5 sm:grid-cols-2">
                 <Commitment
                   label="commitment on-chain"
                   hex={audit.onchainCommitment}
@@ -184,11 +184,11 @@ export default async function Demo() {
         </StaggerItem>
 
         <StaggerItem>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-            A commitment to a value <code className="text-foreground">v</code> with blinding{" "}
-            <code className="text-foreground">r</code> is the curve point{" "}
-            <code className="text-foreground">v·G + r·H</code>. Add two and you get{" "}
-            <code className="text-foreground">(v₁+v₂)·G + (r₁+r₂)·H</code> — a commitment to the
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">
+            A commitment to a value <code className="text-ink">v</code> with blinding{" "}
+            <code className="text-ink">r</code> is the curve point{" "}
+            <code className="text-ink">v·G + r·H</code>. Add two and you get{" "}
+            <code className="text-ink">(v₁+v₂)·G + (r₁+r₂)·H</code> — a commitment to the
             sum, containing nothing that identifies either term. So eight payments land in the
             building&rsquo;s balance and the chain ends up holding a commitment to their total
             without ever having held one to any single payment.
@@ -197,18 +197,18 @@ export default async function Demo() {
 
         <StaggerItem>
           <div
-            className={`mt-6 rounded-xl border bg-surface p-5 ${
+            className={`mt-6 rounded-xl border bg-paper p-5 ${
               homo.matches ? "border-verified/30" : "border-refused/30"
             }`}
           >
-            <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+            <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               split the total two ways, commit to each half, add the points
             </p>
             <div className="mt-3 space-y-1.5">
               <Commitment hex={homo.a} truncate={40} />
               <Commitment hex={homo.b} truncate={40} />
             </div>
-            <p className="mt-4 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+            <p className="mt-4 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               equals a commitment to the whole
             </p>
             <div className="mt-2">
@@ -229,7 +229,7 @@ export default async function Demo() {
         </StaggerItem>
 
         <StaggerItem>
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-muted">
+          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-soft">
             A plain ledger makes you choose between an auditable total and private line items.
             This does not — but only while the history the wallet replays is the real one.{" "}
             <Link href="/verify" className="text-accent hover:underline">
@@ -240,9 +240,9 @@ export default async function Demo() {
       </StaggerGroup>
 
       <Reveal>
-        <p className="mt-12 text-xs leading-relaxed text-muted">
+        <p className="mt-12 text-xs leading-relaxed text-ink-soft">
           Eight real transactions on Stellar testnet. Reproduce them with{" "}
-          <code className="rounded border border-hairline bg-surface px-1.5 py-0.5 font-mono">
+          <code className="rounded border border-rule bg-paper-sunk px-1.5 py-0.5 font-mono">
             node examples/condominium.mjs
           </code>
           . Building this is what surfaced the blinding-accumulation bug listed on the home

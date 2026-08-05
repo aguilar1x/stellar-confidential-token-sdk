@@ -1,39 +1,42 @@
 @import "tailwindcss";
 
 /**
- * Palette anchored on sentinel's near-black navy, with one addition this
- * subject needs: the page's whole argument is a binary — a reconstruction
- * either matches the chain's commitment or it does not — so verified/refused
- * are not status colours borrowed from a UI kit, they carry the content.
+ * Light, white, and quiet — the brief's requirement, and the right register for
+ * a project whose whole claim is that you can check its arithmetic yourself.
  *
- * `--sealed` is for values that exist but cannot be read: the •••• amounts and
- * the commitment hex beside them. It sits deliberately between muted and
- * foreground, because a sealed amount is present, not absent.
+ * The accent is a deep indigo rather than a green: green already belongs to the
+ * sibling project this borrows its layout language from, and here it would
+ * fight the one place colour has to mean something. Verified and refused are
+ * not decoration on this site, they are the verdict, so they get the only
+ * saturated colour on the page and everything else stays neutral.
  */
 :root {
-  --background: hsl(222 47% 5%);
-  --surface: hsl(222 40% 8.5%);
-  --surface-raised: hsl(222 36% 11%);
-  --hairline: hsl(220 25% 16%);
-  --foreground: hsl(213 31% 91%);
-  --muted: hsl(215 20% 55%);
-  --sealed: hsl(215 22% 44%);
-  --accent: hsl(174 62% 55%);
-  --verified: hsl(152 55% 52%);
-  --refused: hsl(4 78% 64%);
+  --paper: hsl(0 0% 100%);
+  --paper-sunk: hsl(228 22% 97.5%);
+  --ink: hsl(230 30% 11%);
+  --ink-soft: hsl(230 12% 40%);
+  --rule: hsl(228 16% 90%);
+  --rule-strong: hsl(228 14% 82%);
+  --accent: hsl(243 56% 44%);
+  --accent-soft: hsl(243 60% 96%);
+  --verified: hsl(160 66% 28%);
+  --refused: hsl(2 66% 47%);
+  /* A sealed value: present, unreadable. Never the same grey as muted text. */
+  --sealed: hsl(230 14% 62%);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-hairline: var(--hairline);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-sealed: var(--sealed);
+  --color-paper: var(--paper);
+  --color-paper-sunk: var(--paper-sunk);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
   --color-verified: var(--verified);
   --color-refused: var(--refused);
+  --color-sealed: var(--sealed);
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-hex), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
@@ -45,60 +48,67 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 /**
- * The signature: a commitment. A 64-character hex string that stands for an
- * amount nobody can read. It recurs on every page, so it gets one definition
- * rather than being restyled per use.
+ * The signature. A commitment is what this protocol writes to a public ledger
+ * instead of an amount, so it appears on every page as the real hex rather than
+ * as ornament.
  */
 .commitment {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.02em;
+  font-size: 0.7rem;
+  letter-spacing: 0.015em;
   color: var(--sealed);
   word-break: break-all;
-  line-height: 1.55;
-}
-
-/** A value that exists and cannot be read. Not a redaction — a seal. */
-.sealed::before {
-  content: "••••";
-  margin-right: 0.4em;
-  opacity: 0.5;
-  letter-spacing: 0.1em;
+  line-height: 1.6;
 }
 
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.66rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
-/* Hairline grid backdrop — the plain ledger this replaces. */
-.grid-backdrop {
-  background-image:
-    linear-gradient(to right, var(--hairline) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hairline) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, black 15%, transparent 72%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, black 15%, transparent 72%);
+/**
+ * The hero's backdrop is not a photograph — it is the subject's own material.
+ * Rows of real commitment hex, set faintly and faded out, so the thing the page
+ * argues about is literally what you are looking through.
+ */
+.hex-field {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.85;
+  letter-spacing: 0.06em;
+  color: hsl(0 0% 100% / 0.1);
+  word-break: break-all;
+  user-select: none;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 52%, transparent 92%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 18%,
+    black 52%,
+    transparent 92%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -54,7 +54,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={runAll}
-            className="group inline-flex items-center gap-2 rounded-md bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
+            className="group inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <Play className="size-3.5" />
             Check all five
@@ -62,14 +62,14 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
           {done.length > 0 && (
             <button
               onClick={reset}
-              className="inline-flex items-center gap-2 rounded-md border border-hairline px-4 py-2.5 text-sm text-muted transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-2 rounded-md border border-rule px-4 py-2.5 text-sm text-ink-soft transition-colors hover:text-ink"
             >
               <RotateCcw className="size-3.5" />
               Reset
             </button>
           )}
           {done.length === ARCHIVES.length && (
-            <p className="font-mono text-xs text-muted">
+            <p className="font-mono text-xs text-ink-soft">
               {accepted} of {ARCHIVES.length} believed
             </p>
           )}
@@ -83,7 +83,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
 
           const border =
             s.status !== "done"
-              ? "border-hairline"
+              ? "border-rule"
               : v?.accepted
                 ? "border-verified/40"
                 : "border-refused/40";
@@ -91,7 +91,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
           return (
             <article
               key={a.id}
-              className={`rounded-xl border ${border} bg-surface transition-colors`}
+              className={`rounded-xl border ${border} bg-paper-sunk transition-colors`}
             >
               <div className="flex flex-wrap items-start gap-4 p-5">
                 <div className="min-w-0 flex-1">
@@ -101,8 +101,8 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
                       <span
                         className={`inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.1em] ${
                           v?.accepted
-                            ? "bg-verified/12 text-verified"
-                            : "bg-refused/12 text-refused"
+                            ? "bg-emerald-50 text-verified"
+                            : "bg-red-50 text-refused"
                         }`}
                       >
                         {v?.accepted ? (
@@ -114,18 +114,18 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
                       </span>
                     )}
                     {s.status === "done" && v?.caughtBy && !v.accepted && (
-                      <span className="font-mono text-[0.62rem] text-muted">
+                      <span className="font-mono text-[0.62rem] text-ink-soft">
                         caught by {v.caughtBy}
                       </span>
                     )}
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{a.blurb}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{a.blurb}</p>
                 </div>
 
                 <button
                   onClick={() => check(a.id)}
                   disabled={s.status === "running"}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-md border border-hairline px-3.5 py-2 text-xs font-medium transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-md border border-rule px-3.5 py-2 text-xs font-medium transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-50"
                 >
                   {s.status === "running" ? (
                     <>
@@ -141,13 +141,13 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
               </div>
 
               {s.status === "done" && v && (
-                <div className="border-t border-hairline px-5 py-4">
+                <div className="border-t border-rule px-5 py-4">
                   <p className="text-sm leading-relaxed">{v.detail}</p>
 
                   {v.reported && v.truth && (
                     <dl className="mt-4 grid gap-4 sm:grid-cols-2">
                       <div>
-                        <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                        <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                           What it convinced the wallet of
                         </dt>
                         <dd className="mt-1.5 space-y-0.5 font-mono text-[0.8rem]">
@@ -155,7 +155,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
                             className={
                               v.reported.spendable !== v.truth.spendable
                                 ? "font-semibold text-refused"
-                                : "text-foreground"
+                                : "text-ink"
                             }
                           >
                             spendable {xlm(v.reported.spendable)}
@@ -164,7 +164,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
                             className={
                               v.reported.receiving !== v.truth.receiving
                                 ? "font-semibold text-refused"
-                                : "text-foreground"
+                                : "text-ink"
                             }
                           >
                             receiving {xlm(v.reported.receiving)}
@@ -172,10 +172,10 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
                         </dd>
                       </div>
                       <div>
-                        <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted">
+                        <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
                           What the chain holds
                         </dt>
-                        <dd className="mt-1.5 space-y-0.5 font-mono text-[0.8rem] text-foreground">
+                        <dd className="mt-1.5 space-y-0.5 font-mono text-[0.8rem] text-ink">
                           <p>spendable {xlm(v.truth.spendable)}</p>
                           <p>receiving {xlm(v.truth.receiving)}</p>
                         </dd>

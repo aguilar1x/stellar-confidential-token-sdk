@@ -9,47 +9,55 @@ const LINKS = [
   { href: "/verify", label: "Break it" },
 ];
 
+/**
+ * A floating pill rather than a full-width bar.
+ *
+ * It has to read cleanly against two different backgrounds — the dark hero on
+ * the home page and plain white everywhere else — so it stays white with a soft
+ * shadow in both cases instead of going translucent, which would muddy over the
+ * hex field behind it.
+ */
 export function Nav() {
   const path = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline/70 bg-background/80 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3.5">
-        <Link href="/" className="flex items-center gap-2.5 text-sm font-semibold tracking-tight">
-          {/* A commitment, reduced to a mark: a sealed value you can still point at. */}
+    <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+      <nav className="pointer-events-auto flex items-center gap-1 rounded-full border border-rule bg-paper py-1.5 pl-5 pr-1.5 shadow-[0_8px_28px_-10px_rgb(16_18_38_/_0.28)]">
+        <Link
+          href="/"
+          aria-label="Home"
+          className="mr-2 flex items-center gap-2 text-[0.86rem] font-bold tracking-tight text-ink"
+        >
           <span
             aria-hidden
-            className="inline-block size-2.5 rounded-full bg-accent shadow-[0_0_0_3px_color-mix(in_srgb,var(--accent)_18%,transparent)]"
+            className="inline-block size-2 rounded-full bg-accent ring-4 ring-accent/12"
           />
-          confidential&#8203;-token-sdk
+          <span className="hidden sm:inline">ct-sdk</span>
         </Link>
 
-        <div className="ml-auto flex items-center gap-1">
-          {LINKS.map((l) => {
-            const active = path === l.href || path.startsWith(`${l.href}/`);
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                aria-current={active ? "page" : undefined}
-                className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
-                  active
-                    ? "bg-surface-raised text-foreground"
-                    : "text-muted hover:text-foreground"
-                }`}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-          <a
-            href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
-            className="ml-2 rounded-md bg-foreground px-3.5 py-1.5 text-sm font-medium text-background transition-opacity hover:opacity-90"
-          >
-            GitHub
-          </a>
-        </div>
+        {LINKS.map((l) => {
+          const active = path === l.href || path.startsWith(`${l.href}/`);
+          return (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={active ? "page" : undefined}
+              className={`rounded-full px-3.5 py-1.5 text-[0.86rem] transition-colors ${
+                active ? "font-semibold text-ink" : "text-ink-soft hover:text-ink"
+              }`}
+            >
+              {l.label}
+            </Link>
+          );
+        })}
+
+        <a
+          href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
+          className="ml-1 rounded-full bg-accent px-4 py-2 text-[0.86rem] font-medium text-white transition-opacity hover:opacity-90"
+        >
+          GitHub
+        </a>
       </nav>
-    </header>
+    </div>
   );
 }

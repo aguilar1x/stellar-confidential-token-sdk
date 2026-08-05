@@ -32,7 +32,7 @@ export function Commitment({
   return (
     <div>
       {label && (
-        <span className="mb-1.5 block font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-muted">
+        <span className="mb-1.5 block font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-ink-soft">
           {label}
         </span>
       )}

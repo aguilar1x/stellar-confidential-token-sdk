@@ -20,7 +20,7 @@ export function CopyButton({ text }: { text: string }) {
         }
       }}
       aria-label={copied ? "Copied" : "Copy code"}
-      className="absolute right-3 top-3 rounded-md border border-hairline bg-surface-raised p-1.5 text-muted opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100"
+      className="absolute right-3 top-3 rounded-md border border-white/15 bg-white/10 p-1.5 text-white/70 opacity-0 transition-opacity hover:text-white focus-visible:opacity-100 group-hover:opacity-100"
     >
       {copied ? <Check className="size-3.5 text-verified" /> : <Copy className="size-3.5" />}
     </button>
