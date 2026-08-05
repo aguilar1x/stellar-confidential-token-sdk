@@ -1,87 +1,175 @@
 # stellar-confidential-token-sdk
 
-**A conformant client layer for OpenZeppelin Confidential Tokens on Stellar.**
+[![CI](https://github.com/aguilar1x/stellar-confidential-token-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/aguilar1x/stellar-confidential-token-sdk/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/stellar-confidential-token-sdk)](https://www.npmjs.com/package/stellar-confidential-token-sdk)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-In July 2026 OpenZeppelin published two normative specifications for confidential
-tokens — [`SDK.md`][sdk] (the client's obligations) and [`INDEXER.md`][indexer]
-(what an indexer must serve and how a client must verify it). Both exist because
-an external audit finding (N-08, [issue #787][issue]) established that the client
-is load-bearing: lose an opening and the funds are unrecoverable.
+**The supporting infrastructure a confidential-token wallet is built on: an
+archive you can point a wallet at, and the client that checks the archive isn't
+lying to it.**
 
-This repository is an implementation of those obligations.
+A confidential-token wallet has an unusual problem. The chain stores
+*commitments*; only the wallet holds the *openings* that can spend them. So the
+wallet is load-bearing in a way most wallets are not — an opening that is lost,
+or derived slightly differently on a second device, is money that cannot be
+moved. An external audit finding ([N-08, issue #787][issue]) established exactly
+this, and OpenZeppelin responded in July 2026 with two normative specifications:
+[`SDK.md`][sdk], the client's obligations, and [`INDEXER.md`][indexer], what an
+archive must serve and how a client must verify it.
+
+This repository implements both.
 
 [sdk]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/SDK.md
 [indexer]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/INDEXER.md
 [issue]: https://github.com/OpenZeppelin/stellar-contracts/issues/787
 
-## Status
+## See it work
 
-This is early, in-progress work. What is true right now:
-
-| Component | State |
-|---|---|
-| Crypto core (Grumpkin, Poseidon2, commitments, field ops) | Implemented, tested |
-| §4.7 rejection sampling | Implemented, tested |
-| §5.1 deterministic key derivation | Implemented, tested |
-| Witness builders (register, transfer, withdraw, disclose) | Implemented |
-| UltraHonk proving via bb.js, keccak transcript | Implemented, self-verifying against real circuits |
-| Offline state engine + `verifyAgainstChain` | Implemented |
-| Selective disclosure (sender + recipient) | Implemented |
-| §6 conformance suite (fixtures, parity, tamper, vectors) | Not started |
-| Indexer (INDEXER.md C2/C3/C4) + `recoverFromSeed` | Not started |
-
-117 tests pass, including real UltraHonk proofs generated and verified against
-the vendored circuits.
-
-### §5.1 — deterministic derivation
-
-Recoverability is the property the whole client hinges on, and it exists only if
-derivation is deterministic. This SDK implements the spec's chain exactly:
-
-```
-msg  = "openzeppelin/confidential-token/v1/sk" || 0x0a
-       || enc(contract) || 0x0a || enc(account)
-root = Ed25519-Sign(sk_ed, SHA-256("Stellar Signed Message:\n" || msg))
-sk   = RS(HKDF-SHA-512(
-         IKM  = root,
-         salt = "openzeppelin/confidential-token/v1/sk",
-         info = be_32(addr_f) || be_32(acct_f) || le_4(j)))
-```
-
-`j` starts at zero and increments on every rejection — both when §4.7 rejects
-the candidate and when the induced `vk` would be zero.
-
-Two details are easy to get silently wrong, so both are pinned by tests:
-
-- **§4.7 clears the top 2 bits, not the top byte.** Clearing 8 bits makes
-  rejection impossible and yields a secret uniform over `[1, 2^248)` rather than
-  `[1, r)`. Because `j` advances on rejection, a wrong mask also produces a
-  different `sk` for the same root — an interoperability break, not just a
-  statistical one.
-- **SEP-0053 signs `SHA-256(prefix || msg)`, not the message.** Our construction
-  is cross-checked against `@stellar/stellar-sdk`'s independent `signMessage`.
-
-## Layout
-
-```
-packages/sdk/          the client SDK (published to npm)
-packages/conformance/  SDK.md §6 conformance suite (fixtures, parity, tamper)
-apps/                  reference app + indexer
-```
-
-## Development
+A real confidential payment on testnet, from a single signer — two fresh
+accounts, secrets derived and never stored, a hidden amount, and the recipient
+decrypting it from public chain events alone:
 
 ```bash
 npm install
-npm run build
-npm test
+node examples/live-payment.mjs
 ```
 
-Requires Node ≥ 20.
+Then break the archive it depends on, and watch the client refuse it:
 
-## License
+```bash
+ALICE_SECRET=<printed by the previous command> node examples/sabotage.mjs
+```
 
-Apache-2.0. See [LICENSE](LICENSE) and [NOTICE](NOTICE) for provenance.
+```
+ACCEPTED  honest      a faithful archive
+          §7: openings match the chain
 
-This is an independent implementation. It is not endorsed by or affiliated with
-OpenZeppelin.
+REJECTED  lagging     honest, but cannot vouch for the range
+          C3: archive admitted an incomplete history
+
+REJECTED  omitting    drops your merge, still claims complete: true
+          §7: commitment mismatch on receiving
+          it would have told you: receiving 1000000000     ← 100 XLM that do not exist
+
+REJECTED  corrupting  alters your balance ciphertext, still claims complete: true
+          §7: commitment mismatch on spendable
+          it would have told you: spendable 600000001      ← wrong by a single stroop
+```
+
+Three adversaries, caught by two different defences, and the split is the whole
+argument. The lagging archive is caught by `INDEXER.md` C3 — it admits the gap
+itself. The other two **lie**, claiming `complete: true`, so C3 cannot help: a
+completeness flag is only as good as the party asserting it. They are caught
+because the client re-derives its openings and checks them against the chain's
+commitments (§7).
+
+That is what it means for an indexer to be untrusted rather than merely
+monitored. And note the last line: wrong by one stroop, and still caught.
+
+## What's here
+
+| | |
+|---|---|
+| `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. |
+| `packages/conformance` | The `SDK.md` §6 suite: OpenZeppelin's fixtures byte-for-byte, circuit-execution parity with tamper cases, and the §6.3 vectors. |
+| `apps/indexer` | An `INDEXER.md` archive (C1–C4) as a Web-standard `fetch` handler, so one implementation serves from Node, Cloudflare, Deno or Vercel. |
+| `examples/` | The live payment and the sabotage, both against real testnet contracts. |
+
+214 tests, run in CI on every push and weekly.
+
+## Conformance, honestly
+
+15 of the 17 published primitives reproduce **byte-for-byte**. Two do not, and
+what they reveal is worth more than a clean sweep would have been:
+
+| Primitive | Specification | This client |
+|---|---|---|
+| `ecdh` | `Poseidon2(δ_ecdh, S.x, S.y)` | `(s·P).x` |
+| `encrypt_auditor_sender_balance` | second sponge squeeze | first squeeze |
+
+Both were tested against the real circuits. The vendored withdraw circuit
+**accepts** the first-squeeze form, and the live transfer against the deployed
+contract works with x-only ECDH. So the finding is not about this client:
+
+> **The contracts deployed on testnet were compiled from circuits that predate
+> the published specification — and both changes the spec made are security
+> fixes.** Anyone building against those contracts today is building on
+> pre-fix cryptography, with nothing to tell them.
+
+The spec states both reasons outright. An x-only ECDH secret is invariant under
+point negation, so `P` and `−P` derive the *same* secret. And the first sponge
+squeeze is the **amount** pad, left unused on purpose "so the checkpoint pad
+never coincides with an amount pad, even under `(r_e, σ)` reuse" — using it
+reintroduces exactly that pad collision.
+
+Each divergence is [pinned from both sides](./packages/conformance/src/divergences.js):
+the suite fails if our value drifts, if the spec moves again, **or if the two
+converge** — the last meaning the circuits were regenerated and the divergence
+should be deleted rather than left standing as a stale excuse.
+
+There is also a domain-tag collision: `δ_ecdh` was recovered from the fixtures
+(only domain 13 reproduces the `ecdh` vector) and this codebase already assigns
+13 to `DISCLOSURE`.
+
+### The vectors §6.3 asks for and nobody published
+
+`SDK.md` §6.3 names three derivations needing fixture coverage. One exists
+upstream. The other two are [generated here](./packages/conformance/vectors/) in
+OpenZeppelin's own testdata format:
+
+- **`δ_eph`** — the spec's reason for wanting it: *"No circuit constrains `r_e`,
+  so a fixture is the only mechanism keeping a user's clients in agreement."* A
+  client that derives it differently still produces proofs that verify; the
+  damage shows up later, when the user's second device cannot recompute it.
+- **the §5.1 chain** — a fixed root through `addr_f` and `acct_f` to `sk`, `vk`,
+  `Y`, `PVK`, including the SEP-0053 preimage and signature.
+
+## Using it
+
+```bash
+npm install stellar-confidential-token-sdk
+```
+
+```ts
+import { deriveSk, deriveKeys, skSigningMessage } from "stellar-confidential-token-sdk";
+import { proveTransfer } from "stellar-confidential-token-sdk/node";
+
+// The account secret is DERIVED, never stored — same signer, same key, forever.
+const root = await wallet.signMessage(skSigningMessage(CONTRACT, ACCOUNT));
+const { sk, addrF } = deriveSk(root, CONTRACT, ACCOUNT);
+
+const { payload, next } = await proveTransfer({
+  keys: deriveKeys(sk, addrF),
+  v: 2500n, r: openingBlinding,
+  amount: 750n,
+  pvkB: recipientViewingKey, kAudR: auditorKey, kAudS: auditorKey,
+});
+// PERSIST `next` BEFORE SUBMITTING. It is the only thing that can spend the result.
+```
+
+Browser proving works too, via bb.js in WASM. It needs cross-origin isolation
+(`Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy:
+credentialless`) for `SharedArrayBuffer`.
+
+## Known limitations
+
+Stated plainly, because a conformance project that hid its own gaps would be
+self-refuting:
+
+- **Testnet only.** The two divergences above are unresolved until the circuits
+  are regenerated and the verifier redeployed. Do not hold value with this.
+- **Deposits and withdrawals are public by design.** Only transfers hide amounts.
+- **The two divergences are not fixable from the client side** without breaking
+  compatibility with the deployed verifier.
+- **The disclosure receipt is a bearer token** — anyone holding the URL can read
+  the disclosed amount.
+- **Not audited.** Nethermind's audit covers the contracts, not this client.
+
+## Provenance and license
+
+Apache-2.0. The crypto core was written by the same author inside an earlier
+project and re-published here; every extracted file was verified per-file
+against that repository's git history to contain no other contributor's work.
+See [NOTICE](./NOTICE).
+
+An independent implementation. Not endorsed by or affiliated with OpenZeppelin.
