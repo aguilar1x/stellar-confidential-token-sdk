@@ -1,0 +1,20 @@
+{
+  "name": "@stellar-confidential/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "INDEXER.md-conformant archive for confidential-token events (C1-C4)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./src/handler.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "16.2.0",
+    "stellar-confidential-token-sdk": "*"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}

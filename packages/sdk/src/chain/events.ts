@@ -209,8 +209,14 @@ export function naturalEventId(p: {
 /**
  * The operation and event indices carried inside an RPC event id
  * (`<toid>-<eventOrder>`): `opIndex = toid & 0xfff`, `eventIndex = eventOrder`.
+ *
+ * Exported because an indexer ingesting from the RPC must derive these the same
+ * way. The pair feeds both the §3.4 total order and {@link naturalEventId}, so
+ * an indexer that parses the id differently produces events that no longer
+ * dedupe against their RPC twins — the hybrid source would then replay the same
+ * transfer twice and silently inflate a receiving balance.
  */
-function rpcEventCoords(id: string): { opIndex: number; eventIndex: number } {
+export function rpcEventCoords(id: string): { opIndex: number; eventIndex: number } {
   const [toidStr, eventStr] = id.split("-");
   const opIndex = Number(BigInt(toidStr!) & 0xfffn);
   const eventIndex = Number(eventStr ?? "0");
