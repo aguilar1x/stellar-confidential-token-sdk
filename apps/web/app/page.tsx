@@ -87,9 +87,17 @@ export default async function Landing() {
             </div>
 
             {/* Right: the claim, checked. Beside the headline rather than under
-                it, so the evidence and the assertion are read together. */}
-            <Reveal delay={0.18} className="lg:pl-10">
-              <figure className="rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.11] to-white/[0.05] p-6">
+                it, so the evidence and the assertion are read together.
+
+                The card deliberately has NO entrance animation. Its blur is a
+                backdrop-filter, and an ancestor animating opacity or transform
+                establishes a new backdrop root — so during a reveal the filter
+                has no page behind it to sample and renders as nothing, then
+                snaps back when the animation settles. Do not wrap this in
+                Reveal; the credit below it can animate because it has no
+                filter of its own. */}
+            <div className="lg:pl-10">
+              <figure className="rounded-2xl border border-white/12 bg-white/[0.07] p-6 backdrop-blur-md">
                 <figcaption className="flex flex-wrap items-baseline justify-between gap-3">
                   <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/45">
                     a real balance, on testnet
@@ -128,7 +136,7 @@ export default async function Landing() {
                 </div>
               </figure>
 
-              <div className="mt-7 flex items-center justify-end gap-3.5">
+              <Reveal delay={0.18} className="mt-7 flex items-center justify-end gap-3.5">
                 <span className="text-[0.82rem] text-white/50">Built by</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -136,8 +144,8 @@ export default async function Landing() {
                   alt="Oppia Labs"
                   className="h-8 w-auto brightness-0 invert"
                 />
-              </div>
-            </Reveal>
+              </Reveal>
+            </div>
           </div>
         </div>
       </section>
