@@ -284,17 +284,34 @@ export default async function Demo() {
         </StaggerItem>
       </StaggerGroup>
 
+      {/* The bug this page found is the strongest thing on it, and it was set as
+          a 12px grey footnote with a shell command as the last word. Promoted. */}
       <Reveal>
-        <p className="mt-12 text-xs leading-relaxed text-ink-soft">
-          Eight real transactions on Stellar testnet. Reproduce them with{" "}
-          <code className="rounded border border-rule bg-paper-sunk px-1.5 py-0.5 font-mono">
-            node examples/condominium.mjs
-          </code>
-          . Building this is what surfaced the blinding-accumulation bug listed on the home
-          page — a single payment reconstructs correctly under either modulus, so it took eight
-          to show up.
-        </p>
+        <section className="mt-16 border-t border-rule pt-10">
+          <h2 className="text-xl font-bold tracking-tight">
+            Building this is what found the bug.
+          </h2>
+          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
+            The first time this audit ran against the chain it came out red. The total was
+            right and the commitment was wrong, because the client was adding blinding factors
+            in the wrong field — and with a single payment that reconstructs correctly either
+            way. It took eight neighbours to show up. Every example shipped before this one
+            moved money exactly once.
+          </p>
+          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
+            That is the argument for a demo with real numbers in it, rather than a test suite
+            alone.
+          </p>
+          <p className="mt-6 text-xs leading-relaxed text-ink-soft">
+            Eight real transactions on Stellar testnet, reproducible with{" "}
+            <code className="rounded border border-rule bg-paper-sunk px-1.5 py-0.5 font-mono">
+              node examples/condominium.mjs
+            </code>
+            . Testnet only, not audited.
+          </p>
+        </section>
       </Reveal>
+
     </main>
   );
 }

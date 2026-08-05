@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { Reveal } from "@/components/reveal";
 import type { ArchiveId } from "@/lib/demo";
@@ -81,20 +82,30 @@ export default async function Verify() {
         </section>
       </Reveal>
 
+      {/* Ends on a move forward. The previous closer asserted that the archives
+          are real — which the intro already says, where a reader needs it before
+          clicking — and then offered a terminal as an alternative to the thing
+          they had just done in the browser. Both read as defensive. */}
       <Reveal>
-        <p className="mt-10 text-sm leading-relaxed text-ink-soft">
-          The archives are the same handler this project deploys for real, differing only in
-          how they serve the history.{" "}
-          <Link href="/demo" className="text-accent hover:underline">
-            See what they were serving
+        <section className="mt-16 border-t border-rule pt-10">
+          <h2 className="text-xl font-bold tracking-tight">
+            So what were those archives protecting?
+          </h2>
+          <p className="mt-3 max-w-xl text-[0.94rem] leading-relaxed text-ink-soft">
+            A building collecting its dues. Eight neighbours, eight different amounts, none of
+            them on-chain — and a total every resident can audit. That guarantee is what a
+            lying archive takes away.
+          </p>
+          <Link
+            href="/demo"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          >
+            See the audit
+            <ArrowRight className="size-4" />
           </Link>
-          , or run{" "}
-          <code className="rounded border border-rule bg-paper-sunk px-1.5 py-0.5 font-mono text-xs">
-            node examples/sabotage.mjs
-          </code>{" "}
-          for the same thing in a terminal.
-        </p>
+        </section>
       </Reveal>
+
     </main>
   );
 }
