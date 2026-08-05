@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
    * own assets out of node_modules the way they do under plain Node.
    */
   serverExternalPackages: [
+    // Bundling this picks up a build that reaches for the `buffer` polyfill,
+    // whose legacy `Buffer()` constructor triggers DEP0005 — surfaced as a
+    // Console Error overlay in dev. Left external it uses Node's own Buffer.
+    "@stellar/stellar-sdk",
     "@noir-lang/noir_js",
     "@noir-lang/acvm_js",
     "@noir-lang/noirc_abi",
