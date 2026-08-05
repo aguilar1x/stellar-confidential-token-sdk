@@ -19,6 +19,19 @@ const crossOriginIsolation = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ["stellar-confidential-token-sdk"],
+  /**
+   * Proving happens inside a server action, and the proving stack loads WASM at
+   * runtime by URL. Bundling it rewrites those to /_next/static/... — a
+   * browser-relative path with no base on the server, so `fetch` fails with
+   * "Failed to parse URL". Leaving these external keeps them resolving their
+   * own assets out of node_modules the way they do under plain Node.
+   */
+  serverExternalPackages: [
+    "@noir-lang/noir_js",
+    "@noir-lang/acvm_js",
+    "@noir-lang/noirc_abi",
+    "@aztec/bb.js",
+  ],
   async headers() {
     return [{ source: "/(.*)", headers: crossOriginIsolation }];
   },

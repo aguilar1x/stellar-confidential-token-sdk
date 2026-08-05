@@ -33,8 +33,10 @@ import { CONTRACTS, NETWORK_PASSPHRASE, RPC_URL } from "@/lib/demo";
 import { BUILDING } from "./data";
 
 export interface AuditResult {
-  /** What the building says it collected, in stroops. */
+  /** What the building publishes: the total it can open its commitment to. */
   published: string;
+  /** Of that, what the eight listed units paid. The rest came from visitors. */
+  fromUnits: string;
   /** What the chain's commitment actually opens to. */
   reconstructed: string;
   /** The building's receiving commitment, as served by the chain. */
@@ -51,7 +53,9 @@ export interface AuditResult {
 const hex = (b: Uint8Array) => Buffer.from(b).toString("hex");
 
 export async function auditBuilding(): Promise<AuditResult> {
-  const published = BUILDING.units.reduce((n, u) => n + BigInt(u.dues), 0n);
+  // What the eight listed units paid. Visitors can add more from the page, so
+  // this is a component of the total, not the total itself.
+  const fromUnits = BUILDING.units.reduce((n, u) => n + BigInt(u.dues), 0n);
 
   try {
     const client = new ChainClient({
@@ -85,7 +89,8 @@ export async function auditBuilding(): Promise<AuditResult> {
     const onchain = await client.confidentialBalance(address);
     if (!onchain) {
       return {
-        published: published.toString(),
+        published: fromUnits.toString(),
+        fromUnits: fromUnits.toString(),
         reconstructed: "0",
         onchainCommitment: "",
         recomputedCommitment: "",
@@ -101,17 +106,23 @@ export async function auditBuilding(): Promise<AuditResult> {
     const onchainC = pointToBytes(onchain.receivingBalance);
     const recomputed = pointToBytes(commit(receiving.v, receiving.r));
 
+    // The audit is exactly one question: does the commitment the chain holds
+    // open to the total the building publishes? Comparing against a hardcoded
+    // figure instead would make the page fail the moment a visitor adds a
+    // payment — reporting a mismatch while the cryptography agreed perfectly.
     return {
-      published: published.toString(),
+      published: receiving.v.toString(),
+      fromUnits: fromUnits.toString(),
       reconstructed: receiving.v.toString(),
       onchainCommitment: hex(onchainC),
       recomputedCommitment: hex(recomputed),
-      ok: hex(onchainC) === hex(recomputed) && receiving.v === published,
+      ok: hex(onchainC) === hex(recomputed),
       paymentCount: BUILDING.units.length,
     };
   } catch (e) {
     return {
-      published: published.toString(),
+      published: fromUnits.toString(),
+      fromUnits: fromUnits.toString(),
       reconstructed: "0",
       onchainCommitment: "",
       recomputedCommitment: "",

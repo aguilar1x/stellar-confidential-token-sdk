@@ -7,6 +7,8 @@ import { Commitment } from "@/components/commitment";
 import { EXPLORER } from "@/lib/demo";
 import { BUILDING } from "./data";
 import { auditBuilding, demonstrateHomomorphism } from "./audit";
+import { payDues } from "./pay";
+import { PayButton } from "./pay-button";
 
 export const metadata: Metadata = {
   title: "A building collects its dues",
@@ -90,8 +92,15 @@ export default async function Demo() {
             </tbody>
             <tfoot>
               <tr className="border-t border-rule bg-paper-sunk">
-                <td colSpan={2} className="px-5 py-4 font-semibold">
-                  Collected this month
+                <td colSpan={2} className="px-5 py-4">
+                  <span className="font-semibold">Collected this month</span>
+                  {BigInt(audit.published) > BigInt(audit.fromUnits) && (
+                    <span className="ml-2 text-sm text-ink-soft">
+                      — {xlm(audit.fromUnits)} from the eight units,{" "}
+                      {xlm((BigInt(audit.published) - BigInt(audit.fromUnits)).toString())}{" "}
+                      added by visitors
+                    </span>
+                  )}
                 </td>
                 <td colSpan={2} className="px-5 py-4 text-right font-mono text-lg font-bold text-accent">
                   {xlm(audit.published)}
@@ -139,7 +148,7 @@ export default async function Demo() {
               <dl className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div>
                   <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-                    The building says it collected
+                    The building publishes
                   </dt>
                   <dd className="mt-1.5 font-mono text-base font-semibold">
                     {xlm(audit.published)}
@@ -174,6 +183,12 @@ export default async function Demo() {
             </>
           )}
         </section>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div className="mt-6">
+          <PayButton pay={payDues} />
+        </div>
       </Reveal>
 
       {/* Why it works — shown, not asserted. */}
