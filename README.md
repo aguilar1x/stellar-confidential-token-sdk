@@ -7,7 +7,7 @@
 **The layer for anything that has to prove a total without exposing its parts.**
 
 Every confidential-token wallet needs this. So does a building collecting its
-dues — which is what runs below, with real money on testnet. The chain holds
+dues — which is what runs below, in 35 real transactions on testnet. The chain holds
 *commitments*; whoever holds the *openings* can prove what they sum to, and
 nothing else. This is the archive that history is replayed from, and the client
 that proves that archive is not lying.
@@ -36,7 +36,12 @@ The primitive is the same every time: many sealed values, one provable total.
   (§5.1), rebuild spendable and receiving balances from events, and verify them
   against the chain's commitments before showing a number to anyone.
 - **Shared ledgers** — a building's dues, a fund's contributions, a split bill.
-  Every participant audits the total; nobody sees a neighbour's line item.
+  Every participant audits the total against the chain, and no individual amount
+  is ever written to it. What an opened total cannot hide is arithmetic: enough
+  participants comparing notes can infer the one who didn't. That is a property
+  of adding numbers, not of this scheme — worth saying out loud, because the
+  privacy here is against the chain and any third party, not against a quorum of
+  your own counterparties.
 - **Payroll and treasury** — a total that reconciles against the chain while the
   individual figures stay sealed, including from the party doing the reconciling.
 - **Compliance without disclosure** — the auditor channel encrypts balances to a

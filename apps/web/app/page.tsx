@@ -61,10 +61,10 @@ export default async function Landing() {
                   A total everybody can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
-                  The layer for anything that has to prove a total without exposing its
-                  parts — a wallet, a building collecting dues, a payroll. Each one replays
-                  its history from an archive it did not write. This is the only conformant
-                  archive, and the client that proves it is not lying.
+                  Getting there means deriving keys that match byte-for-byte on every
+                  device, rebuilding balances from an archive you did not write, and
+                  generating proofs. All three fail silently — as money that will not move.
+                  This ships all three. One signature, 1.5s to a private transfer.
                 </p>
               </Reveal>
 
@@ -176,7 +176,7 @@ export default async function Landing() {
               <p className="mt-3 flex-1 text-[0.94rem] leading-relaxed text-ink-soft">
                 Commitments add. Each payment contributes to the building&rsquo;s balance
                 without the chain ever holding a commitment to a single one of them. The
-                treasurer opens the total; the line items stay shut.
+                treasurer opens the total; no line item is ever written.
               </p>
               <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                 See the audit
