@@ -37,6 +37,22 @@ export const DEMO = {
 } as const;
 
 export const RPC_URL = "https://soroban-testnet.stellar.org";
+
+/**
+ * Where the archives start scanning.
+ *
+ * The demo account's history is closed — it sits in ledgers 3976175..3976748
+ * and nothing will be added to it. Scanning from the RPC's retention floor
+ * instead would examine 120,000 ledgers to find the same fifteen events, which
+ * costs about two seconds against a third of a second and grows every day.
+ *
+ * That matters because neither Vercel nor Cloudflare keeps memory between cold
+ * starts, so this scan can run on a page load rather than once at boot.
+ *
+ * It stays honest: the archive reports this as its `ingested_from`, so a client
+ * asking for earlier history is truthfully told the range is not covered.
+ */
+export const INDEX_FROM_LEDGER = Number(process.env.INDEX_FROM_LEDGER ?? 3_976_100);
 export const NETWORK_PASSPHRASE = "Test SDF Network ; September 2015";
 
 export const CONTRACTS = {

@@ -20,7 +20,7 @@ import { dishonestStore } from "../../../../../../indexer/src/tamper.js";
 
 type Store = InstanceType<typeof MemoryStore>;
 
-import { CONTRACTS, RPC_URL, type ArchiveId } from "@/lib/demo";
+import { CONTRACTS, INDEX_FROM_LEDGER, RPC_URL, type ArchiveId } from "@/lib/demo";
 
 export const runtime = "nodejs";
 // The chain history for a fixed demo account does not change, so ingesting once
@@ -34,7 +34,12 @@ function ingestOnce() {
   ingestion ??= (async () => {
     const store = new MemoryStore();
     const server = new rpc.Server(RPC_URL);
-    await ingestFromRpc({ server, store, contractId: CONTRACTS.token, fromLedger: 0 });
+    await ingestFromRpc({
+      server,
+      store,
+      contractId: CONTRACTS.token,
+      fromLedger: INDEX_FROM_LEDGER,
+    });
     return store;
   })().catch((e) => {
     // Never cache a failed ingestion: a transient RPC error would otherwise

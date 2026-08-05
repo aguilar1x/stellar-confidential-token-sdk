@@ -1,0 +1,26 @@
+# Cloudflare Workers deployment for the INDEXER.md archive.
+#
+# Deploy:
+#   npx wrangler login          # opens a browser once
+#   npx wrangler deploy         # from apps/indexer
+#
+# The free plan covers this comfortably: 100,000 requests/day, and this Worker
+# only serves JSON plus a short RPC scan on cold start.
+
+name = "confidential-token-archive"
+main = "src/worker.js"
+compatibility_date = "2026-08-01"
+# stellar-sdk reaches for Node built-ins; this lets the Workers runtime provide
+# them instead of the bundle failing to resolve them.
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+TOKEN_CONTRACT_ID = "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY"
+RPC_URL = "https://soroban-testnet.stellar.org"
+# Pinned near the demo history. A cold start scans from here, not from the RPC's
+# retention floor — a third of a second instead of two seconds, and it does not
+# grow as the chain advances.
+FROM_LEDGER = "3976100"
+
+[observability]
+enabled = true

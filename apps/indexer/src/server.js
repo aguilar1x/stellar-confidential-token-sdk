@@ -24,6 +24,7 @@ const PORT = Number(process.env.PORT ?? 8787);
 const RPC_URL = process.env.RPC_URL ?? "https://soroban-testnet.stellar.org";
 const CONTRACT = process.env.TOKEN_CONTRACT_ID;
 const POLL_SECONDS = Number(process.env.POLL_SECONDS ?? 10);
+const FROM_LEDGER = Number(process.env.FROM_LEDGER ?? 0);
 
 if (!CONTRACT) {
   console.error("TOKEN_CONTRACT_ID is required");
@@ -37,7 +38,7 @@ const server = new rpc.Server(RPC_URL, { allowHttp: RPC_URL.startsWith("http://"
 /** Resume from the ledger after the last one ingested, or from the start. */
 async function poll() {
   try {
-    const from = store.ingestedThrough() + 1;
+    const from = store.ingestedThrough() ? store.ingestedThrough() + 1 : FROM_LEDGER;
     const res = await ingestFromRpc({ server, store, contractId: CONTRACT, fromLedger: from });
     if (res.ingested > 0) {
       console.log(`ingested ${res.ingested} event(s) over ledgers ${res.from}..${res.to}`);
