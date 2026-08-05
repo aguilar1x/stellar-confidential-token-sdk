@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ShieldCheck, ShieldAlert, ExternalLink } from "lucide-react";
+import { ShieldCheck, ShieldAlert, ArrowRight } from "lucide-react";
 
-import { Reveal, StaggerGroup, StaggerItem } from "@/components/reveal";
-import { Commitment } from "@/components/commitment";
-import { EXPLORER } from "@/lib/demo";
+import { Reveal } from "@/components/reveal";
 import { BUILDING } from "./data";
-import { auditBuilding, demonstrateHomomorphism } from "./audit";
-import { firstPaymentAnatomy } from "./anatomy";
-import { Lifecycle } from "./lifecycle";
-import { PaymentAnatomy } from "./anatomy-view";
-import LIFECYCLE_TXS from "./lifecycle-txs.json";
+import { auditBuilding, type AuditResult } from "./audit";
 import { PayButton } from "./pay-button";
-import { Tamper } from "./tamper";
+import { Steps } from "./steps";
+import { RepoScript } from "@/components/repo-script";
+import { StepLink } from "./step-actions";
+import { LedgerTable } from "./ledger-table";
 
 export const metadata: Metadata = {
   title: "A building collects its dues",
@@ -27,15 +23,26 @@ const XLM = 10_000_000n;
 const xlm = (s: string | bigint) =>
   `${(Number(BigInt(s)) / Number(XLM)).toLocaleString("en-US")} XLM`;
 
+/**
+ * Three tabs, in the order a visitor does them: read the sealed ledger, pay
+ * into it, check the result themselves.
+ *
+ * This page used to also carry the payment anatomy, the raw commitment hex, the
+ * Pedersen identity and the tamper console — eight sections, with the button
+ * that pays sitting sixth. A judge with four minutes met elliptic curves before
+ * they met the product. All of that still exists and none of it was softened;
+ * the explanation moved to /how and the adversarial console to /verify, which
+ * is the page named after it.
+ *
+ * What is left is the claim, the act, and the check — and as tabs rather than
+ * scroll, so all three are visible as a set from the first screen instead of
+ * being discovered on the way down.
+ */
 export default async function Demo() {
-  const [audit, homo, anatomy] = await Promise.all([
-    auditBuilding(),
-    demonstrateHomomorphism(),
-    firstPaymentAnatomy(),
-  ]);
+  const audit = await auditBuilding();
 
   return (
-    <main className="mx-auto max-w-4xl px-6 pb-24 pt-32">
+    <main className="mx-auto max-w-3xl px-6 pb-24 pt-32">
       <Reveal>
         <p className="eyebrow">A month of dues · Stellar testnet</p>
         <h1 className="mt-4 max-w-2xl text-[2.1rem] font-bold leading-[1.1] tracking-tight sm:text-5xl">
@@ -44,287 +51,149 @@ export default async function Demo() {
           <span className="text-accent">Nobody sees your payment.</span>
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
-          Eight units paid this month. A studio does not pay what the penthouse pays, and none
-          of those amounts exist on-chain. Yet any resident can check that the building
-          collected exactly what it says it did — not by trusting the treasurer, and not by
-          being shown the ledger.
+          Eight units paid this month. A studio does not pay what the penthouse pays, and
+          none of those amounts exist on-chain — yet anyone can check the building collected
+          exactly what it says it did. Three steps, about a minute, no wallet.
         </p>
       </Reveal>
 
       <Reveal delay={0.05}>
-        <section className="mt-12 border-t border-rule pt-12">
-          <p className="eyebrow">How the money got there</p>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight">
-            Four steps. Two of them are public, and that is not a bug.
-          </h2>
-          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
-            Getting value into the pool is a boundary crossing, so it is visible by
-            construction. What happens inside the pool is not.
-          </p>
-          <div className="mt-8 border-t border-rule pt-8">
-            <Lifecycle txs={LIFECYCLE_TXS} />
-          </div>
-        </section>
+        <Steps
+          steps={[
+            {
+              id: "ledger",
+              title: "Read the ledger",
+              blurb:
+                "Every row is a real transaction on testnet. Every amount is sealed — published nowhere, held only inside a commitment the payer and the building can open. Open one on the explorer and look for the amount.",
+              content: <Ledger audit={audit} />,
+            },
+            {
+              id: "pay",
+              title: "Add a payment",
+              blurb:
+                "Pick any amount. It becomes a real transaction on Stellar testnet: the total moves, your amount is written nowhere, and the audit still opens.",
+              content: (
+                <>
+                  <PayButton />
+                  <WhoseKey />
+                </>
+              ),
+            },
+            {
+              id: "check",
+              title: "Check it yourself",
+              blurb:
+                "Everything so far is something we did and are reporting. The next page is yours: it recomputes the commitment in your own browser from numbers you can edit, and points the client at five archives — three of which lie about this account's history.",
+              content: (
+                <div className="flex flex-wrap gap-3">
+                  <StepLink href="/verify">
+                    Try to break it
+                    <ArrowRight className="size-4" />
+                  </StepLink>
+                  <StepLink href="/how" variant="secondary">
+                    Why this works
+                  </StepLink>
+                </div>
+              ),
+            },
+          ]}
+        />
       </Reveal>
 
-      {/* The ledger. The point of this table is the column that has nothing in it. */}
-      <Reveal delay={0.08}>
-        <section className="mt-12 overflow-hidden rounded-xl border border-rule bg-paper">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-rule">
-                {["Unit", "Type", "Paid", "On-chain"].map((h) => (
-                  <th
-                    key={h}
-                    className="px-5 py-3 text-left font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-ink-soft"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-rule">
-              {BUILDING.units.map((u) => (
-                <tr key={u.id}>
-                  <td className="px-5 py-3 font-semibold">{u.id}</td>
-                  <td className="px-5 py-3 text-ink-soft">{u.label}</td>
-                  <td className="px-5 py-3">
-                    <span className="font-mono text-sealed">
-                      <span aria-hidden className="mr-1.5 opacity-50 tracking-[0.1em]">
-                        ••••
-                      </span>
-                      sealed
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    {u.tx ? (
-                      <a
-                        href={`${EXPLORER}/${u.tx}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-1 font-mono text-xs text-ink-soft hover:text-accent"
-                      >
-                        {u.tx.slice(0, 10)}…
-                        <ExternalLink className="size-3" />
-                      </a>
-                    ) : (
-                      <span className="text-ink-soft">—</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr className="border-t border-rule bg-paper-sunk">
-                <td colSpan={2} className="px-5 py-4">
-                  <span className="font-semibold">Collected this month</span>
-                  {BigInt(audit.published) > BigInt(audit.fromUnits) && (
-                    <span className="ml-2 text-sm text-ink-soft">
-                      — {xlm(audit.fromUnits)} from the eight units,{" "}
-                      {xlm((BigInt(audit.published) - BigInt(audit.fromUnits)).toString())}{" "}
-                      added by visitors
-                    </span>
-                  )}
-                </td>
-                <td colSpan={2} className="px-5 py-4 text-right font-mono text-lg font-bold text-accent">
-                  {xlm(audit.published)}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        </section>
-        <p className="mt-3 text-xs leading-relaxed text-ink-soft">
-          &ldquo;Sealed&rdquo; is not a display choice. Those amounts are published nowhere —
-          each is inside a commitment only the payer and the building can open.
+      <Reveal>
+        <p className="mt-16 border-t border-rule pt-8 text-xs leading-relaxed text-ink-soft">
+          Eight real transactions on Stellar testnet, regenerated from a clone of the
+          repository by <RepoScript path="examples/condominium.mjs" /> — a fixture script, not
+          part of the published package. Testnet only, not audited.
         </p>
       </Reveal>
+    </main>
+  );
+}
 
-      <Reveal delay={0.05}>
-        <div className="mt-14">
-          <PaymentAnatomy data={anatomy} />
-        </div>
-      </Reveal>
+/**
+ * Whose key signs.
+ *
+ * A reader watching a "Pay" button on a page about confidential money forms one
+ * objection, in this order: whose money is that? Answering it beside the button
+ * costs a sentence. It was a clause at the foot of the page before, past the
+ * point most readers stop — and phrased as why we did not add wallet-connect,
+ * which is an excuse where a fact belongs.
+ *
+ * So: state it plainly, and hand over the path that does use their own key,
+ * because that path is real and shipped.
+ */
+function WhoseKey() {
+  return (
+    <p className="mt-4 text-xs leading-relaxed text-ink-soft">
+      <strong className="font-semibold text-ink">The key that signs is ours, not yours.</strong>{" "}
+      This pays from a guest key held on the server, published in the repository on purpose —
+      the transaction and the proof are real, the money is not yours. Paying confidentially
+      requires an account already registered, funded and merged, so a freshly connected wallet
+      could not do it in one click anyway. To run the whole thing from a key you generate,{" "}
+      <RepoScript path="examples/live-payment.mjs" /> in the repository funds a new keypair
+      with friendbot and does every step from scratch.
+    </p>
+  );
+}
 
-      {/* The audit. */}
-      <Reveal delay={0.05}>
-        <section
-          className={`mt-10 rounded-xl border bg-paper p-6 ${
-            audit.ok ? "border-verified/40" : "border-refused/40"
+/**
+ * The sealed table and the one-sentence verdict.
+ *
+ * The point of the table is the column that has nothing in it. The verdict is a
+ * sentence rather than the two commitment points it rests on, because a reader
+ * who wants to see those bytes has a page for it — and a reader who does not
+ * should still leave knowing what was checked.
+ */
+function Ledger({ audit }: { audit: AuditResult }) {
+  return (
+    <>
+      {/* The fixture's units are known at build time; the reader's own payments
+          are not, so the table itself is a client component that folds them in
+          after mount. Only what it needs crosses the boundary — no `dues`,
+          which is sealed and has no business in a browser bundle. */}
+      <LedgerTable
+        units={BUILDING.units.map((u) => ({ id: u.id, label: u.label, tx: u.tx ?? null }))}
+        published={audit.published}
+        fromUnits={audit.fromUnits}
+      />
+
+      {/* Marked with a rule, not a wash — same device as the notes in the docs.
+          The verdict is carried by the badge and the sentence; a green
+          rectangle behind them only makes both harder to read. */}
+      <div
+        className={`mt-4 flex flex-wrap items-center gap-3 rounded-r-xl border-y border-r border-rule border-l-2 bg-paper-sunk px-5 py-4 ${
+          !audit.error && audit.ok ? "border-l-verified" : "border-l-refused"
+        }`}
+      >
+        <span
+          className={`inline-flex shrink-0 items-center gap-1.5 rounded-md bg-paper px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] ${
+            audit.ok && !audit.error ? "text-verified" : "text-refused"
           }`}
         >
-          <div className="flex flex-wrap items-center gap-3">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.12em] ${
-                audit.ok ? "bg-emerald-50 text-verified" : "bg-red-50 text-refused"
-              }`}
-            >
-              {audit.ok ? <ShieldCheck className="size-3" /> : <ShieldAlert className="size-3" />}
-              {audit.ok ? "verified" : "mismatch"}
-            </span>
-            <h2 className="text-lg font-semibold">The audit</h2>
-          </div>
-
-          {audit.error ? (
-            <p className="mt-4 text-sm text-refused">{audit.error}</p>
+          {audit.ok && !audit.error ? (
+            <ShieldCheck className="size-3" />
           ) : (
-            <>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">
-                The chain holds one commitment for everything the building received. Opening it
-                to the published total and recomputing the commitment gives back the point the
-                chain already stores — which it could not, had the building overstated or
-                understated by a single stroop.
-              </p>
-
-              <dl className="mt-6 grid gap-5 sm:grid-cols-2">
-                <div>
-                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-                    The building publishes
-                  </dt>
-                  <dd className="mt-1.5 font-mono text-base font-semibold">
-                    {xlm(audit.published)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-                    The chain&rsquo;s commitment opens to
-                  </dt>
-                  <dd
-                    className={`mt-1.5 font-mono text-base font-semibold ${
-                      audit.ok ? "text-verified" : "text-refused"
-                    }`}
-                  >
-                    {xlm(audit.reconstructed)}
-                  </dd>
-                </div>
-              </dl>
-
-              <div className="mt-6 grid gap-4 border-t border-rule pt-5 sm:grid-cols-2">
-                <Commitment
-                  label="commitment on-chain"
-                  hex={audit.onchainCommitment}
-                  tone={audit.ok ? "verified" : "refused"}
-                />
-                <Commitment
-                  label="recomputed from the total"
-                  hex={audit.recomputedCommitment}
-                  tone={audit.ok ? "verified" : "refused"}
-                />
-              </div>
-            </>
+            <ShieldAlert className="size-3" />
           )}
-        </section>
-      </Reveal>
-
-      <Reveal delay={0.05}>
-        <div className="mt-6">
-          <PayButton />
-        </div>
-      </Reveal>
-
-      {/* The reader's turn to disbelieve it. Runs entirely in their browser. */}
-      {!audit.error && (
-        <Reveal delay={0.05}>
-          <div className="mt-6">
-            <Tamper
-              total={audit.published}
-              blinding={audit.blinding}
-              onchainCommitment={audit.onchainCommitment}
-            />
-          </div>
-        </Reveal>
-      )}
-
-      {/* Why it works — shown, not asserted. */}
-      <StaggerGroup className="mt-14">
-        <StaggerItem>
-          <p className="eyebrow">Why this is possible</p>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight">Commitments add.</h2>
-        </StaggerItem>
-
-        <StaggerItem>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            A commitment to a value <code className="text-ink">v</code> with blinding{" "}
-            <code className="text-ink">r</code> is the curve point{" "}
-            <code className="text-ink">v·G + r·H</code>. Add two and you get{" "}
-            <code className="text-ink">(v₁+v₂)·G + (r₁+r₂)·H</code> — a commitment to the
-            sum, containing nothing that identifies either term. So eight payments land in the
-            building&rsquo;s balance and the chain ends up holding a commitment to their total
-            without ever having held one to any single payment.
-          </p>
-        </StaggerItem>
-
-        <StaggerItem>
-          <div
-            className={`mt-6 rounded-xl border bg-paper p-5 ${
-              homo.matches ? "border-verified/30" : "border-refused/30"
-            }`}
-          >
-            <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-              split the total two ways, commit to each half, add the points
-            </p>
-            <div className="mt-3 space-y-1.5">
-              <Commitment hex={homo.a} truncate={40} />
-              <Commitment hex={homo.b} truncate={40} />
-            </div>
-            <p className="mt-4 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-              equals a commitment to the whole
-            </p>
-            <div className="mt-2">
-              <Commitment
-                hex={homo.sum}
-                truncate={40}
-                tone={homo.matches ? "verified" : "refused"}
-              />
-            </div>
-            <p
-              className={`mt-4 font-mono text-xs font-bold ${
-                homo.matches ? "text-verified" : "text-refused"
-              }`}
-            >
-              {homo.matches ? "✓ identical" : "✗ mismatch"}
-            </p>
-          </div>
-        </StaggerItem>
-
-        <StaggerItem>
-          <p className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            A plain ledger makes you choose between an auditable total and private line items.
-            This does not — but only while the history the wallet replays is the real one.{" "}
-            <Link href="/verify" className="text-accent hover:underline">
-              So try breaking the archive that serves it.
-            </Link>
-          </p>
-        </StaggerItem>
-      </StaggerGroup>
-
-      {/* The bug this page found is the strongest thing on it, and it was set as
-          a 12px grey footnote with a shell command as the last word. Promoted. */}
-      <Reveal>
-        <section className="mt-16 border-t border-rule pt-10">
-          <h2 className="text-xl font-bold tracking-tight">
-            Building this is what found the bug.
-          </h2>
-          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
-            The first time this audit ran against the chain it came out red. The total was
-            right and the commitment was wrong, because the client was adding blinding factors
-            in the wrong field — and with a single payment that reconstructs correctly either
-            way. It took eight neighbours to show up. Every example shipped before this one
-            moved money exactly once.
-          </p>
-          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
-            That is the argument for a demo with real numbers in it, rather than a test suite
-            alone.
-          </p>
-          <p className="mt-6 text-xs leading-relaxed text-ink-soft">
-            Eight real transactions on Stellar testnet, reproducible with{" "}
-            <code className="rounded border border-rule bg-paper-sunk px-1.5 py-0.5 font-mono">
-              node examples/condominium.mjs
-            </code>
-            . Testnet only, not audited.
-          </p>
-        </section>
-      </Reveal>
-
-    </main>
+          {audit.error ? "unavailable" : audit.ok ? "verified" : "mismatch"}
+        </span>
+        <p className="min-w-0 flex-1 text-sm leading-relaxed">
+          {audit.error ? (
+            <span className="text-refused">{audit.error}</span>
+          ) : audit.ok ? (
+            <>
+              The commitment the chain is holding opens to exactly{" "}
+              <strong className="font-semibold">{xlm(audit.published)}</strong> — it could not,
+              had the building overstated or understated by a single stroop.
+            </>
+          ) : (
+            <span className="text-refused">
+              The chain&rsquo;s commitment does not open to the published total.
+            </span>
+          )}
+        </p>
+      </div>
+    </>
   );
 }

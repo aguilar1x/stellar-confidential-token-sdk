@@ -133,7 +133,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
         if (b.kind === "code") {
           return (
             <div key={i} className="group relative">
-              <pre className="overflow-x-auto rounded-xl bg-ink p-5 font-mono text-[0.78rem] leading-relaxed text-white/85">
+              <pre className="overflow-x-auto rounded-xl bg-code p-5 font-mono text-[0.78rem] leading-relaxed text-white/85">
                 <code>{b.code}</code>
               </pre>
               <CopyButton text={b.code} />
@@ -144,10 +144,20 @@ function Blocks({ blocks }: { blocks: Block[] }) {
         if (b.kind === "note") {
           const warn = b.tone === "warn";
           return (
+            /**
+             * A rule, not a tint.
+             *
+             * Washing the whole block in the tone's colour is the reflex, and it
+             * is why these read as generated: the surface does the shouting and
+             * the text inside has to compete with it. A 2px rule down the left
+             * edge is the older, quieter device — it marks the block as an
+             * aside, keeps the tone legible at a glance, and leaves the body on
+             * the same surface as every other block on the page.
+             */
             <aside
               key={i}
-              className={`rounded-xl border p-4 ${
-                warn ? "border-refused/30 bg-red-50/60" : "border-accent/25 bg-accent-soft"
+              className={`rounded-r-xl border-y border-r border-rule border-l-2 bg-paper-sunk py-4 pl-5 pr-4 ${
+                warn ? "border-l-refused" : "border-l-accent"
               }`}
             >
               <p

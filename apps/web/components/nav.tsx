@@ -4,10 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Github } from "lucide-react";
 
+/**
+ * Ordered as the visitor moves, not by convention.
+ *
+ * Docs first is the dev-tool default, and it was fighting the home page: both
+ * hero calls to action point at /demo and /verify, so the nav's leading item
+ * sent a reader somewhere the page itself was not sending them. This reads
+ * left to right as the journey — see it work, understand why, try to break it —
+ * and lands Docs beside GitHub, since both are where someone goes once they are
+ * already convinced.
+ */
 const LINKS = [
-  { href: "/docs", label: "Docs" },
   { href: "/demo", label: "Demo" },
+  { href: "/how", label: "How" },
   { href: "/verify", label: "Break it" },
+  { href: "/docs", label: "Docs" },
 ];
 
 /**

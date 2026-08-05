@@ -1,3 +1,15 @@
+> **This file and the JSON fixtures beside it are OpenZeppelin's, vendored verbatim.**
+>
+> Copied unmodified from
+> [`packages/tokens/src/confidential/circuits/lib/testdata/`](https://github.com/OpenZeppelin/stellar-contracts/tree/main/packages/tokens/src/confidential/circuits/lib/testdata)
+> in `OpenZeppelin/stellar-contracts`, so this suite can run offline and so the
+> expected values are theirs rather than ours. Copyright OpenZeppelin,
+> Apache-2.0 — not covered by this repository's copyright.
+>
+> `scripts/check-fixtures-upstream.mjs` re-fetches all 17 and byte-compares them
+> on every push and weekly, so the copy cannot quietly become a fork of the spec.
+> **Paths referenced below are OpenZeppelin's, not this repository's.**
+
 # Cross-language test vectors
 
 ## What this is

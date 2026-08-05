@@ -1,10 +1,20 @@
 /**
  * Event store behind the INDEXER.md API.
  *
- * The interface is deliberately tiny so the same handler runs on any provider:
- * an in-memory store for local runs and tests, a KV-backed one on Cloudflare, a
- * file-backed one on a plain Node host. Two independent deployments (INDEXER.md
- * §7) then differ only in their store, never in their serving logic.
+ * The interface is deliberately tiny so the same handler can run on any
+ * provider, with two independent deployments (INDEXER.md §7) differing only in
+ * their store and never in their serving logic.
+ *
+ * ONE implementation ships today: `MemoryStore`. A KV-backed store on Cloudflare
+ * and a file-backed one on a plain Node host are what this seam exists for, and
+ * neither is written yet. The consequence is not cosmetic and is stated in the
+ * README's limitations: without durable backing, a deployment rehydrates by
+ * scanning the RPC on cold start, so it can only serve history the RPC still
+ * retains — which is the very window an archive is supposed to outlive.
+ *
+ * Everything else here is independent of that: the C1-C4 surface, the
+ * completeness accounting, and the client-side verification are real and are
+ * what the tests and the demo exercise.
  *
  * The store owns the C3 answer, and that is the whole design point. Only the
  * component that knows which ledger ranges were actually ingested can honestly

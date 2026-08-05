@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Check, ExternalLink, AlertTriangle, Send } from "lucide-react";
+import Link from "next/link";
+import { Loader2, Check, ExternalLink, AlertTriangle, Send, ArrowRight } from "lucide-react";
 
 import { EXPLORER } from "@/lib/demo";
 import {
@@ -12,6 +13,8 @@ import {
   type StageKey,
   type Timings,
 } from "./payment-types";
+import { useStepAction } from "./steps";
+import { saveReceipt } from "@/lib/receipt";
 
 const XLM = 10_000_000n;
 
@@ -50,6 +53,7 @@ interface Done {
 export function PayButton() {
   const router = useRouter();
   const [, startTransition] = useTransition();
+  const settled = useStepAction("pay");
 
   const [amount, setAmount] = useState("3");
   const [running, setRunning] = useState(false);
@@ -126,9 +130,16 @@ export function PayButton() {
     }
   };
 
-  // Re-run the audit above with the payment included.
+  // Re-run the audit above with the payment included, and report the step as
+  // done — a settled transaction is the action of this step, and the only thing
+  // that should tick it off.
   useEffect(() => {
-    if (done) startTransition(() => router.refresh());
+    if (!done) return;
+    settled();
+    // Kept for the rest of the visit, so /verify can show it again after the
+    // reader has been anywhere else.
+    saveReceipt({ tx: done.tx, amountStroops: done.amountStroops });
+    startTransition(() => router.refresh());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
 
@@ -136,15 +147,13 @@ export function PayButton() {
 
   return (
     <div className="rounded-2xl border border-rule bg-paper-sunk">
+      {/* The surrounding step already says what this does, so the control is just
+          the control. A second heading here read as a second section. */}
       <div className="flex flex-wrap items-end justify-between gap-5 p-6">
-        <div className="max-w-md">
-          <h2 className="text-lg font-bold tracking-tight">Add a payment yourself</h2>
-          <p className="mt-2 text-[0.94rem] leading-relaxed text-ink-soft">
-            Pick any amount. It becomes a real transaction on Stellar testnet, and the audit
-            above re-runs with it included — the total will move, no individual amount will
-            be written, and the commitment will still open.
-          </p>
-        </div>
+        <p className="max-w-xs text-sm leading-relaxed text-ink-soft">
+          Up to {MAX_STROOPS / XLM} XLM per payment. The four stages below report as the
+          server actually finishes them.
+        </p>
 
         <div className="flex items-end gap-3">
           <label className="block">
@@ -242,8 +251,11 @@ export function PayButton() {
         </ol>
       )}
 
+      {/* Paper rather than a green wash: this strip closes a card that is
+          already sunk, so lifting it to the page's own surface separates it
+          without tinting. The verdict is in the sentence. */}
       {done && (
-        <div className="border-t border-verified/30 bg-emerald-50 p-6">
+        <div className="border-t border-rule bg-paper p-6">
           <p className="text-sm font-semibold text-verified">
             Settled in {fmtMs(total)}. The total above has already moved.
           </p>
@@ -252,20 +264,32 @@ export function PayButton() {
             {done.payloadBytes.toLocaleString("en-US")} bytes of proof. Every other
             payment stayed sealed, and the audit still opens.
           </p>
-          <a
-            href={`${EXPLORER}/${done.tx}`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center gap-1.5 font-mono text-xs text-accent hover:underline"
-          >
-            {done.tx.slice(0, 24)}…
-            <ExternalLink className="size-3" />
-          </a>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            {/* The receipt travels to /verify, so the visitor can re-open the
+                commitment their own payment just moved — without a wallet, and
+                without taking this box's word for any of it. */}
+            <Link
+              href={`/verify?receipt=${done.tx}&amount=${done.amountStroops}`}
+              className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Verify this receipt
+              <ArrowRight className="size-3.5" />
+            </Link>
+            <a
+              href={`${EXPLORER}/${done.tx}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 font-mono text-xs text-ink-soft hover:text-accent"
+            >
+              {done.tx.slice(0, 24)}…
+              <ExternalLink className="size-3" />
+            </a>
+          </div>
         </div>
       )}
 
       {error && (
-        <div className="flex gap-3 border-t border-refused/30 bg-red-50 p-6">
+        <div className="flex gap-3 border-t border-rule bg-paper p-6">
           <AlertTriangle className="mt-0.5 size-4 shrink-0 text-refused" />
           <p className="text-sm leading-relaxed text-ink-soft">{error}</p>
         </div>
