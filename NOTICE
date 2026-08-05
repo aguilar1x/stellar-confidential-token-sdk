@@ -30,6 +30,23 @@ project's copyright. This project is an independent implementation and is not
 endorsed by or affiliated with OpenZeppelin.
 
 ------------------------------------------------------------------------------
+Vendored material
+------------------------------------------------------------------------------
+
+`packages/conformance/fixtures/` — including its README.md — is a verbatim,
+unmodified copy of OpenZeppelin's cross-language test vectors, taken from:
+
+  https://github.com/OpenZeppelin/stellar-contracts/tree/main/packages/tokens/src/confidential/circuits/lib/testdata
+
+They are vendored so the conformance suite runs offline and so the expected
+values are OpenZeppelin's rather than this project's. Copyright OpenZeppelin,
+Apache-2.0; not covered by this project's copyright.
+
+`packages/conformance/scripts/check-fixtures-upstream.mjs` re-fetches every
+fixture from that source and byte-compares it, on every push and on a weekly
+schedule, so the vendored copy cannot silently diverge from upstream.
+
+------------------------------------------------------------------------------
 Third-party dependencies
 ------------------------------------------------------------------------------
 
