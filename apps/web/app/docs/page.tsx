@@ -5,6 +5,7 @@ import { AlertTriangle, Info } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { SECTIONS, type Block } from "./content";
 import { CopyButton } from "./copy-button";
+import { DocsNav } from "./docs-nav";
 
 export const metadata: Metadata = {
   title: "Docs",
@@ -112,20 +113,7 @@ export default function Docs() {
 
       <div className="mt-14 gap-14 lg:grid lg:grid-cols-[190px_1fr]">
         {/* Sidebar. Sticky on desktop, a plain list on mobile. */}
-        <nav aria-label="Sections" className="mb-10 lg:mb-0">
-          <ul className="lg:sticky lg:top-24 space-y-0.5 border-l border-rule">
-            {SECTIONS.map((s) => (
-              <li key={s.id}>
-                <a
-                  href={`#${s.id}`}
-                  className="-ml-px block border-l border-transparent py-1.5 pl-4 text-sm text-ink-soft transition-colors hover:border-accent hover:text-ink"
-                >
-                  {s.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <DocsNav sections={SECTIONS.map((s) => ({ id: s.id, title: s.title }))} />
 
         <div className="min-w-0 space-y-16">
           {SECTIONS.map((s) => (
