@@ -81,14 +81,43 @@ export function hexToBytes(h: string): Uint8Array {
   return out;
 }
 
-/** Cryptographically-random nonzero scalar in `[1, r)`. */
+/**
+ * The rejection-sampling candidate step of SDK.md §4.7 / DESIGN.md §2.2.
+ *
+ * Takes 32 bytes, clears the top **2** bits (yielding a 254-bit candidate) and
+ * returns it, or `null` if the candidate must be rejected — that is, if it is
+ * `>= r`, or if it is zero and the call site requires nonzero.
+ *
+ * The 2-bit mask is a wire contract, not an implementation detail: §5.1 feeds
+ * this HKDF output rather than CSPRNG bytes and increments a counter `j` on
+ * each rejection, so a different mask width silently yields a DIFFERENT
+ * account secret for the same root.
+ *
+ * @param bytes32   exactly 32 bytes, big-endian.
+ * @param nonzero   reject a zero candidate (default `true`).
+ */
+export function rejectionSample(bytes32: Uint8Array, nonzero = true): bigint | null {
+  if (bytes32.length !== 32) {
+    throw new Error(`rejectionSample expects 32 bytes, got ${bytes32.length}`);
+  }
+  const masked = new Uint8Array(bytes32);
+  masked[0] = (masked[0] as number) & 0x3f; // clear the top 2 bits → 254-bit
+  const v = fromBytesBE(masked);
+  if (v >= FR_MODULUS) return null;
+  if (nonzero && v === 0n) return null;
+  return v;
+}
+
+/**
+ * Cryptographically-random nonzero scalar in `[1, r)`, drawn by the §4.7
+ * rejection procedure: 32 CSPRNG bytes → clear the top 2 bits → accept iff in
+ * `[1, r)`, else redraw.
+ */
 export function randomScalar(): bigint {
   for (;;) {
     const bytes = new Uint8Array(32);
     crypto.getRandomValues(bytes);
-    // Clear the top byte to bias-reduce; the rejection loop guarantees < r.
-    bytes[0] = 0;
-    const v = fromBytesBE(bytes);
-    if (v !== 0n && v < FR_MODULUS) return v;
+    const v = rejectionSample(bytes);
+    if (v !== null) return v;
   }
 }

@@ -20,32 +20,46 @@ This is early, in-progress work. What is true right now:
 
 | Component | State |
 |---|---|
-| Crypto core (Grumpkin, Poseidon2, commitments, field ops) | Implemented, 92 tests passing |
+| Crypto core (Grumpkin, Poseidon2, commitments, field ops) | Implemented, tested |
+| §4.7 rejection sampling | Implemented, tested |
+| §5.1 deterministic key derivation | Implemented, tested |
 | Witness builders (register, transfer, withdraw, disclose) | Implemented |
 | UltraHonk proving via bb.js, keccak transcript | Implemented, self-verifying against real circuits |
 | Offline state engine + `verifyAgainstChain` | Implemented |
 | Selective disclosure (sender + recipient) | Implemented |
-| §5.1 key derivation (HKDF-SHA-512 → rejection sampling) | **Not yet conformant** — see below |
 | §6 conformance suite (fixtures, parity, tamper, vectors) | Not started |
 | Indexer (INDEXER.md C2/C3/C4) + `recoverFromSeed` | Not started |
 
-### Known gap: §5.1
+117 tests pass, including real UltraHonk proofs generated and verified against
+the vendored circuits.
 
-The crypto core carried over from its origin project derives the account secret
-`sk` **randomly** and seals it in a server-held envelope. SDK.md §5.1 instead
-requires a deterministic derivation:
+### §5.1 — deterministic derivation
+
+Recoverability is the property the whole client hinges on, and it exists only if
+derivation is deterministic. This SDK implements the spec's chain exactly:
 
 ```
-sk = RS(HKDF-SHA-512(
-  IKM  = root,
-  salt = "openzeppelin/confidential-token/v1/sk",
-  info = be_32(addr_f) || be_32(acct_f) || le_4(j)))
+msg  = "openzeppelin/confidential-token/v1/sk" || 0x0a
+       || enc(contract) || 0x0a || enc(account)
+root = Ed25519-Sign(sk_ed, SHA-256("Stellar Signed Message:\n" || msg))
+sk   = RS(HKDF-SHA-512(
+         IKM  = root,
+         salt = "openzeppelin/confidential-token/v1/sk",
+         info = be_32(addr_f) || be_32(acct_f) || le_4(j)))
 ```
 
-Everything downstream of `sk` already matches the spec — `address_to_field`
-(§4.9), `vk = poseidon_with_domain(δ_vk, [sk, addr_f])`, and `Y = sk·H` are
-implemented and tested. Replacing the derivation itself is the next commit, and
-it is a prerequisite for seed-based recovery.
+`j` starts at zero and increments on every rejection — both when §4.7 rejects
+the candidate and when the induced `vk` would be zero.
+
+Two details are easy to get silently wrong, so both are pinned by tests:
+
+- **§4.7 clears the top 2 bits, not the top byte.** Clearing 8 bits makes
+  rejection impossible and yields a secret uniform over `[1, 2^248)` rather than
+  `[1, r)`. Because `j` advances on rejection, a wrong mask also produces a
+  different `sk` for the same root — an interoperability break, not just a
+  statistical one.
+- **SEP-0053 signs `SHA-256(prefix || msg)`, not the message.** Our construction
+  is cross-checked against `@stellar/stellar-sdk`'s independent `signMessage`.
 
 ## Layout
 
