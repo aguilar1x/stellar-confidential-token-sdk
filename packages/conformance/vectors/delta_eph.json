@@ -1,0 +1,31 @@
+{
+  "primitive": "delta_eph",
+  "design_doc_refs": [
+    "DESIGN.md Section 5.3",
+    "SDK.md Section 6.3"
+  ],
+  "description": "Wallet-side deterministic ephemeral scalar r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma). Section 6.3 calls for this fixture because NO CIRCUIT CONSTRAINS r_e — only R_e = r_e*H and r_e != 0 are constrained — so a client that derives it differently still produces proofs that verify. The damage appears later and silently: a second client belonging to the same user cannot recompute r_e, and the sender loses the ability to prove what their own transfer contained. A fixture is the only mechanism that keeps a user's clients in agreement.",
+  "vectors": [
+    {
+      "inputs": {
+        "vk": "0x10a7dc532f3f0f60babd1d91e55bb7a2471608b9234ecb41407345c322b1d566",
+        "sigma": "0x0000000000000000000000000000000000000000000000000000000000000001"
+      },
+      "output": "0x07beab80bf89e1ce5c5e766a0dae664ad8ad94250c0d7673fca4012f470f26e4"
+    },
+    {
+      "inputs": {
+        "vk": "0x10a7dc532f3f0f60babd1d91e55bb7a2471608b9234ecb41407345c322b1d566",
+        "sigma": "0x0000000000000000000000000000000000000000000000000000000000000002"
+      },
+      "output": "0x0680a8029af6a8a5e1c2f4c3faf5f6a7b0037a5c2a3f9584b50819533ab1a494"
+    },
+    {
+      "inputs": {
+        "vk": "0x10a7dc532f3f0f60babd1d91e55bb7a2471608b9234ecb41407345c322b1d566",
+        "sigma": "0x00000000000000000000000000000000000000000000000000000000feedface"
+      },
+      "output": "0x10b3a464f7ab763621ef2242073aa6720b505584360f9adc21b8bb45192e9cc6"
+    }
+  ]
+}

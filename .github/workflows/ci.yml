@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  # Weekly, so a change to OpenZeppelin's published fixtures surfaces here even
+  # when nothing in this repository has moved. A conformance claim that is only
+  # re-checked when we happen to commit is a claim about the past.
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  conformance:
+    name: SDK.md §6 conformance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build the SDK
+        run: npm run build --workspace=stellar-confidential-token-sdk
+
+      - name: Typecheck
+        run: npm run typecheck --workspace=stellar-confidential-token-sdk
+
+      - name: Check the vendored fixtures still match upstream
+        # Vendoring keeps CI hermetic; this step is what stops the vendored copy
+        # from quietly becoming a fork of the specification.
+        run: node packages/conformance/scripts/check-fixtures-upstream.mjs
+
+      - name: SDK tests
+        run: npm run test --workspace=stellar-confidential-token-sdk
+
+      - name: §6 conformance suite
+        run: npm run test --workspace=@stellar-confidential/conformance
+
+      - name: Indexer tests
+        run: npm run test --workspace=@stellar-confidential/indexer
