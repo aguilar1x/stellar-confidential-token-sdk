@@ -230,6 +230,8 @@ async function main() {
   if (!check.ok) throw new Error("local state does not match the chain");
 
   console.log("\n✅ A confidential payment settled on testnet. The amount never appeared on-chain.");
+  console.log("\nTo watch the client reject a lying archive over this same history:");
+  console.log(`  ALICE_SECRET=${alice.secret()} node examples/sabotage.mjs`);
 }
 
 main().catch((e) => {
