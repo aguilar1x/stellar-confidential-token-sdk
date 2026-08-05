@@ -43,3 +43,19 @@ jobs:
 
       - name: Indexer tests
         run: npm run test --workspace=@stellar-confidential/indexer
+
+  published:
+    name: The published package, as installed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Everything above tests the source. This tests the tarball a reader
+      # actually installs — a package can be broken by a bad files list, a wrong
+      # exports map or a missing asset while every source test stays green. The
+      # double-wrapped proof envelope shipped in 0.1.0 was exactly that shape.
+      - name: Install from the registry and run the real flow
+        run: node scripts/verify-published.mjs

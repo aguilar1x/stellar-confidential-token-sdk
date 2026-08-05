@@ -106,7 +106,16 @@ floor — verified with the published client, not with curl alone.
 | `apps/web` | The demo page. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
 | `examples/` | The live payment and the sabotage, both against real testnet contracts. |
 
-216 tests, run in CI on every push and weekly.
+216 tests, run in CI on every push and weekly — plus a job that installs the
+**published tarball** from npm into a clean directory and puts it through the
+real flow: derive a secret through §5.1, generate an UltraHonk proof against the
+packaged circuits, and reconstruct a multi-payment balance that verifies against
+the chain. Source tests cannot catch a bad `files` list or a wrong `exports`
+map, and the double-wrapped proof envelope in `0.1.0` was exactly that shape of
+bug — clean at the source, broken on arrival.
+
+The demo site uses the SDK the same way you would: only its public entry points,
+with no cryptography of its own.
 
 ## Conformance, honestly
 
