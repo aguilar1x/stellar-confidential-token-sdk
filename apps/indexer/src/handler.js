@@ -78,6 +78,9 @@ export function createHandler({ store, now, transform }) {
       return json({
         latest_ledger: latest,
         ingested_through: ingested,
+        // Not named by C4, but a client needs it to pick a range this archive
+        // can actually vouch for. See MemoryStore#ingestedFrom.
+        ingested_from: store.ingestedFrom(),
         lag_seconds: now ? now() : lag,
       });
     }

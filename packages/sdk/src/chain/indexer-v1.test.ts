@@ -57,15 +57,29 @@ afterEach(() => vi.unstubAllGlobals());
 const client = new IndexerV1Client({ baseUrl: "https://idx.test", label: "idx-a" });
 
 describe("C4 · ingestion status", () => {
-  it("reads latest_ledger / ingested_through / lag_seconds", async () => {
+  it("reads the ingestion status fields", async () => {
     mockFetch(() => ({
-      body: { latest_ledger: 5000, ingested_through: 4990, lag_seconds: 55 },
+      body: {
+        latest_ledger: 5000,
+        ingested_through: 4990,
+        ingested_from: 100,
+        lag_seconds: 55,
+      },
     }));
     expect(await client.health()).toEqual({
       latestLedger: 5000,
       ingestedThrough: 4990,
+      ingestedFrom: 100,
       lagSeconds: 55,
     });
+  });
+
+  it("defaults ingestedFrom to 0 when an archive omits it", async () => {
+    // Unlike C3's completeness flag, silence here is safe to default: a floor
+    // of zero makes a client ask for MORE than the archive covers, which draws
+    // an honest `complete: false` rather than a false sense of coverage.
+    mockFetch(() => ({ body: { latest_ledger: 10, ingested_through: 10 } }));
+    expect((await client.health()).ingestedFrom).toBe(0);
   });
 
   it("hits the spec's path", async () => {

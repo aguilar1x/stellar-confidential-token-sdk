@@ -69,8 +69,28 @@ describe("C4 · ingestion status", () => {
     expect(await client.health()).toEqual({
       latestLedger: 0,
       ingestedThrough: 0,
+      ingestedFrom: 0,
       lagSeconds: 0,
     });
+  });
+
+  it("publishes the floor of what it can answer for", async () => {
+    // An archive built by scanning an RPC starts above genesis. Without this,
+    // a client asking from ledger one gets `complete: false` from a perfectly
+    // faithful archive and cannot tell that apart from a real gap.
+    store.ingest([mergeEvent(3400, ALICE)], 3000, 4000, 4000);
+    const health = await client.health();
+    expect(health.ingestedFrom).toBe(3000);
+    expect(health.ingestedThrough).toBe(4000);
+
+    const { events, complete } = await client.fetchEvents({
+      contractId: CONTRACT,
+      account: ALICE,
+      fromLedger: health.ingestedFrom,
+      toLedger: health.ingestedThrough,
+    });
+    expect(complete).toBe(true);
+    expect(events.map((e) => e.ledger)).toEqual([3400]);
   });
 });
 

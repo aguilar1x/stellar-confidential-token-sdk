@@ -51,6 +51,13 @@ export interface IngestionStatus {
   latestLedger: number;
   /** Highest ledger fully ingested; the client's staleness bound. */
   ingestedThrough: number;
+  /**
+   * Lowest ledger the archive can answer for. Zero when unreported. An archive
+   * built by scanning an RPC starts above genesis, so a client that assumes
+   * coverage from ledger one gets `complete: false` from a perfectly honest
+   * archive and cannot tell that apart from a real gap.
+   */
+  ingestedFrom: number;
   /** Seconds between the chain head and what has been ingested. */
   lagSeconds: number;
 }
@@ -137,11 +144,13 @@ export class IndexerV1Client {
     const body = await this.getJson<{
       latest_ledger?: number;
       ingested_through?: number;
+      ingested_from?: number;
       lag_seconds?: number;
     }>(this.url("v1/health"));
     return {
       latestLedger: Number(body.latest_ledger ?? 0),
       ingestedThrough: Number(body.ingested_through ?? 0),
+      ingestedFrom: Number(body.ingested_from ?? 0),
       lagSeconds: Number(body.lag_seconds ?? 0),
     };
   }

@@ -92,6 +92,22 @@ export class MemoryStore {
     return first ? first[1] : 0;
   }
 
+  /**
+   * Lowest ledger this archive can answer for.
+   *
+   * C4 asks for the latest fully-ingested ledger so clients can bound
+   * staleness. Publishing the floor as well is strictly more informative and
+   * has a practical use: an archive that starts above genesis — every archive
+   * built by scanning an RPC does, since the RPC only retains about a week —
+   * would otherwise have to answer `complete: false` to any client asking from
+   * the beginning, with no way for that client to discover which range it
+   * COULD have asked for.
+   */
+  ingestedFrom() {
+    const first = this.ranges[0];
+    return first ? first[0] : 0;
+  }
+
   /** C3 — is `[from, to]` covered by a single gap-free ingested range? */
   isComplete(from, to) {
     if (to < from) return true;
