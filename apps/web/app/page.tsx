@@ -43,7 +43,7 @@ export default async function Landing() {
   return (
     <main>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative isolate flex min-h-[92svh] items-center overflow-hidden bg-ink">
+      <section className="relative isolate flex min-h-svh items-center overflow-hidden bg-ink">
         <HeroBackdrop />
         <HexField seed={hero.commitment} />
 
