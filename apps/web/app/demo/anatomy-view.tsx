@@ -30,7 +30,13 @@ export function PaymentAnatomy({ data }: { data: Data }) {
         This is unit 1A&rsquo;s dues — a real transaction, in full. Not a summary of it.
       </p>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.35fr_1fr]">
+      {/* `items-start` matters: the two cards are a pair, not a two-column
+          layout. Stretching the right one to the field list's height left a tall
+          block of empty colour under a three-word answer — the space read as
+          something missing rather than as room. It now ends where it ends, and
+          rides along instead, so the recovered amount stays beside whichever
+          field the reader is looking at. */}
+      <div className="mt-6 grid items-start gap-4 lg:grid-cols-[1.35fr_1fr]">
         <div className="overflow-hidden rounded-2xl border border-rule bg-paper-sunk">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule px-5 py-3">
             <span className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
@@ -68,27 +74,34 @@ export function PaymentAnatomy({ data }: { data: Data }) {
           </p>
         </div>
 
-        <div className="flex flex-col rounded-2xl border border-accent/30 bg-accent-soft p-5">
-          <span className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-accent">
-            <EyeOff className="size-3" />
-            recovered with the viewing key
-          </span>
+        {/* Same anatomy as the card on the left — header rule, body, divided
+            sections — so the two read as a matched pair. The distinction is
+            carried by the one number that came back out, not by washing the
+            whole panel in a tint. */}
+        <div className="overflow-hidden rounded-2xl border border-rule bg-paper lg:sticky lg:top-24">
+          <div className="border-b border-rule px-5 py-3">
+            <span className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-accent">
+              <EyeOff className="size-3" />
+              recovered with the viewing key
+            </span>
+          </div>
 
-          <p className="mt-4 text-[0.86rem] leading-relaxed text-ink-soft">
-            The building runs <code className="font-mono text-ink">decryptIncoming</code> over
-            the fields on the left. Nothing else — no side channel, no stored note, no server.
-          </p>
+          <div className="px-5 py-4">
+            <p className="text-[0.86rem] leading-relaxed text-ink-soft">
+              The building runs <code className="font-mono text-ink">decryptIncoming</code> over
+              the fields on the left. Nothing else — no side channel, no stored note, no
+              server.
+            </p>
 
-          <div className="mt-5">
-            <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+            <p className="mt-4 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               amount paid
             </p>
-            <p className="mt-1 font-mono text-3xl font-bold text-accent">
+            <p className="mt-1 font-mono text-[2rem] font-bold leading-none text-accent">
               {Number(data.decrypted.amount) / XLM} XLM
             </p>
           </div>
 
-          <div className="mt-5 border-t border-accent/20 pt-4">
+          <div className="border-t border-rule bg-paper-sunk px-5 py-4">
             <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               and its blinding factor
             </p>

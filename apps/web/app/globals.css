@@ -23,6 +23,16 @@
   --refused: hsl(2 66% 47%);
   /* A sealed value: present, unreadable. Never the same grey as muted text. */
   --sealed: hsl(230 14% 62%);
+  /**
+   * The surface code sits on: #303030. Neutral by construction — zero
+   * saturation, so it has no hue to drift against the palette.
+   *
+   * Its own token rather than `--ink`, which carries the page's blue cast
+   * because it is body text and the hero, and both want to sit inside the
+   * palette. A code block is a terminal quotation and reads better off the blue
+   * entirely.
+   */
+  --code: hsl(0 0% 18.8%);
 }
 
 @theme inline {
@@ -37,6 +47,7 @@
   --color-verified: var(--verified);
   --color-refused: var(--refused);
   --color-sealed: var(--sealed);
+  --color-code: var(--code);
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono-hex), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
