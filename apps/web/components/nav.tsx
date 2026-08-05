@@ -27,7 +27,7 @@ export function Nav() {
         <Link
           href="/"
           aria-label="Home"
-          className="mr-2 flex items-center gap-2 text-[0.86rem] font-bold tracking-tight text-ink"
+          className="mr-5 flex items-center gap-2 text-[0.86rem] font-bold tracking-tight text-ink"
         >
           <span
             aria-hidden
@@ -54,7 +54,7 @@ export function Nav() {
 
         <a
           href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
-          className="btn-raised ml-1 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[0.86rem] font-medium text-white"
+          className="btn-raised ml-4 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[0.86rem] font-medium text-white"
         >
           <Github className="size-3.5" />
           GitHub

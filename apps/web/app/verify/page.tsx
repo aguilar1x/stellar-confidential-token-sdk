@@ -54,8 +54,8 @@ export default async function Verify() {
       </div>
 
       <Reveal>
-        <section className="mt-16 grid gap-10 border-t border-rule pt-10 sm:grid-cols-2">
-          <div>
+        <section className="mt-14 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-xl border border-rule bg-paper-sunk p-5">
             <h2 className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-accent">
               C3 · the archive admits it
             </h2>
@@ -65,7 +65,7 @@ export default async function Verify() {
               it produces a confident, wrong one.
             </p>
           </div>
-          <div>
+          <div className="rounded-xl border border-rule bg-paper-sunk p-5">
             <h2 className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-refused">
               §7 · the chain settles it
             </h2>
