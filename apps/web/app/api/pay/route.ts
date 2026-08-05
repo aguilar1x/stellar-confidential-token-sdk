@@ -13,6 +13,16 @@
 import { runPayment } from "@/app/demo/payment-flow";
 import type { PaymentEvent } from "@/app/demo/payment-types";
 
+/**
+ * bb.js caches the CRS under `os.homedir() + "/.bb-crs"`, and a serverless
+ * filesystem is read-only apart from /tmp — so the default path fails at
+ * `mkdir`, at the moment proving starts and not before. Node derives
+ * `homedir()` from $HOME on POSIX, so pointing $HOME at /tmp is enough, and it
+ * has to happen before the lazy `@aztec/bb.js` import rather than inside the
+ * request.
+ */
+if (process.env.VERCEL) process.env.HOME = "/tmp";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
