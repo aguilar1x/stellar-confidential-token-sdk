@@ -5,8 +5,7 @@
  * given the same signer root and the same (contract, account) pair, every
  * conformant client MUST arrive at the same `sk`, on any device, forever. A
  * client that instead draws `sk` randomly and stores it can never rebuild the
- * account from a seed — which is precisely the failure mode audit finding N-08
- * (issue #787) is about.
+ * account from a seed at all, whatever the archive it replays.
  *
  * The chain, verbatim from the spec:
  *

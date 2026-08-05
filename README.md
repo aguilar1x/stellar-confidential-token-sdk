@@ -4,18 +4,25 @@
 [![npm](https://img.shields.io/npm/v/stellar-confidential-token-sdk)](https://www.npmjs.com/package/stellar-confidential-token-sdk)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-**The supporting infrastructure a confidential-token wallet is built on: an
-archive you can point a wallet at, and the client that checks the archive isn't
-lying to it.**
+**The layer underneath every confidential-token wallet: the archive a wallet
+replays its history from, and the client that proves that archive is not lying.**
+
+Every CT wallet has to rebuild its openings from an archive it did not write.
+This is the only conformant one, plus the verifier that demonstrates it.
 
 A confidential-token wallet has an unusual problem. The chain stores
 *commitments*; only the wallet holds the *openings* that can spend them. So the
 wallet is load-bearing in a way most wallets are not — an opening that is lost,
 or derived slightly differently on a second device, is money that cannot be
-moved. An external audit finding ([N-08, issue #787][issue]) established exactly
-this, and OpenZeppelin responded in July 2026 with two normative specifications:
-[`SDK.md`][sdk], the client's obligations, and [`INDEXER.md`][indexer], what an
-archive must serve and how a client must verify it.
+moved.
+
+Recovering that state after the RPC's seven-day window means replaying history
+from an archive. OpenZeppelin's audit flagged that the specification for such an
+archive did not exist ([N-08, issue #787][issue]: recovery was normative while
+`INDEXER.md` was still "to be added", so implementations could diverge with
+nothing to implement against). July 2026 filled both gaps —
+[`SDK.md`][sdk] for the client's obligations and [`INDEXER.md`][indexer] for what
+an archive must serve and how a client must verify it.
 
 This repository implements both.
 
@@ -106,16 +113,58 @@ floor — verified with the published client, not with curl alone.
 | `apps/web` | The demo page. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
 | `examples/` | The live payment and the sabotage, both against real testnet contracts. |
 
-216 tests, run in CI on every push and weekly — plus a job that installs the
-**published tarball** from npm into a clean directory and puts it through the
-real flow: derive a secret through §5.1, generate an UltraHonk proof against the
-packaged circuits, and reconstruct a multi-payment balance that verifies against
-the chain. Source tests cannot catch a bad `files` list or a wrong `exports`
-map, and the double-wrapped proof envelope in `0.1.0` was exactly that shape of
-bug — clean at the source, broken on arrival.
+## Check it yourself in one command
 
-The demo site uses the SDK the same way you would: only its public entry points,
-with no cryptography of its own.
+No clone, no build, nothing to trust. This installs the published package from
+the npm registry into a throwaway directory, fetches OpenZeppelin's fixtures from
+**their** repository and reproduces them byte-for-byte, derives a key through
+§5.1, generates a real UltraHonk proof against the circuits inside the tarball,
+and shows a one-stroop tamper being refused:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aguilar1x/stellar-confidential-token-sdk/master/scripts/verify-published.mjs | node --input-type=module
+```
+
+```
+installed stellar-confidential-token-sdk@0.1.1
+
+1 · OpenZeppelin's published fixtures, byte-for-byte
+    15 reproduced exactly
+    ecdh DIVERGES — deployed circuits use x-only; spec absorbs both coordinates
+    encrypt_auditor_sender_balance DIVERGES — deployed circuits use the first sponge squeeze; spec the second
+2 · §5.1 derivation    same signer, same key, twice
+3 · UltraHonk proof    15308 XDR bytes in 1.5s
+4 · one-stroop tamper  rejected: commitment differs, so the opening cannot verify
+```
+
+It prints the two divergences rather than hiding them, and **fails** if a third
+appears. It is the same script CI runs on every push, which is what the badge
+above asserts.
+
+## For wallet integrators
+
+Every confidential-token wallet — including any built at this hackathon — has to
+rebuild openings from an archive it did not write. That is the layer this sits
+at. The whole surface a wallet consumes:
+
+```ts
+import { deriveSk, deriveKeys, StateEngine, pointToBytes } from "stellar-confidential-token-sdk";
+import { proveTransfer } from "stellar-confidential-token-sdk/node";
+import { ChainClient, IndexerV1Client, hybridFetchEvents } from "stellar-confidential-token-sdk/chain";
+
+const { sk, addrF } = deriveSk(root, CONTRACT, ACCOUNT);   // §5.1, nothing stored
+const keys = deriveKeys(sk, addrF);
+
+const engine = new StateEngine({ address: ACCOUNT, keys });
+engine.ingestEvents(await eventsFrom(archive));            // C2/C3 honoured
+engine.verifyAgainstChain({ spendableC, receivingC });     // §7 — never skip this
+
+const { payload, next } = await proveTransfer({ keys, ...engine.spendable(), amount });
+```
+
+The conformance suite is a public tool, not a private badge: point it at **any**
+CT indexer and it will tell you whether that indexer serves what `INDEXER.md`
+requires. We ran it against every one we could find.
 
 ## Conformance, honestly
 

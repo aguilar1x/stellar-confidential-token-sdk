@@ -4,10 +4,11 @@
 
 In July 2026 OpenZeppelin published [`SDK.md`][sdk] — a specification of what a
 confidential-token *client* must do, written as obligations rather than as an
-API. It exists because an external audit finding (N-08, [issue #787][issue])
-established that the client is load-bearing: the chain stores commitments, the
-client stores the openings, and an opening that is lost or wrongly derived means
-funds that cannot be spent.
+API. The client is load-bearing in a way most are not: the chain stores
+commitments, the client stores the openings, and an opening that is lost or
+wrongly derived means funds that cannot be spent. OpenZeppelin's audit separately
+flagged that the archive those openings are rebuilt from had no specification at
+all (N-08, [issue #787][issue]) — `INDEXER.md` is the answer to that finding.
 
 This package implements those obligations.
 

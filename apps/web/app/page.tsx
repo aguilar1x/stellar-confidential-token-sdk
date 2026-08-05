@@ -17,7 +17,7 @@ const FINDINGS = [
   },
   {
     title: "Account secrets drawn at random",
-    body: "§5.1 requires deriving them from a signer root. Drawn randomly, a clean device can never rebuild the account — the failure audit finding N-08 describes.",
+    body: "§5.1 requires deriving them from a signer root. Drawn randomly, a clean device can never rebuild the account at all — no archive, however faithful, can hand back a key that was never derived.",
     where: "found in the reference core",
   },
   {
@@ -61,9 +61,9 @@ export default async function Landing() {
                   A total everybody can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
-                  The chain stores commitments; only your wallet holds the openings that spend
-                  them. This is the client that derives those openings correctly — and refuses
-                  an archive that lies about them.
+                  Every confidential-token wallet rebuilds its balance by replaying history
+                  from an archive it did not write. This is the layer underneath that: the only
+                  conformant archive, and the client that proves it is not lying.
                 </p>
               </Reveal>
 

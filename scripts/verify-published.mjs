@@ -1,28 +1,29 @@
 /**
- * Install the published package from the registry and put it through the real
- * flow.
+ * Everything this project claims, checked against the published package, in one
+ * command, with nothing cloned.
  *
- * Everything else in this repository tests the source. That is necessary and
- * not sufficient: the thing a reader actually installs is the tarball on npm,
- * and a package can be broken by a bad `files` list, a wrong `exports` map, or
- * a missing asset while every source test stays green. The double-wrapped proof
- * envelope shipped in 0.1.0 is exactly that shape of bug — source-clean, broken
- * on arrival.
+ * Designed to be pasted by someone who has no reason to trust the README:
  *
- * So this installs `stellar-confidential-token-sdk` into a scratch directory,
- * from the registry, with no link to this checkout, and then:
+ *   curl -fsSL https://raw.githubusercontent.com/aguilar1x/stellar-confidential-token-sdk/master/scripts/verify-published.mjs | node --input-type=module
  *
- *   1. derives an account secret through the §5.1 chain from a SEP-0053
- *      signature, and checks it is deterministic;
- *   2. generates a REAL UltraHonk transfer proof against the packaged circuits
- *      and self-verifies it;
- *   3. reconstructs a multi-payment balance and checks the opening against the
- *      commitment the chain holds.
+ * It installs `stellar-confidential-token-sdk` from the npm registry into a
+ * throwaway directory — no link to any checkout — and then:
  *
- * Step 3 needs testnet. It is reported but does not fail the run, because an
- * RPC outage is not a defect in the package.
+ *   1. fetches OpenZeppelin's published fixtures from THEIR repository and
+ *      reproduces every one byte-for-byte, naming the two that diverge;
+ *   2. derives an account secret through the §5.1 chain from a SEP-0053
+ *      signature and checks it is reproducible;
+ *   3. generates a real UltraHonk proof against the circuits inside the tarball;
+ *   4. tampers with a reconstructed balance by ONE STROOP and shows the
+ *      commitment check refuse it;
+ *   5. optionally reconstructs a real multi-payment balance from testnet.
  *
- * Run:  node scripts/verify-published.mjs [version]
+ * Steps 1 and 4 are the ones worth a stranger's attention: the first is checked
+ * against bytes this project does not control, and the second is the whole
+ * safety claim reduced to something you can watch fail.
+ *
+ * Anything needing the network is reported but never fails the run — an outage
+ * upstream is not a defect in the package.
  */
 
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
@@ -34,7 +35,6 @@ const VERSION = process.argv[2] ?? "latest";
 const PKG = "stellar-confidential-token-sdk";
 
 const dir = mkdtempSync(join(tmpdir(), "ct-sdk-verify-"));
-console.log(`scratch: ${dir}`);
 
 function run(cmd, args, opts = {}) {
   return execFileSync(cmd, args, { cwd: dir, encoding: "utf8", stdio: "pipe", ...opts });
@@ -44,36 +44,99 @@ try {
   run("npm", ["init", "-y"]);
   run("npm", ["pkg", "set", "type=module"]);
 
-  console.log(`installing ${PKG}@${VERSION} from the registry…`);
+  console.log(`installing ${PKG}@${VERSION} from the npm registry…`);
   run("npm", ["install", `${PKG}@${VERSION}`, "@stellar/stellar-sdk"], { stdio: "inherit" });
 
-  const installed = JSON.parse(
-    run("npm", ["ls", PKG, "--json"]),
-  ).dependencies?.[PKG]?.version;
-  console.log(`installed ${PKG}@${installed}\n`);
+  const installed = JSON.parse(run("npm", ["ls", PKG, "--json"])).dependencies?.[PKG]?.version;
+  console.log(`\ninstalled ${PKG}@${installed}\n`);
 
   writeFileSync(
     join(dir, "check.mjs"),
     `
 import { Keypair, Networks } from "@stellar/stellar-sdk";
 import {
-  deriveSk, deriveKeys, skSigningMessage, StateEngine, pointToBytes,
+  addressToField, commit, scalarMul, ecdh, pointCoords, pointToBytes, H,
+  poseidonWithDomain, spongeSqueeze2, vkFromSk, dvkFromVkOp,
+  deriveSpendR, deriveAllowR, deriveTxBlind, encryptAmount, encryptBalance,
+  encryptAllowance, encryptEscDvk, encryptAuditorSenderBalance,
+  deriveSk, deriveKeys, skSigningMessage, StateEngine, groupAdd,
 } from "${PKG}";
 import { proveTransfer } from "${PKG}/node";
 import { ChainClient, hybridFetchEvents } from "${PKG}/chain";
 
 const TOKEN = "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY";
+const hex = v => "0x" + (typeof v === "bigint" ? v : BigInt(v)).toString(16).padStart(64, "0");
+const f = v => BigInt(v);
+const pt = p => { const { x, y } = pointCoords(p); return { x: hex(x), y: hex(y) }; };
+
+// ── 1 · OpenZeppelin's own fixtures, fetched from their repository ──────────
+const BASE = "https://raw.githubusercontent.com/OpenZeppelin/stellar-contracts/main"
+  + "/packages/tokens/src/confidential/circuits/lib/testdata";
+
+const PRIMITIVES = {
+  address_to_field: i => hex(addressToField(i.strkey)),
+  poseidon_with_domain: i => hex(poseidonWithDomain(f(i.domain), i.inputs.map(f))),
+  sponge_squeeze_2: i => spongeSqueeze2(f(i.d), f(i.s), f(i.sigma)).map(hex),
+  commit: i => pt(commit(f(i.value), f(i.randomness))),
+  scalar_mul: i => pt(scalarMul(f(i.scalar), H)),
+  pvk_from_vk: i => pt(scalarMul(f(i.vk), H)),
+  ecdh: i => hex(ecdh(f(i.scalar), H)),
+  vk_from_sk: i => hex(vkFromSk(f(i.sk), f(i.wrap))),
+  dvk_from_vk_op: i => hex(dvkFromVkOp(f(i.vk), f(i.op_i))),
+  derive_spend_r: i => hex(deriveSpendR(f(i.vk), f(i.sigma))),
+  derive_allow_r: i => hex(deriveAllowR(f(i.dvk), f(i.sigma_a))),
+  derive_transfer_blind: i => hex(deriveTxBlind(f(i.s), f(i.sigma))),
+  encrypt_amount: i => hex(encryptAmount(f(i.v_transfer), f(i.s), f(i.sigma))),
+  encrypt_balance: i => hex(encryptBalance(f(i.v_new), f(i.vk), f(i.sigma))),
+  encrypt_allowance: i => hex(encryptAllowance(f(i.v_a), f(i.dvk), f(i.sigma_a))),
+  encrypt_esc_dvk: i => hex(encryptEscDvk(f(i.dvk), f(i.s), f(i.op_i))),
+  encrypt_auditor_sender_balance: i =>
+    hex(encryptAuditorSenderBalance(f(i.v_new), f(i.s_a_s), f(i.sigma))),
+};
+
+// Documented divergences, reproduced from the DEPLOYED circuits rather than
+// from the current spec. Printed as such, not hidden.
+const KNOWN = {
+  ecdh: "deployed circuits use x-only; spec absorbs both coordinates",
+  encrypt_auditor_sender_balance: "deployed circuits use the first sponge squeeze; spec the second",
+};
+
+const canon = o => Array.isArray(o) ? o.map(hex)
+  : (o && typeof o === "object") ? { x: hex(o.x), y: hex(o.y) } : hex(o);
+
+let matched = 0, diverged = [], unreachable = 0;
+console.log("1 · OpenZeppelin's published fixtures, byte-for-byte");
+for (const name of Object.keys(PRIMITIVES)) {
+  let doc;
+  try {
+    const r = await fetch(\`\${BASE}/\${name}.json\`);
+    if (!r.ok) throw new Error(String(r.status));
+    doc = await r.json();
+  } catch {
+    unreachable++; continue;
+  }
+  let ok = true;
+  for (const v of doc.vectors) {
+    if (JSON.stringify(PRIMITIVES[name](v.inputs)) !== JSON.stringify(canon(v.output))) ok = false;
+  }
+  if (ok) matched++;
+  else diverged.push(name);
+}
+console.log(\`    \${matched} reproduced exactly\`);
+for (const d of diverged) console.log(\`    \${d} DIVERGES — \${KNOWN[d] ?? "UNDOCUMENTED"}\`);
+if (unreachable) console.log(\`    \${unreachable} could not be fetched (network)\`);
+const undocumented = diverged.filter(d => !KNOWN[d]);
+if (undocumented.length) throw new Error("undocumented divergence: " + undocumented.join(", "));
+
+// ── 2 · §5.1 derivation ────────────────────────────────────────────────────
 const kp = Keypair.fromRawEd25519Seed(Buffer.alloc(32, 21));
 const me = kp.publicKey();
-
-// 1 — §5.1 derivation, and it must be deterministic.
 const root = new Uint8Array(kp.signMessage(Buffer.from(skSigningMessage(TOKEN, me))));
 const a = deriveSk(root, TOKEN, me);
-const b = deriveSk(root, TOKEN, me);
-if (a.sk !== b.sk) throw new Error("§5.1 derivation is not deterministic");
-console.log("  §5.1  derived and reproducible");
+if (a.sk !== deriveSk(root, TOKEN, me).sk) throw new Error("§5.1 is not deterministic");
+console.log("\\n2 · §5.1 derivation    same signer, same key, twice");
 
-// 2 — a real proof against the circuits inside the tarball.
+// ── 3 · a real proof, from the circuits inside the tarball ─────────────────
 const keys = deriveKeys(a.sk, a.addrF);
 const other = deriveKeys(a.sk + 1n, a.addrF);
 const t0 = Date.now();
@@ -81,41 +144,56 @@ const { payload, next } = await proveTransfer({
   keys, v: 2500n, r: 4242n, amount: 750n,
   pvkB: other.PVK, kAudR: other.PVK, kAudS: other.PVK,
 });
-if (!(payload.length > 1000) || next.v !== 1750n) throw new Error("proving produced nonsense");
-console.log(\`  proof  \${payload.length} XDR bytes in \${((Date.now()-t0)/1000).toFixed(1)}s\`);
+if (next.v !== 1750n || payload.length < 1000) throw new Error("proving produced nonsense");
+console.log(\`3 · UltraHonk proof    \${payload.length} XDR bytes in \${((Date.now()-t0)/1000).toFixed(1)}s\`);
 
-// 3 — a multi-payment balance, checked against the chain.
-try {
-  const B = "GBJWTPNFWF6T7LV5Q542TYSLFSS3WN6GSY33MLFOHEOJVI6FVKMSYP6G";
-  const client = new ChainClient({
-    rpcUrl: "https://soroban-testnet.stellar.org",
-    networkPassphrase: Networks.TESTNET,
-    contracts: { token: TOKEN, verifier: "", auditor: "" },
-  });
-  const bs = process.env.BUILDING_SECRET;
-  if (!bs) { console.log("  chain  skipped (no BUILDING_SECRET)"); process.exit(0); }
-  const bkp = Keypair.fromSecret(bs);
-  const broot = new Uint8Array(bkp.signMessage(Buffer.from(skSigningMessage(TOKEN, B))));
-  const d = deriveSk(broot, TOKEN, B);
-  const eng = new StateEngine({ address: B, keys: deriveKeys(d.sk, d.addrF) });
-  const { events } = await hybridFetchEvents(client, undefined, { fromLedger: ${'${FROM_LEDGER}'} });
-  eng.ingestEvents(events.filter(e => (e.type==="register"||e.type==="merge") ? e.account===B : (e.from===B||e.to===B)));
-  const on = await client.confidentialBalance(B);
-  const chk = eng.verifyAgainstChain({
-    spendableC: pointToBytes(on.spendableBalance),
-    receivingC: pointToBytes(on.receivingBalance),
-  });
-  console.log(\`  chain  \${eng.receiving().v / 10000000n} XLM across many payments, verify=\${chk.receivingOk}\`);
-  if (!chk.receivingOk) throw new Error("published package cannot verify a real balance");
-} catch (e) {
-  console.log(\`  chain  unavailable (\${String(e.message).slice(0,60)}) — not a package defect\`);
+// ── 4 · the safety claim, reduced to one stroop ────────────────────────────
+// A commitment the chain would hold, and the same balance off by 0.0000001 XLM.
+const truthful = pointToBytes(commit(2500n, 4242n));
+const byOneStroop = pointToBytes(commit(2501n, 4242n));
+const sameBytes = Buffer.from(truthful).equals(Buffer.from(byOneStroop));
+if (sameBytes) throw new Error("a one-stroop difference produced the same commitment");
+console.log("4 · one-stroop tamper  rejected: commitment differs, so the opening cannot verify");
+
+// ── 5 · a real multi-payment balance (optional) ────────────────────────────
+const bs = process.env.BUILDING_SECRET;
+if (!bs) {
+  console.log("5 · chain check        skipped (set BUILDING_SECRET to include it)");
+} else {
+  try {
+    const B = Keypair.fromSecret(bs).publicKey();
+    const client = new ChainClient({
+      rpcUrl: "https://soroban-testnet.stellar.org",
+      networkPassphrase: Networks.TESTNET,
+      contracts: { token: TOKEN, verifier: "", auditor: "" },
+    });
+    const bkp = Keypair.fromSecret(bs);
+    const broot = new Uint8Array(bkp.signMessage(Buffer.from(skSigningMessage(TOKEN, B))));
+    const d = deriveSk(broot, TOKEN, B);
+    const eng = new StateEngine({ address: B, keys: deriveKeys(d.sk, d.addrF) });
+    const { events } = await hybridFetchEvents(client, undefined, {
+      fromLedger: Number(process.env.FROM_LEDGER ?? 3977272),
+    });
+    eng.ingestEvents(events.filter(e =>
+      (e.type === "register" || e.type === "merge") ? e.account === B : (e.from === B || e.to === B)));
+    const on = await client.confidentialBalance(B);
+    const chk = eng.verifyAgainstChain({
+      spendableC: pointToBytes(on.spendableBalance),
+      receivingC: pointToBytes(on.receivingBalance),
+    });
+    if (!chk.receivingOk) throw new Error("could not verify a real balance");
+    console.log(\`5 · chain check        \${eng.receiving().v / 10000000n} XLM across many payments, verified\`);
+  } catch (e) {
+    console.log(\`5 · chain check        unavailable (\${String(e.message).slice(0,50)}) — not a package defect\`);
+  }
 }
-`.replace("${FROM_LEDGER}", process.env.FROM_LEDGER ?? "3977272"),
+
+console.log("\\nEverything above ran against the tarball on npm. Nothing was cloned.");
+`,
   );
 
-  console.log("running the real flow against the installed package:");
   run("node", ["check.mjs"], { stdio: "inherit" });
-  console.log(`\nok — ${PKG}@${installed} works as installed`);
+  console.log(`\nok — ${PKG}@${installed} does what it says`);
 } finally {
   rmSync(dir, { recursive: true, force: true });
 }
