@@ -14,4 +14,5 @@ export * from "./client.js";
 export * from "./payload.js";
 export * from "./events.js";
 export * from "./indexer.js";
+export * from "./indexer-v1.js";
 export * from "./event-source.js";

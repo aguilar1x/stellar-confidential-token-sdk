@@ -355,8 +355,16 @@ function parseEvent(ev: rpc.Api.EventResponse): ConfidentialEvent | null {
   return buildConfidentialEvent(name, base, addr, dataMap(ev.value));
 }
 
-/** XDR-backed {@link EventDataAccessor} over a Map-format event's data `ScMap`. */
-function dataMap(value: xdr.ScVal): EventDataAccessor {
+/**
+ * XDR-backed {@link EventDataAccessor} over a Map-format event's data `ScMap`.
+ *
+ * Exported so the INDEXER.md client decodes through the SAME path as the RPC.
+ * INDEXER.md serves `topics_xdr` / `data_xdr`, so an indexer event and its RPC
+ * twin go through identical bytes → identical `bigint`s and `Point`s. Any
+ * second decoder would be a place for the two sources to silently disagree,
+ * and a disagreement here reconstructs a wrong balance.
+ */
+export function dataMap(value: xdr.ScVal): EventDataAccessor {
   const byName = new Map<string, xdr.ScVal>();
   for (const e of value.map() ?? []) byName.set(e.key().sym().toString(), e.val());
   const get = (name: string): xdr.ScVal => {
