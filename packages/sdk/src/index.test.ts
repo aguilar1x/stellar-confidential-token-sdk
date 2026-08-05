@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Opening, ProofEnvelope } from "./index.js";
 
-describe("stellar-confidential-sdk barrel", () => {
+describe("stellar-confidential-token-sdk barrel", () => {
   it("exposes the frozen public types", () => {
     const envelope: ProofEnvelope = {
       payload: new Uint8Array([1]),

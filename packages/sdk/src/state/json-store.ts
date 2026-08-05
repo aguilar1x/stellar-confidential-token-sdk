@@ -2,7 +2,7 @@
  * Node-only {@link StateStore} backed by a JSON file. Ported from the demo's
  * `state/json-store.ts`. Kept OUT of the package barrel so the browser bundle
  * never pulls in `node:fs`. Import it directly by subpath:
- * `import { JsonFileStore } from "stellar-confidential-sdk/state/json-store"` (Z2.14 wires
+ * `import { JsonFileStore } from "stellar-confidential-token-sdk/state/json-store"` (Z2.14 wires
  * the node subpath; until then, import from source).
  */
 

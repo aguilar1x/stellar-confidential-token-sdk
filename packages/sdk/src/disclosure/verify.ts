@@ -9,7 +9,7 @@
  * resolved independently from the chain, and `(P_R, nu)` come from the
  * verifier's OWN request record, never from the prover.
  *
- * PORT NOTE (`stellar-confidential-sdk`, Z2 does NO RPC): the demo's `verifyDisclosure`
+ * PORT NOTE (`stellar-confidential-token-sdk`, Z2 does NO RPC): the demo's `verifyDisclosure`
  * fetched three things from a live `ChainClient` — the event (via
  * `hybridResolveEventRef`), `PVK_A` (via `confidentialBalance(disclosingAccount)`),
  * and, for D-sender, `PVK_B` (via `confidentialBalance(event.to)`) — and derived
@@ -66,7 +66,7 @@ export interface VerifiedDisclosure {
 
 /**
  * The pre-resolved on-chain / config inputs the demo's verifier fetched over
- * RPC. `stellar-confidential-sdk` performs NO network I/O, so the caller (API/web) resolves
+ * RPC. `stellar-confidential-token-sdk` performs NO network I/O, so the caller (API/web) resolves
  * these — event fields, disclosing-account PVK(s), the token `addr_f`, and the
  * pinned VK — and passes them in. Which account each PVK is read from is
  * dictated by the bundle's variant + the event payload (§5.3 step 2): `E.to`
@@ -99,7 +99,7 @@ export interface DisclosureVerifyContext {
 
 /**
  * Verify a disclosure bundle against pre-resolved on-chain context. Returns
- * `{ ok, amount }` (the frozen `stellar-confidential-sdk` surface); throws
+ * `{ ok, amount }` (the frozen `stellar-confidential-token-sdk` surface); throws
  * {@link DisclosureVerifyError} on any §5.3 failure. `ok` is always `true` when
  * it returns — a failed proof or out-of-range decrypt throws rather than
  * returning `{ ok: false }`, so callers get the failing stage.

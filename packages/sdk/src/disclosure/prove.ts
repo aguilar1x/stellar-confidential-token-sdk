@@ -7,7 +7,7 @@
  *   - proveSenderDisclosure    — I sent the event (D-sender, §7; r_e is
  *                                re-derived from vk + the event's sigma, §15.2)
  *
- * `proveDisclosure` is the frozen `stellar-confidential-sdk` surface: a thin dispatcher over
+ * `proveDisclosure` is the frozen `stellar-confidential-token-sdk` surface: a thin dispatcher over
  * the two role builders (default recipient).
  *
  * Pure orchestration over the witness builders + prover; the heavy lifting
@@ -88,7 +88,7 @@ export async function proveSenderDisclosure(params: {
 export type DisclosureRole = "recipient" | "sender";
 
 /**
- * The frozen `stellar-confidential-sdk` disclosure-proving surface: dispatch to the right
+ * The frozen `stellar-confidential-token-sdk` disclosure-proving surface: dispatch to the right
  * role builder from a single params object. `role` defaults to `"recipient"`;
  * `"sender"` additionally requires the ephemeral scalar `rEScalar` and the
  * transfer recipient's `pvkB` (§7).

@@ -1,5 +1,5 @@
 {
-  "name": "stellar-confidential-sdk",
+  "name": "stellar-confidential-token-sdk",
   "version": "0.1.0",
   "description": "Conformant TypeScript client for OpenZeppelin Confidential Tokens on Stellar — implements the SDK.md client obligations (key derivation, witness building, UltraHonk proving, local state, selective disclosure).",
   "license": "Apache-2.0",
@@ -40,11 +40,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aguilar1x/stellar-confidential-sdk.git",
+    "url": "git+https://github.com/aguilar1x/stellar-confidential-token-sdk.git",
     "directory": "packages/sdk"
   },
-  "homepage": "https://github.com/aguilar1x/stellar-confidential-sdk#readme",
-  "bugs": "https://github.com/aguilar1x/stellar-confidential-sdk/issues",
+  "homepage": "https://github.com/aguilar1x/stellar-confidential-token-sdk#readme",
+  "bugs": "https://github.com/aguilar1x/stellar-confidential-token-sdk/issues",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

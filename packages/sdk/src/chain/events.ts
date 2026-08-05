@@ -16,7 +16,7 @@
  * NOTE (Cluster): this chain-layer `ConfidentialEvent` union is DISTINCT from
  * the state-engine's `ConfidentialEvent` (`state/types.ts`). To avoid a name
  * collision on the top-level barrel, this module is exposed via the dedicated
- * `stellar-confidential-sdk/chain` subpath, not `stellar-confidential-sdk`.
+ * `stellar-confidential-token-sdk/chain` subpath, not `stellar-confidential-token-sdk`.
  */
 
 import { xdr, Address, scValToNative, rpc } from "@stellar/stellar-sdk";

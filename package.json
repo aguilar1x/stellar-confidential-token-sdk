@@ -1,5 +1,5 @@
 {
-  "name": "stellar-confidential-monorepo",
+  "name": "stellar-confidential-token-monorepo",
   "version": "0.0.0",
   "private": true,
   "description": "Conformant client layer for OpenZeppelin Confidential Tokens on Stellar",

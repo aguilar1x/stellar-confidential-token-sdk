@@ -1,4 +1,4 @@
-# stellar-confidential-sdk
+# stellar-confidential-token-sdk
 
 **A conformant TypeScript client for OpenZeppelin Confidential Tokens on Stellar.**
 
@@ -15,14 +15,14 @@ This package implements those obligations.
 [issue]: https://github.com/OpenZeppelin/stellar-contracts/issues/787
 
 ```bash
-npm install stellar-confidential-sdk
+npm install stellar-confidential-token-sdk
 ```
 
 ## A confidential transfer
 
 ```ts
-import { deriveSk, deriveKeys, skSigningMessage } from "stellar-confidential-sdk";
-import { proveTransfer } from "stellar-confidential-sdk/node";
+import { deriveSk, deriveKeys, skSigningMessage } from "stellar-confidential-token-sdk";
+import { proveTransfer } from "stellar-confidential-token-sdk/node";
 
 // 1. The account secret is DERIVED, never stored — same seed, same key, forever.
 const root = await wallet.signMessage(skSigningMessage(CONTRACT, ACCOUNT));
@@ -90,9 +90,9 @@ suite, so conformance is demonstrated rather than asserted.
 
 | Import | Contents |
 |---|---|
-| `stellar-confidential-sdk` | Browser-safe: crypto, derivation, witnesses, prover, disclosure, state engine |
-| `stellar-confidential-sdk/node` | Circuit/VK loading from disk, the `prove*` ops, `JsonFileStore` |
-| `stellar-confidential-sdk/chain` | On-chain reader, event decoding, auditor decryption |
+| `stellar-confidential-token-sdk` | Browser-safe: crypto, derivation, witnesses, prover, disclosure, state engine |
+| `stellar-confidential-token-sdk/node` | Circuit/VK loading from disk, the `prove*` ops, `JsonFileStore` |
+| `stellar-confidential-token-sdk/chain` | On-chain reader, event decoding, auditor decryption |
 
 The top-level entry imports no `node:*` module, directly or transitively — it is
 the surface a browser bundle consumes.

@@ -1,10 +1,10 @@
 /**
  * CJS require smoke (Z2.14). Guards two regressions:
  *
- *  1. `require('stellar-confidential-sdk')` must NOT crash at import. The main barrel is
+ *  1. `require('stellar-confidential-token-sdk')` must NOT crash at import. The main barrel is
  *     browser-safe (no node:fs), so its CJS build has no top-level
  *     `import.meta.url` → `fileURLToPath(undefined)` crash.
- *  2. `require('stellar-confidential-sdk/node').loadCircuit` must be a function and resolve
+ *  2. `require('stellar-confidential-token-sdk/node').loadCircuit` must be a function and resolve
  *     vendored circuits under CJS — the `shims: true` polyfill makes
  *     `import.meta.url` work in the node subpath's CJS output.
  *
@@ -29,16 +29,16 @@ function runNode(script: string): string {
 }
 
 describe.skipIf(!built)("CJS require smoke", () => {
-  it("require('stellar-confidential-sdk') does not throw and exposes the browser barrel", () => {
+  it("require('stellar-confidential-token-sdk') does not throw and exposes the browser barrel", () => {
     const out = runNode(
-      "const z=require('stellar-confidential-sdk'); console.log(typeof z.CircuitProver, typeof z.verifyDisclosure);",
+      "const z=require('stellar-confidential-token-sdk'); console.log(typeof z.CircuitProver, typeof z.verifyDisclosure);",
     );
     expect(out).toBe("function function");
   });
 
-  it("require('stellar-confidential-sdk/node').loadCircuit resolves a vendored circuit", () => {
+  it("require('stellar-confidential-token-sdk/node').loadCircuit resolves a vendored circuit", () => {
     const out = runNode(
-      "const z=require('stellar-confidential-sdk/node'); console.log(typeof z.loadCircuit, typeof z.loadCircuit('register').bytecode);",
+      "const z=require('stellar-confidential-token-sdk/node'); console.log(typeof z.loadCircuit, typeof z.loadCircuit('register').bytecode);",
     );
     expect(out).toBe("function string");
   });

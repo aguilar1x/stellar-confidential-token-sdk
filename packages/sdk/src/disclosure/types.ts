@@ -6,8 +6,8 @@
  * touch the chain.
  *
  * Ported from the demo `@ctd/sdk` `disclosure/types.ts`. The one adaptation for
- * `stellar-confidential-sdk`: the demo imported `EventRef`/`TransferEvent` from a
- * network-bound `chain/events.ts`. `stellar-confidential-sdk` (Z2) does NO RPC, so the
+ * `stellar-confidential-token-sdk`: the demo imported `EventRef`/`TransferEvent` from a
+ * network-bound `chain/events.ts`. `stellar-confidential-token-sdk` (Z2) does NO RPC, so the
  * disclosure event shape lives here as {@link DisclosureEvent} — just the
  * transfer fields the prover consumes — and the caller (API/web) is responsible
  * for resolving on-chain events and passing them in.
@@ -37,7 +37,7 @@ export interface JsonPoint {
 /**
  * Source-independent reference to the on-chain event a bundle discloses. The
  * verifier re-resolves this to the single token-contract event it names (out
- * of band, off the `stellar-confidential-sdk` critical path) and feeds the resolved fields
+ * of band, off the `stellar-confidential-token-sdk` critical path) and feeds the resolved fields
  * into `verifyDisclosure` via its `ctx`.
  */
 export interface EventRef {
@@ -49,7 +49,7 @@ export interface EventRef {
 /**
  * The transfer-event fields the disclosure prover consumes. In the demo these
  * were carried by the richer `TransferEvent` from `chain/events.ts`; here they
- * are named explicitly so `stellar-confidential-sdk` stays free of any RPC/event-decoding
+ * are named explicitly so `stellar-confidential-token-sdk` stays free of any RPC/event-decoding
  * dependency. `from`/`to` identify the disclosing accounts; `ref` is attached
  * so the produced bundle can name the event.
  */

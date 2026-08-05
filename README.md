@@ -1,4 +1,4 @@
-# stellar-confidential-sdk
+# stellar-confidential-token-sdk
 
 **A conformant client layer for OpenZeppelin Confidential Tokens on Stellar.**
 

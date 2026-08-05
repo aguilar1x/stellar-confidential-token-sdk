@@ -17,7 +17,7 @@
  * via `indexer-parity.mjs` before relying on the indexer in production.
  *
  * Browser-safe: uses the global `fetch` (no `node:*`), so the indexer is
- * available on the `stellar-confidential-sdk/chain` surface alongside the RPC client.
+ * available on the `stellar-confidential-token-sdk/chain` surface alongside the RPC client.
  */
 
 import { fromBytesBE, hexToBytes } from "../crypto/field.js";
