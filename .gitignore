@@ -9,3 +9,4 @@ out/
 .turbo/
 coverage/
 public/vendor/bb/
+*.tgz

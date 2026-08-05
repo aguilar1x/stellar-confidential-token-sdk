@@ -1,0 +1,40 @@
+stellar-confidential-sdk
+Copyright 2026 Matias Aguilar (aguilar1x)
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+------------------------------------------------------------------------------
+Provenance
+------------------------------------------------------------------------------
+
+The cryptographic core in `packages/sdk/` was originally written by the same
+author inside the Cluster project (Oppia Software Labs) and is re-published here
+under Apache-2.0. Only files authored solely by aguilar1x were carried over,
+verified per-file against the source repository's git history. No third-party
+contributor's code from that project is included.
+
+------------------------------------------------------------------------------
+Specifications implemented
+------------------------------------------------------------------------------
+
+This project implements client obligations defined by OpenZeppelin's
+Confidential Tokens specifications:
+
+  - SDK.md
+    https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/SDK.md
+  - INDEXER.md
+    https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/INDEXER.md
+
+Those specifications are authored by OpenZeppelin and are not covered by this
+project's copyright. This project is an independent implementation and is not
+endorsed by or affiliated with OpenZeppelin.
+
+------------------------------------------------------------------------------
+Third-party dependencies
+------------------------------------------------------------------------------
+
+Proving is performed by Aztec's Barretenberg (`@aztec/bb.js`) and Noir
+(`@noir-lang/noir_js`), and field/curve/hash primitives come from the Noble
+libraries (`@noble/curves`, `@noble/hashes`, `@noble/ciphers`) and
+`@zkpassport/poseidon2`. Each is distributed under its own license; see the
+respective packages for details.

@@ -35,8 +35,16 @@
   },
   "files": [
     "dist",
-    "circuits"
+    "circuits",
+    "NOTICE"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aguilar1x/stellar-confidential-sdk.git",
+    "directory": "packages/sdk"
+  },
+  "homepage": "https://github.com/aguilar1x/stellar-confidential-sdk#readme",
+  "bugs": "https://github.com/aguilar1x/stellar-confidential-sdk/issues",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
