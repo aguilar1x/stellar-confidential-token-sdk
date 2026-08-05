@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck, ShieldAlert } from "lucide-react";
 
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/reveal";
 import { HexField } from "@/components/hex-field";
+import { HeroBackdrop } from "@/components/hero-backdrop";
 import { heroCommitment } from "./hero-data";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +44,7 @@ export default async function Landing() {
     <main>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative isolate overflow-hidden bg-ink">
+        <HeroBackdrop />
         <HexField seed={hero.commitment} />
 
         <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-36 sm:pb-32 sm:pt-44">
@@ -123,6 +125,18 @@ export default async function Landing() {
                 </div>
               </dl>
             </figure>
+          </Reveal>
+
+          <Reveal delay={0.26}>
+            <div className="mt-16 flex items-end justify-end gap-4">
+              <span className="pb-1 text-sm text-white/55">Built by</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logos/oppia.svg"
+                alt="Oppia Labs"
+                className="h-9 w-auto brightness-0 invert sm:h-11"
+              />
+            </div>
           </Reveal>
         </div>
       </section>
