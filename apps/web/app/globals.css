@@ -98,17 +98,20 @@ body {
   font-size: 0.78rem;
   line-height: 1.85;
   letter-spacing: 0.06em;
-  color: hsl(0 0% 100% / 0.1);
+  color: hsl(0 0% 100% / 0.045);
   word-break: break-all;
   user-select: none;
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 52%, transparent 92%);
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    transparent,
-    black 18%,
-    black 52%,
-    transparent 92%
-  );
+  /* Fades from both edges AND from the left, so it never runs under the
+     headline — where it stopped reading as texture and started reading as
+     glitch. */
+  mask-image:
+    linear-gradient(to bottom, transparent, black 30%, black 60%, transparent 88%),
+    linear-gradient(to right, transparent 28%, black 62%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent, black 30%, black 60%, transparent 88%),
+    linear-gradient(to right, transparent 28%, black 62%);
+  mask-composite: intersect;
+  -webkit-mask-composite: source-in;
 }
 
 @media (prefers-reduced-motion: reduce) {

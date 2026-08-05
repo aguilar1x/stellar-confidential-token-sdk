@@ -43,101 +43,102 @@ export default async function Landing() {
   return (
     <main>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden bg-ink">
+      <section className="relative isolate flex min-h-[92svh] items-center overflow-hidden bg-ink">
         <HeroBackdrop />
         <HexField seed={hero.commitment} />
 
-        <div className="relative mx-auto max-w-6xl px-6 pb-24 pt-36 sm:pb-32 sm:pt-44">
-          <Reveal>
-            <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/50">
-              OpenZeppelin Confidential Tokens · Stellar
-            </p>
-            <h1 className="mt-6 max-w-4xl text-[2.6rem] font-bold leading-[1.04] tracking-[-0.02em] text-white sm:text-6xl lg:text-[4.4rem]">
-              An amount nobody can read.
-              <br />
-              A total everybody can audit.
-            </h1>
-            <p className="mt-7 max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
-              The chain stores commitments; only your wallet holds the openings that spend
-              them. This is the client that derives those openings correctly — and refuses an
-              archive that lies about them.
-            </p>
-          </Reveal>
+        <div className="relative mx-auto w-full max-w-6xl px-6 pb-20 pt-28 sm:pb-24 sm:pt-32">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+            {/* Left: the claim. */}
+            <div>
+              <Reveal>
+                <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/50">
+                  OpenZeppelin Confidential Tokens · Stellar
+                </p>
+                <h1 className="mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl lg:text-[3.4rem]">
+                  An amount nobody can read.
+                  <br />
+                  A total everybody can audit.
+                </h1>
+                <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
+                  The chain stores commitments; only your wallet holds the openings that spend
+                  them. This is the client that derives those openings correctly — and refuses
+                  an archive that lies about them.
+                </p>
+              </Reveal>
 
-          <Reveal delay={0.12}>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Link
-                href="/demo"
-                className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-opacity hover:opacity-90"
-              >
-                See it audited
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-              </Link>
-              <Link
-                href="/verify"
-                className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
-              >
-                Break the archive
-              </Link>
+              <Reveal delay={0.12}>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Link
+                    href="/demo"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-opacity hover:opacity-90"
+                  >
+                    See it audited
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </Link>
+                  <Link
+                    href="/verify"
+                    className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
+                  >
+                    Break the archive
+                  </Link>
+                </div>
+              </Reveal>
             </div>
-          </Reveal>
 
-          {/* The thesis as an object: a real balance, right now. The hex above
-              is what the chain publishes; the number below is what the client
-              proved it opens to. */}
-          <Reveal delay={0.2}>
-            <figure className="mt-16 max-w-2xl rounded-2xl border border-white/12 bg-white/[0.06] p-5 backdrop-blur-md sm:p-6">
-              <figcaption className="flex items-baseline justify-between gap-4">
-                <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/45">
-                  a real balance, on testnet
-                </span>
-                <span
-                  className={`inline-flex items-center gap-1.5 font-mono text-[0.66rem] font-semibold ${
-                    hero.verified ? "text-emerald-300" : "text-rose-300"
-                  }`}
-                >
-                  {hero.verified ? (
-                    <ShieldCheck className="size-3.5" />
-                  ) : (
-                    <ShieldAlert className="size-3.5" />
-                  )}
-                  {hero.verified ? "verified against chain" : "chain unreachable"}
-                </span>
-              </figcaption>
+            {/* Right: the claim, checked. Beside the headline rather than under
+                it, so the evidence and the assertion are read together. */}
+            <Reveal delay={0.18}>
+              <figure className="rounded-2xl border border-white/12 bg-white/[0.06] p-6 backdrop-blur-md">
+                <figcaption className="flex flex-wrap items-baseline justify-between gap-3">
+                  <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-white/45">
+                    a real balance, on testnet
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 font-mono text-[0.66rem] font-semibold ${
+                      hero.verified ? "text-emerald-300" : "text-rose-300"
+                    }`}
+                  >
+                    {hero.verified ? (
+                      <ShieldCheck className="size-3.5" />
+                    ) : (
+                      <ShieldAlert className="size-3.5" />
+                    )}
+                    {hero.verified ? "verified against chain" : "chain unreachable"}
+                  </span>
+                </figcaption>
 
-              <dl className="mt-5 grid gap-5 border-t border-white/10 pt-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-[0.7rem] uppercase tracking-wider text-white/45">
+                <div className="mt-5 border-t border-white/10 pt-5">
+                  <p className="text-[0.68rem] uppercase tracking-wider text-white/45">
                     What the chain reveals
-                  </dt>
-                  <dd className="mt-1.5 font-mono text-lg text-white/35">
+                  </p>
+                  <p className="mt-1.5 font-mono text-2xl text-white/30">
                     <span aria-hidden>•••• ••••</span>
                     <span className="sr-only">nothing</span>
-                  </dd>
+                  </p>
                 </div>
-                <div>
-                  <dt className="text-[0.7rem] uppercase tracking-wider text-white/45">
-                    What the opening proves
-                  </dt>
-                  <dd className="mt-1.5 font-mono text-lg font-semibold text-white">
-                    {hero.verified ? hero.total : "—"}
-                  </dd>
-                </div>
-              </dl>
-            </figure>
-          </Reveal>
 
-          <Reveal delay={0.26}>
-            <div className="mt-16 flex items-end justify-end gap-4">
-              <span className="pb-1 text-sm text-white/55">Built by</span>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/logos/oppia.svg"
-                alt="Oppia Labs"
-                className="h-9 w-auto brightness-0 invert sm:h-11"
-              />
-            </div>
-          </Reveal>
+                <div className="mt-5 border-t border-white/10 pt-5">
+                  <p className="text-[0.68rem] uppercase tracking-wider text-white/45">
+                    What the opening proves
+                  </p>
+                  <p className="mt-1.5 font-mono text-3xl font-bold text-white">
+                    {hero.verified ? hero.total : "—"}
+                  </p>
+                </div>
+              </figure>
+
+              <div className="mt-7 flex items-center justify-end gap-3.5">
+                <span className="text-[0.82rem] text-white/50">Built by</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/logos/oppia.svg"
+                  alt="Oppia Labs"
+                  className="h-8 w-auto brightness-0 invert"
+                />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 

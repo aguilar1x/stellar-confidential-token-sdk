@@ -14,7 +14,15 @@ export const stagger: Variants = {
   show: { transition: { staggerChildren: 0.09, delayChildren: 0.04 } },
 };
 
-/** Section-level reveal. Re-animates on scroll back, matching sentinel. */
+/**
+ * Section-level reveal.
+ *
+ * `once: true` on purpose. Re-animating on scroll back looks livelier, but it
+ * means content returns to opacity 0 whenever it leaves the viewport — so
+ * scrolling quickly, or landing mid-page, can show a blank screen for a beat.
+ * On a page whose entire job is to be believed by someone skimming it once,
+ * that is a bad trade.
+ */
 export function Reveal({
   children,
   className,
@@ -30,7 +38,7 @@ export function Reveal({
       variants={fadeUp}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: false, amount: 0.15, margin: "0px 0px -80px 0px" }}
+      viewport={{ once: true, amount: 0.12, margin: "0px 0px -60px 0px" }}
       transition={{ delay }}
     >
       {children}
@@ -51,7 +59,7 @@ export function StaggerGroup({
       variants={stagger}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: false, amount: 0.12, margin: "0px 0px -80px 0px" }}
+      viewport={{ once: true, amount: 0.1, margin: "0px 0px -60px 0px" }}
     >
       {children}
     </motion.div>
