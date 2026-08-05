@@ -1,3 +1,5 @@
+import { join } from "node:path";
+
 import type { NextConfig } from "next";
 
 /**
@@ -36,6 +38,20 @@ const nextConfig: NextConfig = {
     "@noir-lang/noirc_abi",
     "@aztec/bb.js",
   ],
+  /**
+   * bb.js resolves its own WASM by path at runtime, so nothing in the import
+   * graph references `barretenberg-threads.wasm.gz` and the build trace prunes
+   * it. Proving then fails with ENOENT in the deployed function only — after the
+   * earlier stages have reported success, which makes it read as a fault in the
+   * cryptography instead of a missing 2.4 MB file.
+   *
+   * The tracing root has to be the workspace root: dependencies are hoisted
+   * there, so a root anchored at `apps/web` cannot describe them.
+   */
+  outputFileTracingRoot: join(import.meta.dirname, "..", ".."),
+  outputFileTracingIncludes: {
+    "/api/pay": ["../../node_modules/@aztec/bb.js/dest/node/**"],
+  },
   async headers() {
     return [{ source: "/(.*)", headers: crossOriginIsolation }];
   },
