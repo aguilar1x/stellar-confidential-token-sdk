@@ -49,7 +49,9 @@ export default async function Verify() {
         </p>
       </Reveal>
 
-      <div className="mt-10">
+      {/* Rules off the page header from the adversarial run, the same way the
+          docs header is separated from its body. */}
+      <div className="mt-12 border-t border-rule pt-12">
         <VerifyClient run={run} />
       </div>
 

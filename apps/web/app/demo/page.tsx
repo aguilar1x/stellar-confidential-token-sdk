@@ -52,7 +52,7 @@ export default async function Demo() {
       </Reveal>
 
       <Reveal delay={0.05}>
-        <section className="mt-14">
+        <section className="mt-12 border-t border-rule pt-12">
           <p className="eyebrow">How the money got there</p>
           <h2 className="mt-4 text-2xl font-bold tracking-tight">
             Four steps. Two of them are public, and that is not a bug.
