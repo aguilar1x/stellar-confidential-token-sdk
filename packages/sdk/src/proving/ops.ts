@@ -28,9 +28,21 @@ export type TransferEnvelope = ProofEnvelope & {
   rEScalar: TransferWitness["rEScalar"];
 };
 
-/** `xdr.ScVal.toXDR()` returns a Node Buffer; normalize to a plain Uint8Array. */
-function toU8(b: Uint8Array): Uint8Array {
-  return new Uint8Array(b);
+/**
+ * Extract the `data: Bytes` argument from an encoder's envelope.
+ *
+ * The encoders in `chain/payload.ts` already return `scvBytes(<map XDR>)` — the
+ * finished `Bytes` ScVal. What the contract wants is the raw bytes INSIDE it,
+ * because the invocation layer applies its own `scvBytes` wrap when building
+ * the argument.
+ *
+ * Calling `.toXDR()` here instead would serialize the whole `scvBytes(...)`
+ * wrapper, so the contract receives bytes-of-a-bytes-ScVal and rejects the call
+ * with `InvalidData` (#3507) — after the proof has already been generated, so
+ * the failure looks like a proving problem when it is purely an encoding one.
+ */
+function envelopeBytes(scVal: { bytes(): Uint8Array }): Uint8Array {
+  return new Uint8Array(scVal.bytes());
 }
 
 /** Prove account registration for `keys`. */
@@ -39,7 +51,7 @@ export async function proveRegister(keys: KeyPair): Promise<ProofEnvelope> {
   const prover = new CircuitProver(loadCircuit("register"));
   try {
     const { proof } = await prover.prove(witness.inputs);
-    const payload = toU8(encodeRegisterData(witness, proof).toXDR());
+    const payload = envelopeBytes(encodeRegisterData(witness, proof));
     return { payload, proof };
   } finally {
     await prover.destroy();
@@ -52,7 +64,7 @@ export async function proveTransfer(params: TransferParams): Promise<TransferEnv
   const prover = new CircuitProver(loadCircuit("transfer"));
   try {
     const { proof } = await prover.prove(witness.inputs);
-    const payload = toU8(encodeTransferData(witness, proof).toXDR());
+    const payload = envelopeBytes(encodeTransferData(witness, proof));
     return {
       payload,
       proof,
@@ -71,7 +83,7 @@ export async function proveWithdraw(params: WithdrawParams): Promise<ProofEnvelo
   const prover = new CircuitProver(loadCircuit("withdraw"));
   try {
     const { proof } = await prover.prove(witness.inputs);
-    const payload = toU8(encodeWithdrawData(witness, proof).toXDR());
+    const payload = envelopeBytes(encodeWithdrawData(witness, proof));
     return { payload, proof };
   } finally {
     await prover.destroy();
