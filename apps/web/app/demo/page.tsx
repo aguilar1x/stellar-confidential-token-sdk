@@ -61,7 +61,7 @@ export default async function Demo() {
             Getting value into the pool is a boundary crossing, so it is visible by
             construction. What happens inside the pool is not.
           </p>
-          <div className="mt-6">
+          <div className="mt-8 border-t border-rule pt-8">
             <Lifecycle txs={LIFECYCLE_TXS} />
           </div>
         </section>
