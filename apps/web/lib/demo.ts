@@ -76,6 +76,19 @@ export const EXPLORER =
   process.env.NEXT_PUBLIC_EXPLORER ?? "https://stellar.expert/explorer/testnet/tx";
 
 /**
+ * The same explorer, for the two things a reader needs in order to check our
+ * inputs rather than only our arithmetic: the contract that holds the
+ * commitment, and the account it is held for.
+ *
+ * Derived from `EXPLORER` so a deployment pointing at a different explorer moves
+ * all three together, instead of overriding one and silently keeping two links
+ * aimed at stellar.expert.
+ */
+const EXPLORER_ROOT = EXPLORER.replace(/\/tx\/?$/, "");
+export const EXPLORER_CONTRACT = `${EXPLORER_ROOT}/contract`;
+export const EXPLORER_ACCOUNT = `${EXPLORER_ROOT}/account`;
+
+/**
  * A second archive, independently deployed on a different provider.
  *
  * INDEXER.md §7 asks wallets to support multiple independent archive endpoints,

@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ShieldCheck, ShieldAlert, Minus, Plus, RotateCcw } from "lucide-react";
 import { commit, pointToBytes } from "stellar-confidential-token-sdk";
+
+import { Provenance } from "@/components/provenance";
 
 /**
  * The part of the page that asks the reader to break it.
@@ -52,10 +54,16 @@ export function Tamper({
   total,
   blinding,
   onchainCommitment,
+  contract,
+  account,
+  rpcUrl,
 }: {
   total: string;
   blinding: string;
   onchainCommitment: string;
+  contract: string;
+  account: string;
+  rpcUrl: string;
 }) {
   const [v, setV] = useState(total);
   const [r, setR] = useState(blinding);
@@ -63,12 +71,24 @@ export function Tamper({
   const vNum = parse(v);
   const rNum = parse(r);
 
-  const result = useMemo(() => {
-    if (vNum === null || rNum === null || vNum < 0n || rNum < 0n) return null;
+  /**
+   * After mount, not during render — the same hydration trap the receipt panel
+   * fell into. A `useMemo` here runs on the server too, and the `performance`
+   * timing it stamps into the HTML can never match the one the browser
+   * measures, so React discards the tree. An effect also keeps the promise the
+   * heading makes: the arithmetic happens on the reader's machine, and nowhere
+   * before it.
+   */
+  const [result, setResult] = useState<{ hex: string; ms: number } | null>(null);
+
+  useEffect(() => {
+    if (vNum === null || rNum === null || vNum < 0n || rNum < 0n) {
+      setResult(null);
+      return;
+    }
     const t0 = performance.now();
     const bytes = pointToBytes(commit(vNum, rNum));
-    const ms = performance.now() - t0;
-    return { hex: toHex(bytes), ms };
+    setResult({ hex: toHex(bytes), ms: performance.now() - t0 });
   }, [vNum, rNum]);
 
   const matches = result?.hex === onchainCommitment;
@@ -218,6 +238,13 @@ export function Tamper({
           </p>
         )}
       </div>
+
+      <Provenance
+        contract={contract}
+        account={account}
+        rpcUrl={rpcUrl}
+        what="the commitment and its opening"
+      />
     </div>
   );
 }
