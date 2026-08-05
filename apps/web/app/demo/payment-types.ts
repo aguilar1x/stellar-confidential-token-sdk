@@ -33,7 +33,8 @@ export const STAGES = [
   {
     key: "prove",
     label: "Proving",
-    detail: "Witness generation, then UltraHonk. The amount never leaves the browser's sender.",
+    detail:
+      "Witness generation, then UltraHonk. About 1.5s on a laptop and four times that here — a serverless CPU is not a fast one, and the honest number is the one you are watching.",
   },
   {
     key: "submit",

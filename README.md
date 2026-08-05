@@ -166,6 +166,10 @@ It prints the two divergences rather than hiding them, and **fails** if a third
 appears. It is the same script CI runs on every push, which is what the badge
 above asserts.
 
+Step 3's timing is whatever your own machine manages — 1.5s on an M-series
+laptop, around 6s on the serverless CPU behind the demo site. Proving cost is a
+property of the hardware, so any single number quoted without one is decoration.
+
 ## For wallet integrators
 
 Every confidential-token wallet — including any built at this hackathon — has to

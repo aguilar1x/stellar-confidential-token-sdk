@@ -64,7 +64,8 @@ export default async function Landing() {
                   Getting there means deriving keys that match byte-for-byte on every
                   device, rebuilding balances from an archive you did not write, and
                   generating proofs. All three fail silently — as money that will not move.
-                  This ships all three. One signature, 1.5s to a private transfer.
+                  This ships all three. One signature in, a sealed transfer out — and the
+                  page below times every stage of it in front of you.
                 </p>
               </Reveal>
 
