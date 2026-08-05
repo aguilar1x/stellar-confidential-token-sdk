@@ -54,7 +54,7 @@ export function PayButton({ pay }: { pay: () => Promise<PaymentResult> }) {
         <button
           onClick={submit}
           disabled={working}
-          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="btn-raised inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white disabled:opacity-60"
         >
           {working ? (
             <>

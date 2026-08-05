@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Github } from "lucide-react";
 
 const LINKS = [
   { href: "/docs", label: "Docs" },
@@ -22,7 +23,7 @@ export function Nav() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
-      <nav className="pointer-events-auto flex items-center gap-1 rounded-full border border-rule bg-paper py-1.5 pl-5 pr-1.5 shadow-[0_8px_28px_-10px_rgb(16_18_38_/_0.28)]">
+      <nav className="pill-raised pointer-events-auto flex items-center gap-1 rounded-full border border-rule bg-paper py-1.5 pl-5 pr-1.5">
         <Link
           href="/"
           aria-label="Home"
@@ -53,8 +54,9 @@ export function Nav() {
 
         <a
           href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
-          className="ml-1 rounded-full bg-accent px-4 py-2 text-[0.86rem] font-medium text-white transition-opacity hover:opacity-90"
+          className="btn-raised ml-1 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[0.86rem] font-medium text-white"
         >
+          <Github className="size-3.5" />
           GitHub
         </a>
       </nav>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, ShieldAlert } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShieldAlert, Github, Package } from "lucide-react";
 
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/reveal";
 import { HexField } from "@/components/hex-field";
@@ -71,7 +71,7 @@ export default async function Landing() {
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link
                     href="/demo"
-                    className="group inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-medium text-ink transition-opacity hover:opacity-90"
+                    className="btn-raised-light group inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium text-ink"
                   >
                     See it audited
                     <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -298,15 +298,17 @@ export default async function Landing() {
           </p>
           <div className="flex gap-5">
             <a
-              className="hover:text-ink"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-ink"
               href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
             >
+              <Github className="size-4" />
               GitHub
             </a>
             <a
-              className="hover:text-ink"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-ink"
               href="https://www.npmjs.com/package/stellar-confidential-token-sdk"
             >
+              <Package className="size-4" />
               npm
             </a>
           </div>

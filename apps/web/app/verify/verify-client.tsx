@@ -54,7 +54,7 @@ export function VerifyClient({ run }: { run: (id: ArchiveId) => Promise<Verdict>
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={runAll}
-            className="group inline-flex items-center gap-2 rounded-md bg-ink px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+            className="btn-raised group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-white"
           >
             <Play className="size-3.5" />
             Check all five
