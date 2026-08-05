@@ -1,5 +1,14 @@
 # Deploying
 
+Both halves are live:
+
+| | |
+|---|---|
+| Page | <https://stellar-confidential-token-sdk-web.vercel.app> (Vercel) |
+| Archive | <https://confidential-token-archive.aaguilar1x.workers.dev/v1/health> (Cloudflare) |
+
+Two providers, which is what §7 means by independent.
+
 Two things get deployed: the demo page, and the archive it reads from.
 
 `INDEXER.md` §7 says wallets "SHOULD support multiple independent archive

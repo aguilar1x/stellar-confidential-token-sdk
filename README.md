@@ -25,7 +25,12 @@ This repository implements both.
 
 ## See it work
 
-A real confidential payment on testnet, from a single signer — two fresh
+**→ [stellar-confidential-token-sdk-web.vercel.app](https://stellar-confidential-token-sdk-web.vercel.app)**
+
+Five archives serve one real account's history. Three of them lie. The same
+client reads all five, in your browser, with nothing to install.
+
+Or run it yourself. A real confidential payment on testnet, from a single signer — two fresh
 accounts, secrets derived and never stored, a hidden amount, and the recipient
 decrypting it from public chain events alone:
 
@@ -88,9 +93,10 @@ floor — verified with the published client, not with curl alone.
 | `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. |
 | `packages/conformance` | The `SDK.md` §6 suite: OpenZeppelin's fixtures byte-for-byte, circuit-execution parity with tamper cases, and the §6.3 vectors. |
 | `apps/indexer` | An `INDEXER.md` archive (C1–C4) as a Web-standard `fetch` handler, so one implementation serves from Node, Cloudflare, Deno or Vercel. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). |
+| `apps/web` | The demo page. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
 | `examples/` | The live payment and the sabotage, both against real testnet contracts. |
 
-214 tests, run in CI on every push and weekly.
+216 tests, run in CI on every push and weekly.
 
 ## Conformance, honestly
 
