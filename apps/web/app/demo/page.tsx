@@ -7,6 +7,10 @@ import { Commitment } from "@/components/commitment";
 import { EXPLORER } from "@/lib/demo";
 import { BUILDING } from "./data";
 import { auditBuilding, demonstrateHomomorphism } from "./audit";
+import { firstPaymentAnatomy } from "./anatomy";
+import { Lifecycle } from "./lifecycle";
+import { PaymentAnatomy } from "./anatomy-view";
+import LIFECYCLE_TXS from "./lifecycle-txs.json";
 import { payDues } from "./pay";
 import { PayButton } from "./pay-button";
 
@@ -24,7 +28,11 @@ const xlm = (s: string | bigint) =>
   `${(Number(BigInt(s)) / Number(XLM)).toLocaleString("en-US")} XLM`;
 
 export default async function Demo() {
-  const [audit, homo] = await Promise.all([auditBuilding(), demonstrateHomomorphism()]);
+  const [audit, homo, anatomy] = await Promise.all([
+    auditBuilding(),
+    demonstrateHomomorphism(),
+    firstPaymentAnatomy(),
+  ]);
 
   return (
     <main className="mx-auto max-w-4xl px-6 pb-24 pt-32">
@@ -41,6 +49,22 @@ export default async function Demo() {
           collected exactly what it says it did — not by trusting the treasurer, and not by
           being shown the ledger.
         </p>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <section className="mt-14">
+          <p className="eyebrow">How the money got there</p>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight">
+            Four steps. Two of them are public, and that is not a bug.
+          </h2>
+          <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
+            Getting value into the pool is a boundary crossing, so it is visible by
+            construction. What happens inside the pool is not.
+          </p>
+          <div className="mt-6">
+            <Lifecycle txs={LIFECYCLE_TXS} />
+          </div>
+        </section>
       </Reveal>
 
       {/* The ledger. The point of this table is the column that has nothing in it. */}
@@ -113,6 +137,12 @@ export default async function Demo() {
           &ldquo;Sealed&rdquo; is not a display choice. Those amounts are published nowhere —
           each is inside a commitment only the payer and the building can open.
         </p>
+      </Reveal>
+
+      <Reveal delay={0.05}>
+        <div className="mt-14">
+          <PaymentAnatomy data={anatomy} />
+        </div>
       </Reveal>
 
       {/* The audit. */}
