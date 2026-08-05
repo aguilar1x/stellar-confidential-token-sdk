@@ -142,6 +142,22 @@ There is also a domain-tag collision: `δ_ecdh` was recovered from the fixtures
 (only domain 13 reproduces the `ecdh` vector) and this codebase already assigns
 13 to `DISCLOSURE`.
 
+### The bug the condominium found
+
+Blindings were accumulated modulo `r` when the chain accumulates commitment
+**points**, whose scalars reduce modulo the group order `p`. Since `r < p`, a
+sum that crosses `r` came out short by exactly `r·H`, and the wallet
+reconstructed an opening its own on-chain commitment rejects.
+
+One payment reconstructs perfectly under either modulus, which is why nothing
+caught it: every example shipped so far moved value with a single transfer. Two
+random blindings cross `r` about half the time, so the building's eight
+payments wrapped six times out of seven and the audit came out red against a
+chain that was perfectly correct.
+
+Fixed in `0.1.1`, with a regression test that asserts a partial sum actually
+wrapped — without that guard the case passes under the old implementation too.
+
 ### The vectors §6.3 asks for and nobody published
 
 `SDK.md` §6.3 names three derivations needing fixture coverage. One exists
