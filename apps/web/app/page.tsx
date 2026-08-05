@@ -61,9 +61,10 @@ export default async function Landing() {
                   A total everybody can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
-                  Every confidential-token wallet rebuilds its balance by replaying history
-                  from an archive it did not write. This is the layer underneath that: the only
-                  conformant archive, and the client that proves it is not lying.
+                  The layer for anything that has to prove a total without exposing its
+                  parts — a wallet, a building collecting dues, a payroll. Each one replays
+                  its history from an archive it did not write. This is the only conformant
+                  archive, and the client that proves it is not lying.
                 </p>
               </Reveal>
 

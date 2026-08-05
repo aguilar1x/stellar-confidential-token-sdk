@@ -4,11 +4,13 @@
 [![npm](https://img.shields.io/npm/v/stellar-confidential-token-sdk)](https://www.npmjs.com/package/stellar-confidential-token-sdk)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](./LICENSE)
 
-**The layer underneath every confidential-token wallet: the archive a wallet
-replays its history from, and the client that proves that archive is not lying.**
+**The layer for anything that has to prove a total without exposing its parts.**
 
-Every CT wallet has to rebuild its openings from an archive it did not write.
-This is the only conformant one, plus the verifier that demonstrates it.
+Every confidential-token wallet needs this. So does a building collecting its
+dues — which is what runs below, with real money on testnet. The chain holds
+*commitments*; whoever holds the *openings* can prove what they sum to, and
+nothing else. This is the archive that history is replayed from, and the client
+that proves that archive is not lying.
 
 A confidential-token wallet has an unusual problem. The chain stores
 *commitments*; only the wallet holds the *openings* that can spend them. So the
@@ -26,6 +28,24 @@ an archive must serve and how a client must verify it.
 
 This repository implements both.
 
+## What gets built on top
+
+The primitive is the same every time: many sealed values, one provable total.
+
+- **Wallets** — the direct consumer. Derive an account secret from a signature
+  (§5.1), rebuild spendable and receiving balances from events, and verify them
+  against the chain's commitments before showing a number to anyone.
+- **Shared ledgers** — a building's dues, a fund's contributions, a split bill.
+  Every participant audits the total; nobody sees a neighbour's line item.
+- **Payroll and treasury** — a total that reconciles against the chain while the
+  individual figures stay sealed, including from the party doing the reconciling.
+- **Compliance without disclosure** — the auditor channel encrypts balances to a
+  designated key, so an auditor reads what it is entitled to and no more.
+
+Each of these needs the same three things underneath: derivation that is
+byte-identical across devices, an archive that cannot omit history, and a client
+that checks the archive rather than trusting it. That is what is in here.
+
 [sdk]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/SDK.md
 [indexer]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/INDEXER.md
 [issue]: https://github.com/OpenZeppelin/stellar-contracts/issues/787
@@ -36,13 +56,13 @@ This repository implements both.
 
 Two pages, nothing to install:
 
-- **[A building collecting its dues](https://stellar-confidential-token-sdk-web.vercel.app/condominium)** —
+- **[A building collecting its dues](https://stellar-confidential-token-sdk-web.vercel.app/demo)** —
   eight units pay different amounts, none of them on-chain, and every resident
   can still audit the total. Pedersen commitments add, so the chain ends up
   holding a commitment to the sum without ever holding one to any single
   payment. A normal ledger makes you pick between an auditable total and private
   line items; this does not.
-- **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app)** —
+- **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app/verify)** —
   that guarantee only holds if the history the wallet replays is the real one.
   Five archives serve one account's history; three of them lie. The same client
   reads all five.
