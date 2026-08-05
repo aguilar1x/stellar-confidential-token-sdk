@@ -47,7 +47,7 @@ export function DocsShell({ sections }: { sections: Section[] }) {
   const prev = sections[index - 1];
 
   return (
-    <div className="mt-14 gap-14 lg:grid lg:grid-cols-[210px_1fr]">
+    <div className="mt-12 gap-14 border-t border-rule pt-12 lg:grid lg:grid-cols-[210px_1fr]">
       <nav aria-label="Sections" className="mb-10 lg:mb-0">
         <ul className="space-y-0.5 border-l border-rule lg:sticky lg:top-24">
           {sections.map((s) => {
