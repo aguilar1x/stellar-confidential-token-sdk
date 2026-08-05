@@ -220,6 +220,13 @@ self-refuting:
 - **The disclosure receipt is a bearer token** — anyone holding the URL can read
   the disclosed amount.
 - **Not audited.** Nethermind's audit covers the contracts, not this client.
+- **`npm audit` reports advisories in the demo site's build tooling.** They are
+  reachable only through paths this project does not use: the PostCSS ones need
+  attacker-controlled CSS, and ours is hand-written; `sharp` arrives through
+  `next/image`, which appears nowhere here. Closing them means a major Next
+  version bump, which is a larger risk to a working demo than the advisories
+  are. The published SDK itself carries no known advisories — `npm audit` on a
+  clean install of it is empty.
 
 ## Provenance and license
 
