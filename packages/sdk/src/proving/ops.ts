@@ -12,6 +12,8 @@
  * state engine (a later task) derives those from the account secret and calls in.
  */
 
+import type { CompiledCircuit } from "@noir-lang/noir_js";
+
 import type { KeyPair } from "../crypto/keys.js";
 import type { ProofEnvelope } from "../types.js";
 import { buildRegisterWitness } from "../witness/register.js";
@@ -58,10 +60,22 @@ export async function proveRegister(keys: KeyPair): Promise<ProofEnvelope> {
   }
 }
 
-/** Prove a confidential transfer described by `params`. */
-export async function proveTransfer(params: TransferParams): Promise<TransferEnvelope> {
+/**
+ * Prove a confidential transfer described by `params`.
+ *
+ * `circuit` overrides where the compiled artifact comes from. The default reads
+ * the vendored one off disk, which needs the file to still be there at runtime —
+ * and a bundler that cannot see a path resolved at runtime will prune it. Any
+ * caller whose deployment traces its own dependencies (Next, Vercel, a Lambda
+ * zip) should import the artifact so the bundle includes it, and hand it in here
+ * rather than reimplementing this function around `CircuitProver`.
+ */
+export async function proveTransfer(
+  params: TransferParams,
+  circuit?: CompiledCircuit,
+): Promise<TransferEnvelope> {
   const witness = buildTransferWitness(params);
-  const prover = new CircuitProver(loadCircuit("transfer"));
+  const prover = new CircuitProver(circuit ?? loadCircuit("transfer"));
   try {
     const { proof } = await prover.prove(witness.inputs);
     const payload = envelopeBytes(encodeTransferData(witness, proof));

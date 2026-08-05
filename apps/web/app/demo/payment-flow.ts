@@ -27,6 +27,17 @@ import { deriveSk, deriveKeys, skSigningMessage, StateEngine } from "stellar-con
 import { proveTransfer } from "stellar-confidential-token-sdk/node";
 import { ChainClient, keypairSigner, hybridFetchEvents } from "stellar-confidential-token-sdk/chain";
 
+/**
+ * Imported rather than loaded off disk on purpose.
+ *
+ * The SDK's own loader resolves the vendored artifact at runtime, which Next's
+ * build trace cannot see — so the file gets pruned from the deployment and
+ * proving fails with ENOENT only in production, after two stages have already
+ * reported success. A static import puts the 71 KB into the bundle where the
+ * tracer can account for it.
+ */
+import transferCircuit from "../../../../packages/sdk/circuits/transfer.json";
+
 import { CONTRACTS, NETWORK_PASSPHRASE, RPC_URL } from "@/lib/demo";
 import { BUILDING } from "./data";
 import {
@@ -138,15 +149,18 @@ export async function runPayment(amountStroops: string, emit: Emit): Promise<voi
     const kAud = await client.auditorKey(0);
 
     const payload = await stage("prove", async () => {
-      const { payload } = await proveTransfer({
-        keys,
-        v: spendable.v,
-        r: spendable.r,
-        amount,
-        pvkB: buildingKeys.PVK,
-        kAudR: kAud,
-        kAudS: kAud,
-      });
+      const { payload } = await proveTransfer(
+        {
+          keys,
+          v: spendable.v,
+          r: spendable.r,
+          amount,
+          pvkB: buildingKeys.PVK,
+          kAudR: kAud,
+          kAudS: kAud,
+        },
+        transferCircuit as Parameters<typeof proveTransfer>[1],
+      );
       return payload;
     });
 
