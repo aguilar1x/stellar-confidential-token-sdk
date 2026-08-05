@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { headers } from "next/headers";
 
 import { ARCHIVES, DEMO, EXPLORER } from "@/lib/demo";
@@ -43,8 +44,9 @@ export default async function Page() {
           So: what happens when the archive lies?
         </p>
         <p className="lede">
-          Below, one real account&rsquo;s history is served by four archives. Three of them
-          are dishonest, in three different ways. The same client reads all four.
+          Below, one real account&rsquo;s history is served by five archives — including one
+          deployed separately, on another provider. Three of them are dishonest, in three
+          different ways. The same client reads all five.
         </p>
       </header>
 
@@ -85,6 +87,15 @@ export default async function Page() {
       </section>
 
       <section className="explain">
+        <h3>Why any of this matters</h3>
+        <p>
+          Abstractly, a wrong balance is a wrong number.{" "}
+          <Link href="/condominium">A building collecting its dues</Link> makes it concrete:
+          eight neighbours pay different amounts, none of them appear on-chain, and every
+          resident can still audit the total. That only holds if the history the wallet
+          replays is the real one.
+        </p>
+
         <h3>Two defences, and the difference between them matters</h3>
         <p>
           The <strong>lagging</strong> archive is caught by <code>INDEXER.md</code> C3, the

@@ -24,7 +24,7 @@
  */
 
 import { commit, ecdh, pointFromBytes, pointToBytes, type Point } from "../crypto/grumpkin.js";
-import { frAdd, frMod } from "../crypto/field.js";
+import { frMod, groupAdd } from "../crypto/field.js";
 import { DOMAIN } from "../crypto/constants.js";
 import { deriveSpendR, deriveTxBlind, poseidonWithDomain } from "../crypto/poseidon2.js";
 import { buildTransferWitness, type TransferParams } from "../witness/transfer.js";
@@ -79,9 +79,11 @@ export class StateEngine {
         break;
       case "merge":
         if (ev.account === me) {
+          // Merge adds the two commitment POINTS on-chain, so the openings
+          // combine as Grumpkin scalars — modulo p, not r. See groupAdd.
           state.spendable = {
             v: state.spendable.v + state.receiving.v,
-            r: frAdd(state.spendable.r, state.receiving.r),
+            r: groupAdd(state.spendable.r, state.receiving.r),
           };
           state.receiving = { v: 0n, r: 0n };
         }
@@ -95,9 +97,11 @@ export class StateEngine {
         if (ev.from === me) state.spendable = this.openSpendable(ev.bTilde, ev.sigma);
         if (ev.to === me) {
           const { vTx, rTx } = this.decryptIncoming(ev.rE, ev.vTilde, ev.sigma);
+          // Same here: the chain folds C_tx into the receiving commitment by
+          // point addition, so the blinding accumulates modulo p.
           state.receiving = {
             v: state.receiving.v + vTx,
-            r: frAdd(state.receiving.r, rTx),
+            r: groupAdd(state.receiving.r, rTx),
           };
         }
         break;

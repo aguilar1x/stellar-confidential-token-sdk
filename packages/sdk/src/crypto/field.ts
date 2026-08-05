@@ -4,7 +4,31 @@
  * representative" lives here.
  */
 
-import { FR_MODULUS } from "./constants.js";
+import { FR_MODULUS, FP_MODULUS } from "./constants.js";
+
+/**
+ * Add two blinding factors as GRUMPKIN SCALARS, reducing modulo the group
+ * order `p` rather than `r`.
+ *
+ * This is not interchangeable with {@link frAdd}, and the difference is a real
+ * bug the first time an account receives two payments.
+ *
+ * A commitment is `v·G + r·H`, and scalar multiplication reduces the scalar
+ * modulo the curve's scalar field — for Grumpkin that is `p`
+ * ({@link FP_MODULUS}), not `r`. Individual blindings are `F_r` elements, so
+ * they need no reduction; their SUM does not stay in `F_r`. Since `r < p`,
+ * reducing a sum modulo `r` subtracts `r` where the group would have subtracted
+ * nothing, and the resulting opening no longer matches the point the chain
+ * accumulated — it is off by exactly `r·H`.
+ *
+ * Concretely: two random blindings cross `r` about half the time, so an account
+ * that receives a handful of transfers is very likely to compute an opening its
+ * own commitment does not verify against.
+ */
+export function groupAdd(a: bigint, b: bigint): bigint {
+  const m = (a + b) % FP_MODULUS;
+  return m < 0n ? m + FP_MODULUS : m;
+}
 
 /** Reduce into `[0, r)`. */
 export function frMod(x: bigint): bigint {

@@ -27,8 +27,18 @@ This repository implements both.
 
 **→ [stellar-confidential-token-sdk-web.vercel.app](https://stellar-confidential-token-sdk-web.vercel.app)**
 
-Five archives serve one real account's history. Three of them lie. The same
-client reads all five, in your browser, with nothing to install.
+Two pages, nothing to install:
+
+- **[A building collecting its dues](https://stellar-confidential-token-sdk-web.vercel.app/condominium)** —
+  eight units pay different amounts, none of them on-chain, and every resident
+  can still audit the total. Pedersen commitments add, so the chain ends up
+  holding a commitment to the sum without ever holding one to any single
+  payment. A normal ledger makes you pick between an auditable total and private
+  line items; this does not.
+- **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app)** —
+  that guarantee only holds if the history the wallet replays is the real one.
+  Five archives serve one account's history; three of them lie. The same client
+  reads all five.
 
 Or run it yourself. A real confidential payment on testnet, from a single signer — two fresh
 accounts, secrets derived and never stored, a hidden amount, and the recipient

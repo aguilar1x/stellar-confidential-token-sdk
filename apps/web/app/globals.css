@@ -144,3 +144,87 @@ footer p { margin: 0 0 0.5rem; }
   }
   .aside { color: #767c85; }
 }
+
+/* --- condominium ------------------------------------------------------- */
+
+.ledger { margin: 3rem 0; }
+
+.ledger table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.ledger th {
+  text-align: left;
+  font: 600 0.68rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 0 0.7rem;
+  border-bottom: 1px solid var(--hair);
+}
+.ledger td { padding: 0.7rem 0; border-bottom: 1px solid var(--hair); }
+.ledger .unit { font-weight: 600; }
+.ledger .muted { color: var(--muted); }
+
+/* The point of the whole page: these are not redacted, they were never there. */
+.hidden-amount {
+  font: 0.82rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.hidden-amount::before { content: "•••• "; opacity: 0.45; }
+
+.ledger tfoot td { border-bottom: none; padding-top: 1.1rem; font-size: 1rem; }
+.ledger .total {
+  text-align: right;
+  font: 700 1.15rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--accent);
+}
+
+.audit {
+  background: var(--surface);
+  border: 1px solid var(--hair);
+  border-left-width: 3px;
+  border-radius: 10px;
+  padding: 1.6rem;
+  margin: 2.5rem 0;
+}
+.audit.ok { border-left-color: var(--ok); }
+.audit.bad { border-left-color: var(--bad); }
+.audit-head { display: flex; align-items: baseline; gap: 0.8rem; }
+.audit-head h2 { margin: 0; font-size: 1.1rem; }
+
+.commits { margin-top: 1.2rem; display: grid; gap: 0.7rem; }
+.commits .k, .proof .k {
+  display: block;
+  font: 600 0.66rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+}
+.commits code, .proof code {
+  display: block;
+  font-size: 0.76rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0.5rem 0.6rem;
+}
+
+.proof {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  display: grid;
+  gap: 0.5rem;
+}
+.proof.ok { border-left: 3px solid var(--ok); }
+.proof.bad { border-left: 3px solid var(--bad); }
+.proof .verdict {
+  font: 700 0.8rem ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--ok);
+  margin-top: 0.3rem;
+}
+.proof.bad .verdict { color: var(--bad); }
