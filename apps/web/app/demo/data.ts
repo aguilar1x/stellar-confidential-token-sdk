@@ -38,8 +38,11 @@ if (!summary) {
 }
 
 export const BUILDING: Building = {
-  address: summary.building as string,
-  secret: summary.buildingSecret as string,
-  fromLedger: summary.fromLedger as number,
+  address: process.env.BUILDING_ADDRESS ?? (summary.building as string),
+  // `BUILDING_SECRET` wins when set, so a deployment can audit its own building
+  // rather than the one this repository ran. The committed seed is a testnet
+  // account that exists on no other network.
+  secret: process.env.BUILDING_SECRET ?? (summary.buildingSecret as string),
+  fromLedger: Number(process.env.BUILDING_FROM_LEDGER ?? summary.fromLedger),
   units: summary.units as Unit[],
 };

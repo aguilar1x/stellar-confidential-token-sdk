@@ -50,7 +50,24 @@ import {
 
 const XLM = 10_000_000n;
 
+/**
+ * The account the page spends from.
+ *
+ * `GUEST_SECRET` wins when set, so a deployment can fund its own throwaway
+ * account instead of sharing the one committed here. The committed file is the
+ * fallback rather than the only source because a fresh clone should work with
+ * no setup, and because the seed in it is a testnet account holding nothing that
+ * exists on no other network — checked, not assumed.
+ */
 function guest() {
+  const fromEnv = process.env.GUEST_SECRET;
+  if (fromEnv) {
+    return {
+      secret: fromEnv,
+      address: "",
+      fromLedger: Number(process.env.GUEST_FROM_LEDGER ?? 1),
+    };
+  }
   const path = join(process.cwd(), "..", "..", "examples", "guest-state.json");
   return JSON.parse(readFileSync(path, "utf8")) as {
     secret: string;

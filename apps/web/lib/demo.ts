@@ -36,7 +36,15 @@ export const DEMO = {
   expectedSpendableStroops: 600_000_000n,
 } as const;
 
-export const RPC_URL = "https://soroban-testnet.stellar.org";
+/**
+ * Network and contract targets, overridable so a deployment is not stuck with
+ * the addresses this repository happens to have deployed against.
+ *
+ * `RPC_URL` and `NETWORK_PASSPHRASE` move together on purpose: pointing the RPC
+ * at another network while the passphrase still says testnet produces
+ * signatures that node rejects, which is a confusing way to find out.
+ */
+export const RPC_URL = process.env.RPC_URL ?? "https://soroban-testnet.stellar.org";
 
 /**
  * Where the archives start scanning.
@@ -53,15 +61,19 @@ export const RPC_URL = "https://soroban-testnet.stellar.org";
  * asking for earlier history is truthfully told the range is not covered.
  */
 export const INDEX_FROM_LEDGER = Number(process.env.INDEX_FROM_LEDGER ?? 3_976_100);
-export const NETWORK_PASSPHRASE = "Test SDF Network ; September 2015";
+export const NETWORK_PASSPHRASE =
+  process.env.NETWORK_PASSPHRASE ?? "Test SDF Network ; September 2015";
 
 export const CONTRACTS = {
-  token: "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY",
-  verifier: "CC6NG5LWW6QA4YSW2RP7RR2CE5FF6IHAGJEYY4STG6QP563EWSZU5DG7",
-  auditor: "CAEYYDRJPJ73UR3UZWYLSIWW4CHUZILTSENAWOUYXGSR4LPY4HQ23R4L",
+  token: process.env.TOKEN_CONTRACT ?? "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY",
+  verifier:
+    process.env.VERIFIER_CONTRACT ?? "CC6NG5LWW6QA4YSW2RP7RR2CE5FF6IHAGJEYY4STG6QP563EWSZU5DG7",
+  auditor:
+    process.env.AUDITOR_CONTRACT ?? "CAEYYDRJPJ73UR3UZWYLSIWW4CHUZILTSENAWOUYXGSR4LPY4HQ23R4L",
 } as const;
 
-export const EXPLORER = "https://stellar.expert/explorer/testnet/tx";
+export const EXPLORER =
+  process.env.NEXT_PUBLIC_EXPLORER ?? "https://stellar.expert/explorer/testnet/tx";
 
 /**
  * A second archive, independently deployed on a different provider.
