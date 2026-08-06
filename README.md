@@ -44,7 +44,7 @@ const { payload, next } = await proveTransfer({
 // PERSIST `next` BEFORE SUBMITTING. It is the only thing that can spend the result.
 ```
 
-**222 tests · testnet only · not audited — do not hold value with this.**
+**224 tests · testnet only · not audited — do not hold value with this.**
 
 <details>
 <summary><b>Why an archive specification matters</b> — the recovery problem in 60 seconds</summary>
@@ -393,7 +393,7 @@ Not a test count — a list of claims, and what would fail if each were false.
 | A lying archive is caught even when it claims `complete: true` | 8 checks that each adversary is faithful except in the attacked dimension | `apps/indexer/test/tamper.test.js` |
 | The published tarball does what the source does | installs from the registry and runs the whole flow | `scripts/verify-published.mjs`, CI job `published` |
 
-**222 tests** — 145 in the SDK, 49 in conformance, 28 in the archive. `npm test`
+**224 tests** — 147 in the SDK, 49 in conformance, 28 in the archive. `npm test`
 at the root runs all three; CI runs them on every push and weekly against
 upstream.
 
@@ -513,16 +513,6 @@ self-refuting:
   surface, the completeness accounting and the client-side verification are all
   real and independent of the store; persistence is the missing piece, and the
   store interface is the seam it plugs into.
-- **Tag 13 is claimed twice, and the off-chain disclosure layer is why.**
-  `DESIGN_cont.md` §13 assigns `δ_ecdh = 13` and `δ_disc = 16`. The core path
-  uses 13 for `δ_ecdh`, matching the table. The off-chain disclosure layer still
-  uses 13 for `δ_disc`, because this project's own
-  `circuits/disclose_{sender,recipient}.json` absorb 13 and were not rebuilt in
-  the core-circuit redeploy — a client that moved without them would produce
-  disclosure proofs its own circuits reject. Nothing in CI catches it:
-  `disclosure.test.ts` runs a mocked prover. Closing it means recompiling those
-  two circuits. Tags 1–12, 14 and 15 match the table exactly, and the transfer
-  path is unaffected.
 - **Deposits and withdrawals are public by design.** Only transfers hide amounts.
 - **The disclosure receipt is a bearer token** — anyone holding the URL can read
   the disclosed amount.
@@ -549,7 +539,7 @@ self-refuting:
 
 | | |
 |---|---|
-| `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. **145 tests.** |
+| `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. **147 tests.** |
 | `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **49 tests.** |
 | `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler — C2–C4 required, C1 recommended — with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
 | `apps/web` | The demo. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
