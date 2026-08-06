@@ -24,6 +24,12 @@ import { ArrowRight, Check } from "lucide-react";
  * content, through `useStepAction`, when a real event happens: a block explorer
  * opened, a payment settled on testnet, a departure to the adversarial page.
  *
+ * The one exception is the step's own Next button, which marks the step it is
+ * leaving. That is still an act rather than an arrival: the visitor read the
+ * panel and decided to go on. Without it the first step ticks only for someone
+ * who happens to open an explorer link, so the ordinary path through the page
+ * ends with an empty box beside a step that was in fact completed.
+ *
  * Panels stay MOUNTED and are hidden with the `hidden` attribute instead of
  * being conditionally rendered. A visitor pays under tab 2, clicks tab 3 to see
  * what checking involves, and comes back, unmounting would have thrown away
@@ -178,6 +184,12 @@ export function Steps({ steps }: { steps: Step[] }) {
               <div className="mt-8 border-t border-rule pt-6">
                 <button
                   onClick={() => {
+                    // Advancing is itself the action for this step. A visitor who
+                    // read the ledger and chose to move on has done what the step
+                    // asks; requiring them to also open a block explorer to earn
+                    // the tick means the common path leaves it permanently empty,
+                    // which reads as a step that failed rather than one finished.
+                    mark(s.id);
                     go(i + 1);
                     tabs.current[i + 1]?.focus();
                   }}
