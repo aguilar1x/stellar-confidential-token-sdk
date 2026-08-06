@@ -108,15 +108,13 @@ export const DOMAIN = {
    * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`), which takes its value
    * from DESIGN_cont.md §13, which assigns 16.
    *
-   * This stays 13, because the vendored disclosure circuits absorb 13 and a
-   * client that disagreed with its own circuits would produce disclosure
-   * proofs they reject. Moving it means recompiling
-   * `circuits/disclose_{sender,recipient}.json`, which the core-circuit
-   * redeploy did not cover. Recorded in the README's limitations rather than
-   * changed here, where it would break silently: `disclosure.test.ts` runs a
-   * mocked prover, so nothing in CI would catch the mismatch.
+   * This sat at 13 because the disclosure circuits were written against a tag
+   * table that ended at AUDITOR_RECIPIENT = 12, making 13 look like the next
+   * free slot. It is not free — it is `delta_ecdh`, directly above. Both
+   * circuits were recompiled against 16 (`nargo 1.0.0-beta.11`, `bb 0.87.0`)
+   * and their verification keys regenerated, so client and circuit agree.
    */
-  DISCLOSURE: 13n,
+  DISCLOSURE: 16n,
   /**
    * Aggregate-disclosure nonce binding (`delta_disc_bind`). Reserved, unused.
    * DESIGN_cont.md §13 assigns 15; it previously sat at 14 here, which is

@@ -300,3 +300,54 @@ describe("loadDisclosureVk (node-only pinned VK)", () => {
     expect(vk.length).toBeGreaterThan(1000);
   });
 });
+
+/**
+ * The circuit, actually executed — the guard that was missing.
+ *
+ * Every test above stubs `Noir.execute`, so the client's arithmetic is checked
+ * only against itself. That is how `DOMAIN.DISCLOSURE` was moved off the value
+ * the compiled circuits absorb and shipped in 0.1.3 and 0.1.5 with nothing
+ * failing: a mocked prover agrees with whatever it is handed.
+ *
+ * This executes the real ACIR against a witness the SDK built. The U-block
+ * constrains `v_tilde_disc = v_tx + Poseidon2(delta_disc, S_disc.x, nu)`, so if
+ * the client's tag and the circuit's global ever diverge again, the constraint
+ * is unsatisfiable and this fails here rather than in someone's wallet.
+ */
+describe("disclose_recipient — real circuit execution (no mock)", () => {
+  const load = async () => (await import("../proving/artifacts.js")).loadCircuit("disclose_recipient" as never);
+
+  it("executes the compiled circuit against an SDK-built witness", async () => {
+    const { event, holder } = makeEvent(250n);
+    const rk = generateRecipientKeys();
+    const w = buildDiscloseRecipientWitness({
+      keys: holder, event, pR: pointFromJson(rk.pR), nu: randomScalar(),
+    });
+    expect(w.vTx).toBe(250n);
+    await expect(new Noir(await load()).execute(w.inputs as never)).resolves.toBeDefined();
+  }, 120_000);
+
+  it("is not vacuous — an amount sealed under the old tag is rejected", async () => {
+    const { DOMAIN } = await import("../crypto/constants.js");
+    const { poseidonWithDomain } = await import("../crypto/poseidon2.js");
+    const { frMod } = await import("../crypto/field.js");
+    const { ecdh } = await import("../crypto/grumpkin.js");
+
+    const { event, holder } = makeEvent(250n);
+    const rk = generateRecipientKeys();
+    const nu = randomScalar();
+    const rDiscScalar = randomScalar();
+    const w = buildDiscloseRecipientWitness({
+      keys: holder, event, pR: pointFromJson(rk.pR), nu, rDisc: rDiscScalar,
+    });
+
+    // Re-seal under 13 — what this client used before the tag was corrected.
+    const sDiscX = ecdh(rDiscScalar, pointFromJson(rk.pR));
+    const stale = frMod(w.vTx + poseidonWithDomain(13n, [sDiscX, nu]));
+    expect(DOMAIN.DISCLOSURE).toBe(16n);
+    expect(stale).not.toBe(w.vTildeDisc);
+
+    const bad = { ...w.inputs, v_tilde_disc: toHex32(stale) };
+    await expect(new Noir(await load()).execute(bad as never)).rejects.toThrow();
+  }, 120_000);
+});
