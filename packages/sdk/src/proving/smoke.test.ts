@@ -23,7 +23,9 @@ describe("real proving smoke (register)", () => {
   it(
     "generates and self-verifies a real UltraHonk proof",
     async () => {
-      const keys = deriveKeys(SK, ADDR_F);
+/** Any field element: no gate reads acct_f, its presence is the binding. */
+const ACCT_F = 0x00ac_c700_0000_0001n;
+      const keys = deriveKeys(SK, ADDR_F, ACCT_F);
       const witness = buildRegisterWitness(keys);
 
       const prover = new CircuitProver(loadCircuit("register"));
