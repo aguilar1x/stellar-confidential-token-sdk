@@ -94,16 +94,18 @@ const PRIMITIVES = {
     hex(encryptAuditorSenderBalance(f(i.v_new), f(i.s_a_s), f(i.sigma))),
 };
 
-// Documented divergences, reproduced from the DEPLOYED circuits rather than
-// from the current spec. Printed as such, not hidden.
 /**
  * Empty, and it stays empty.
  *
- * This once held `ecdh` and `encrypt_auditor_sender_balance` while the deployed
- * verifier was built from pre-fix circuits. Both were fixed and the contracts
- * redeployed, so all 17 now reproduce, and an allowlist that outlives its
- * reason is worse than none: it is the two entries most likely to regress,
+ * This once held \`ecdh\` and \`encrypt_auditor_sender_balance\` while the
+ * deployed verifier was built from pre-fix circuits. Both were fixed and the
+ * contracts redeployed, so all 17 now reproduce, and an allowlist that outlives
+ * its reason is worse than none: it is the two entries most likely to regress,
  * pre-approved to exit 0 silently. Anything that diverges now is a failure.
+ *
+ * The backslashes are load-bearing: this whole block is inside the template
+ * literal that writes check.mjs, so a bare backtick here ends the template and
+ * the file stops parsing.
  */
 const KNOWN = {};
 
