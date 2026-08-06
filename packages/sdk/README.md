@@ -100,12 +100,15 @@ the surface a browser bundle consumes.
 
 ## Status
 
-Early and in progress. Implemented and tested: the crypto core, §4.7 sampling,
-§5.1 derivation, witness builders, UltraHonk proving with a keccak transcript,
-the offline state engine, and selective disclosure. Not yet present: the §6
-conformance suite, the INDEXER.md client, and seed-based recovery.
+Implemented and tested: the crypto core, §4.7 sampling, §5.1 derivation,
+witness builders, UltraHonk proving with a keccak transcript, the offline state
+engine, selective disclosure, the `INDEXER.md` v1 archive client, and the
+`SDK.md` §6 conformance suite — which reproduces all 17 of OpenZeppelin's
+published fixtures byte-for-byte.
 
-Testnet only. Do not use this to hold value you cannot lose.
+222 tests across the SDK, the conformance suite and the archive.
+
+Testnet only, and not audited. Do not use this to hold value you cannot lose.
 
 ## License
 
