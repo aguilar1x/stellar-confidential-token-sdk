@@ -20,8 +20,24 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const XLM = 10_000_000n;
-const xlm = (s: string | bigint) =>
-  `${(Number(BigInt(s)) / Number(XLM)).toLocaleString("en-US")} XLM`;
+
+/**
+ * Stroops to XLM, exactly.
+ *
+ * The obvious `Number(s) / 1e7` with `toLocaleString` rounds to three decimals,
+ * which is precisely the digit this page argues about: the sabotage tab moves a
+ * balance by ONE stroop, and a reader who watches the displayed number not
+ * change concludes the tamper check is theatre. Integer arithmetic on the
+ * bigint, with trailing zeros trimmed — never a float, so 8 decimals survive.
+ */
+const xlm = (s: string | bigint) => {
+  const v = BigInt(s);
+  const neg = v < 0n;
+  const abs = neg ? -v : v;
+  const whole = (abs / XLM).toLocaleString("en-US");
+  const frac = (abs % XLM).toString().padStart(7, "0").replace(/0+$/, "");
+  return `${neg ? "-" : ""}${whole}${frac ? `.${frac}` : ""} XLM`;
+};
 
 /**
  * Three tabs, in the order a visitor does them: read the sealed ledger, pay
