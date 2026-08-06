@@ -142,7 +142,7 @@ export default async function How() {
             </p>
             <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
               Every example shipped before this one moved money exactly once, which is why
-              nothing had caught it. Not the test suite, not the reference implementation. The
+              nothing had caught it — not the test suite, not a passing proof. The
               eight transactions above are on testnet and regenerable from a clone by{" "}
               <RepoScript path="examples/condominium.mjs" />, and running them is what turned a
               passing client into a failing one.
@@ -151,7 +151,7 @@ export default async function How() {
               That is the argument for a demo with real numbers in it rather than a test suite
               alone — and it is the first of{" "}
               <Link href="/#defects" className="text-accent hover:underline">
-                five defects
+                three defects
               </Link>{" "}
               this work turned up.
             </p>

@@ -247,11 +247,11 @@ async headers() {
     blocks: [
       {
         kind: "p",
-        text: "The suite loads OpenZeppelin's published fixtures at runtime rather than hardcoding them, so a vector added upstream becomes a test case with no code change and a fixture that goes missing fails instead of quietly shrinking the suite. 15 of 17 primitives reproduce byte-for-byte.",
+        text: "The suite loads OpenZeppelin's published fixtures at runtime rather than hardcoding them, so a vector added upstream becomes a test case with no code change and a fixture that goes missing fails instead of quietly shrinking the suite. All 17 primitives reproduce byte-for-byte.",
       },
       {
         kind: "p",
-        text: "Two do not, and both are documented with their security consequence rather than skipped. In each case this client matches the circuits the deployed verifier was compiled from, and the specification has since moved — so the finding is about the deployment, not the client. Each divergence is pinned from both sides: the suite fails if our value drifts, if the spec moves again, or if the two converge.",
+        text: "All 17 converge because the two that once diverged were fixed here, not excused: an ephemeral scalar derived under the wrong domain tag, and an auditor ciphertext built with the wrong sponge. The divergence table is still in the suite, empty and armed — if a value drifts on either side, the suite names which one moved instead of quietly passing.",
       },
       { kind: "code", lang: "bash", code: "npm run conformance" },
     ],

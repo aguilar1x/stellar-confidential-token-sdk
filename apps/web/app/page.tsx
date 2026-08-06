@@ -16,24 +16,14 @@ const FINDINGS = [
     where: "found by the demo",
   },
   {
-    title: "Account secrets drawn at random",
-    body: "§5.1 requires deriving them from a signer root. Drawn randomly, a clean device can never rebuild the account at all — no archive, however faithful, can hand back a key that was never derived.",
-    where: "found in the reference core",
-  },
-  {
-    title: "Rejection sampling cleared 8 bits, not 2",
-    body: "Rejection became impossible and the counter never advanced, so two conformant clients derive different keys from the same seed.",
-    where: "found in the reference core",
-  },
-  {
-    title: "Proof payloads the contract refuses",
-    body: "The published prove functions double-wrapped their envelope. It only fails against a live node, after the proof is generated, so it reads like a proving bug.",
-    where: "found in the reference core",
-  },
-  {
     title: "An ephemeral scalar nothing constrains",
     body: "r_e was derived under the wrong domain tag. No circuit constrains it, so every proof still verified — the damage only shows when a second client cannot recompute it and the transfer stops being disclosable.",
     where: "found by the conformance suite",
+  },
+  {
+    title: "Fixtures the specification asks for, that nobody published",
+    body: "SDK.md §6.3 names three derivations needing cross-language coverage. One existed. The other two are generated here, in OpenZeppelin's own testdata format.",
+    where: "a gap, not a bug",
   },
 ];
 
@@ -224,7 +214,7 @@ export default async function Landing() {
           <Reveal>
             <p className="eyebrow">What conformance actually caught</p>
             <h2 className="mt-5 max-w-2xl text-[1.7rem] font-bold leading-tight tracking-[-0.02em] sm:text-4xl">
-              Five defects, every one silent until real money moved.
+              Three defects, every one ours, every one silent until real money moved.
             </h2>
             <p className="mt-5 max-w-xl text-[0.94rem] leading-relaxed text-ink-soft">
               None of these throw. Each produces a wallet that looks fine and is wrong — which
@@ -260,7 +250,7 @@ export default async function Landing() {
             </h2>
             <p className="mt-5 text-[0.94rem] leading-relaxed text-ink-soft">
               Same signer, same key, on any device, forever. That is what makes an account
-              recoverable — and it is the obligation the reference implementation got wrong.
+              recoverable — and it is the obligation §5.1 exists to make enforceable.
             </p>
             <code className="mt-7 inline-block rounded-lg border border-rule bg-paper-sunk px-4 py-2.5 font-mono text-[0.82rem]">
               npm i stellar-confidential-token-sdk
