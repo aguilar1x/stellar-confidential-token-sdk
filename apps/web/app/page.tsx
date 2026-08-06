@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck, ShieldAlert, Github, Package } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShieldAlert } from "lucide-react";
 
 import { Reveal, StaggerGroup, StaggerItem } from "@/components/reveal";
 import { HexField } from "@/components/hex-field";
@@ -52,14 +52,17 @@ export default async function Landing() {
                       Read together they state the whole claim, which a symmetric
                       pair like nobody/everybody does not. Colouring a whole line
                       only makes it louder. */}
-                  An <span className="text-accent-lift">amount</span> nobody can read.
-                  <br />A total <span className="text-accent-lift">everybody</span> can audit.
+                  An <span className="text-accent-lift">amount</span> nobody can
+                  read.
+                  <br />A total{" "}
+                  <span className="text-accent-lift">everybody</span> can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
-                  Three things have to hold: keys that derive identically on every
-                  device, balances rebuilt from an archive you did not write, and proofs
-                  the chain accepts. All three fail silently, as money that will not move.
-                  This ships all three, and times every stage in front of you.
+                  Three things have to hold: keys that derive identically on
+                  every device, balances rebuilt from an archive you did not
+                  write, and proofs the chain accepts. All three fail silently,
+                  as money that will not move. This ships all three, and times
+                  every stage in front of you.
                 </p>
               </Reveal>
 
@@ -113,7 +116,9 @@ export default async function Landing() {
                     ) : (
                       <ShieldAlert className="size-3.5" />
                     )}
-                    {hero.verified ? "verified against chain" : "chain unreachable"}
+                    {hero.verified
+                      ? "verified against chain"
+                      : "chain unreachable"}
                   </span>
                 </figcaption>
 
@@ -137,7 +142,10 @@ export default async function Landing() {
                 </div>
               </figure>
 
-              <Reveal delay={0.18} className="mt-7 flex items-center justify-end gap-3.5">
+              <Reveal
+                delay={0.18}
+                className="mt-7 flex items-center justify-end gap-3.5"
+              >
                 <span className="text-[0.82rem] text-white/50">Built by</span>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -156,8 +164,8 @@ export default async function Landing() {
         <Reveal>
           <p className="eyebrow">Two guarantees, and they need each other</p>
           <h2 className="mt-5 max-w-2xl text-[1.7rem] font-bold leading-tight tracking-[-0.02em] sm:text-4xl">
-            Privacy is worthless if the balance is wrong. Correctness is worthless if it costs
-            you privacy.
+            Privacy is worthless if the balance is wrong. Correctness is
+            worthless if it costs you privacy.
           </h2>
         </Reveal>
 
@@ -174,9 +182,10 @@ export default async function Landing() {
                 Eight neighbours, eight amounts, one auditable total
               </h3>
               <p className="mt-3 flex-1 text-[0.94rem] leading-relaxed text-ink-soft">
-                Commitments add. Each payment contributes to the building&rsquo;s balance
-                without the chain ever holding a commitment to a single one of them. The
-                treasurer opens the total; no line item is ever written.
+                Commitments add. Each payment contributes to the
+                building&rsquo;s balance without the chain ever holding a
+                commitment to a single one of them. The treasurer opens the
+                total; no line item is ever written.
               </p>
               <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                 See the audit
@@ -197,9 +206,10 @@ export default async function Landing() {
                 Only if the history you replay is the real one
               </h3>
               <p className="mt-3 flex-1 text-[0.94rem] leading-relaxed text-ink-soft">
-                Rebuilding a wallet means replaying events from an archive it did not write.
-                Corrupt one yourself and watch the client refuse it, including the archives
-                that claim to be complete while quietly dropping an event.
+                Rebuilding a wallet means replaying events from an archive it
+                did not write. Corrupt one yourself and watch the client refuse
+                it, including the archives that claim to be complete while
+                quietly dropping an event.
               </p>
               <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-refused">
                 Try to fool it
@@ -213,16 +223,21 @@ export default async function Landing() {
       {/* ── Findings ─────────────────────────────────────────────────────── */}
       {/* `scroll-mt` keeps the heading clear of the fixed nav pill when /how
           links straight here. */}
-      <section id="defects" className="scroll-mt-24 border-y border-rule bg-paper-sunk">
+      <section
+        id="defects"
+        className="scroll-mt-24 border-y border-rule bg-paper-sunk"
+      >
         <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
           <Reveal>
             <p className="eyebrow">What conformance actually caught</p>
             <h2 className="mt-5 max-w-2xl text-[1.7rem] font-bold leading-tight tracking-[-0.02em] sm:text-4xl">
-              Three defects, every one ours, every one silent until real money moved.
+              Three defects, every one ours, every one silent until real money
+              moved.
             </h2>
             <p className="mt-5 max-w-xl text-[0.94rem] leading-relaxed text-ink-soft">
-              None of these throw. Each produces a wallet that looks fine and is wrong, which
-              is the whole reason OpenZeppelin wrote the obligations down.
+              None of these throw. Each produces a wallet that looks fine and is
+              wrong, which is the whole reason OpenZeppelin wrote the
+              obligations down.
             </p>
           </Reveal>
 
@@ -236,7 +251,9 @@ export default async function Landing() {
                       {f.where}
                     </span>
                   </div>
-                  <p className="text-[0.94rem] leading-relaxed text-ink-soft">{f.body}</p>
+                  <p className="text-[0.94rem] leading-relaxed text-ink-soft">
+                    {f.body}
+                  </p>
                 </div>
               </StaggerItem>
             ))}
@@ -253,8 +270,9 @@ export default async function Landing() {
               The secret is derived, never stored.
             </h2>
             <p className="mt-5 text-[0.94rem] leading-relaxed text-ink-soft">
-              Same signer, same key, on any device, forever. That is what makes an account
-              recoverable, and it is the obligation §5.1 exists to make enforceable.
+              Same signer, same key, on any device, forever. That is what makes
+              an account recoverable, and it is the obligation §5.1 exists to
+              make enforceable.
             </p>
             <code className="mt-7 inline-block rounded-lg border border-rule bg-paper-sunk px-4 py-2.5 font-mono text-[0.82rem]">
               npm i stellar-confidential-token-sdk
@@ -277,19 +295,25 @@ export default async function Landing() {
                     under the 4.5:1 that small text needs to be legible to
                     everyone. /55 clears it and still reads as subordinate. */}
                 <span className="text-white/55">
-                  {"// The account secret comes from a signature, not from disk."}
+                  {
+                    "// The account secret comes from a signature, not from disk."
+                  }
                 </span>
                 {"\n"}
                 <span className="text-indigo-300">const</span> root ={" "}
-                <span className="text-indigo-300">await</span> wallet.signMessage({"\n  "}
+                <span className="text-indigo-300">await</span>{" "}
+                wallet.signMessage({"\n  "}
                 skSigningMessage(CONTRACT, ACCOUNT),{"\n"});{"\n"}
-                <span className="text-indigo-300">const</span> {"{ sk, addrF }"} ={" "}
-                deriveSk(root, CONTRACT, ACCOUNT);{"\n\n"}
-                <span className="text-indigo-300">const</span> {"{ payload, next }"} ={" "}
-                <span className="text-indigo-300">await</span> proveTransfer({"{"}
-                {"\n  "}keys: deriveKeys(sk, addrF),{"\n  "}v: spendable.v, r: spendable.r,
-                {"\n  "}amount: <span className="text-emerald-300">750n</span>,{"\n  "}pvkB:
-                recipientViewingKey,{"\n"}
+                <span className="text-indigo-300">const</span> {"{ sk, addrF }"}{" "}
+                = deriveSk(root, CONTRACT, ACCOUNT);{"\n\n"}
+                <span className="text-indigo-300">const</span>{" "}
+                {"{ payload, next }"} ={" "}
+                <span className="text-indigo-300">await</span> proveTransfer(
+                {"{"}
+                {"\n  "}keys: deriveKeys(sk, addrF),{"\n  "}v: spendable.v, r:
+                spendable.r,
+                {"\n  "}amount: <span className="text-emerald-300">750n</span>,
+                {"\n  "}pvkB: recipientViewingKey,{"\n"}
                 {"}"});{"\n\n"}
                 <span className="text-white/40">
                   {"// Persist `next` BEFORE submitting. It is the only"}
@@ -303,31 +327,6 @@ export default async function Landing() {
           </Reveal>
         </div>
       </section>
-
-      <footer className="border-t border-rule">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-10 text-sm text-ink-soft">
-          <p className="max-w-lg">
-            Apache-2.0 · testnet only, not audited · an independent implementation, not
-            endorsed by OpenZeppelin
-          </p>
-          <div className="flex gap-5">
-            <a
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-ink"
-              href="https://github.com/aguilar1x/stellar-confidential-token-sdk"
-            >
-              <Github className="size-4" />
-              GitHub
-            </a>
-            <a
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-ink"
-              href="https://www.npmjs.com/package/stellar-confidential-token-sdk"
-            >
-              <Package className="size-4" />
-              npm
-            </a>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }

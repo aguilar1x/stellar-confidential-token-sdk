@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 
 import { Nav } from "@/components/nav";
+import { Footer } from "@/components/footer";
 import "./globals.css";
 
 const sans = Plus_Jakarta_Sans({
@@ -31,12 +32,17 @@ export const metadata: Metadata = {
     "An amount nobody can read, a total everybody can audit, and a client that refuses an archive that lies about either.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en" className={`${sans.variable} ${mono.variable}`}>
       <body className="antialiased">
         <Nav />
         {children}
+        <Footer />
       </body>
     </html>
   );

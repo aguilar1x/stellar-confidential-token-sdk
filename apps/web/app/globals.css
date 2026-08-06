@@ -107,6 +107,17 @@ body {
   color: var(--accent);
 }
 
+/* Section labels inside the footer. Same device as .eyebrow but a step quieter:
+   the footer is the least important thing on the page and its labels should not
+   compete with the headings above them. */
+.footer-label {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
 /**
  * The hero's backdrop is not a photograph. It is the subject's own material.
  * Rows of real commitment hex, set faintly and faded out, so the thing the page
