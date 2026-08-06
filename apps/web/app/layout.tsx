@@ -24,7 +24,7 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Confidential Tokens — the client layer",
+    default: "Confidential Tokens: the client layer",
     template: "%s · stellar-confidential-token-sdk",
   },
   description:

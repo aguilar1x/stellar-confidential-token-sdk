@@ -28,7 +28,7 @@ export const revalidate = 0;
  * that has to land in thirty seconds cannot also be the page that explains
  * elliptic curves, so the explanation lives here and /demo links to it.
  *
- * Nothing was diluted on the way over — same live audit, same real
+ * Nothing was diluted on the way over: same live audit, same real
  * transactions, same numbers read off the chain at request time.
  */
 export default async function How() {
@@ -88,7 +88,7 @@ export default async function How() {
             <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
               The chain holds one commitment for everything the building received. Opening
               it to the published total and recomputing the commitment gives back the point
-              the chain already stores — which it could not, had the building overstated or
+              the chain already stores. It could not, had the building overstated or
               understated by a single stroop.
             </p>
 
@@ -120,7 +120,7 @@ export default async function How() {
        * The bug, directly after the audit that produced it.
        *
        * It was last on the page and set one type size below every other
-       * heading, with a shell command as the final word — the exact footnote
+       * heading, with a shell command as the final word, the exact footnote
        * treatment it had been promoted out of once already. It is the strongest
        * claim on the site: the demo caught a defect a test suite had not, in
        * code that had already shipped. So it sits where the red came from, at
@@ -136,20 +136,20 @@ export default async function How() {
             </h2>
             <p className="mt-4 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
               This audit came out red. The total was right and the commitment was wrong,
-              because the client was adding blinding factors in the wrong field — and with a
-              single payment that reconstructs correctly either way. It took eight neighbours
-              to show up.
+              because the client was adding blinding factors in the wrong field. With a
+              single payment that reconstructs correctly either way, so it took eight
+              neighbours to show up.
             </p>
             <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
               Every example shipped before this one moved money exactly once, which is why
-              nothing had caught it — not the test suite, not a passing proof. The
+              nothing had caught it. Not the test suite, not a passing proof. The
               eight transactions above are on testnet and regenerable from a clone by{" "}
               <RepoScript path="examples/condominium.mjs" />, and running them is what turned a
               passing client into a failing one.
             </p>
             <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
               That is the argument for a demo with real numbers in it rather than a test suite
-              alone — and it is the first of{" "}
+              alone, and it is the first of{" "}
               <Link href="/#defects" className="text-accent hover:underline">
                 three defects
               </Link>{" "}
@@ -159,7 +159,7 @@ export default async function How() {
         </Reveal>
       )}
 
-      {/* Why it works — shown, not asserted. */}
+      {/* Why it works, shown rather than asserted. */}
       <StaggerGroup className="mt-16 border-t border-rule pt-12">
         <StaggerItem>
           <p className="eyebrow">Why this is possible</p>
@@ -171,7 +171,7 @@ export default async function How() {
             A commitment to a value <code className="text-ink">v</code> with blinding{" "}
             <code className="text-ink">r</code> is the curve point{" "}
             <code className="text-ink">v·G + r·H</code>. Add two and you get{" "}
-            <code className="text-ink">(v₁+v₂)·G + (r₁+r₂)·H</code> — a commitment to the
+            <code className="text-ink">(v₁+v₂)·G + (r₁+r₂)·H</code>, a commitment to the
             sum, containing nothing that identifies either term. So eight payments land in the
             building&rsquo;s balance and the chain ends up holding a commitment to their total
             without ever having held one to any single payment.
@@ -214,7 +214,7 @@ export default async function How() {
         <StaggerItem>
           <p className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-soft">
             A plain ledger makes you choose between an auditable total and private line items.
-            This does not — but only while the history the wallet replays is the real one.
+            This does not, but only while the history the wallet replays is the real one.
           </p>
         </StaggerItem>
       </StaggerGroup>

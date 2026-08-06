@@ -103,7 +103,7 @@ describe("§6.1 · the suite itself must be non-vacuous", () => {
     expect(fixtures.length).toBeGreaterThan(0);
   });
 
-  it("covers every fixture — an unmapped primitive is a conformance GAP", () => {
+  it("covers every fixture: an unmapped primitive is a conformance GAP", () => {
     // Silently skipping an unknown primitive would let the badge stay green
     // while coverage quietly shrank. Naming the gap is the whole point.
     const unmapped = fixtures.map((x) => x.name).filter((n) => !PRIMITIVES[n]);

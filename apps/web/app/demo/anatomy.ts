@@ -92,12 +92,12 @@ export async function firstPaymentAnatomy(): Promise<PaymentAnatomy> {
       onChain: [
         {
           name: "from",
-          note: "who paid — never hidden",
+          note: "who paid, never hidden",
           value: `${ev.from.slice(0, 8)}…${ev.from.slice(-6)}`,
         },
         {
           name: "to",
-          note: "who was paid — never hidden",
+          note: "who was paid, never hidden",
           value: `${ev.to.slice(0, 8)}…${ev.to.slice(-6)}`,
         },
         {
@@ -117,7 +117,7 @@ export async function firstPaymentAnatomy(): Promise<PaymentAnatomy> {
         },
         {
           name: "v_aud_r",
-          note: "the same amount, sealed to the auditor instead — regulators get a key, not an exemption",
+          note: "the same amount, sealed to the auditor instead. Regulators get a key, not an exemption",
           value: hex(ev.vAudR),
         },
       ],

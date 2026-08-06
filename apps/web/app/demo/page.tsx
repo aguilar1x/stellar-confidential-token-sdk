@@ -28,7 +28,7 @@ const XLM = 10_000_000n;
  * which is precisely the digit this page argues about: the sabotage tab moves a
  * balance by ONE stroop, and a reader who watches the displayed number not
  * change concludes the tamper check is theatre. Integer arithmetic on the
- * bigint, with trailing zeros trimmed — never a float, so 8 decimals survive.
+ * bigint, with trailing zeros trimmed. Never a float, so 8 decimals survive.
  */
 const xlm = (s: string | bigint) => {
   const v = BigInt(s);
@@ -44,13 +44,13 @@ const xlm = (s: string | bigint) => {
  * into it, check the result themselves.
  *
  * This page used to also carry the payment anatomy, the raw commitment hex, the
- * Pedersen identity and the tamper console — eight sections, with the button
+ * Pedersen identity and the tamper console: eight sections, with the button
  * that pays sitting sixth. A judge with four minutes met elliptic curves before
  * they met the product. All of that still exists and none of it was softened;
  * the explanation moved to /how and the adversarial console to /verify, which
  * is the page named after it.
  *
- * What is left is the claim, the act, and the check — and as tabs rather than
+ * What is left is the claim, the act, and the check, as tabs rather than
  * scroll, so all three are visible as a set from the first screen instead of
  * being discovered on the way down.
  */
@@ -68,7 +68,7 @@ export default async function Demo() {
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
           Eight units paid this month. A studio does not pay what the penthouse pays, and
-          none of those amounts exist on-chain — yet anyone can check the building collected
+          none of those amounts exist on-chain, yet anyone can check the building collected
           exactly what it says it did. Three steps, about a minute, no wallet.
         </p>
       </Reveal>
@@ -80,7 +80,7 @@ export default async function Demo() {
               id: "ledger",
               title: "Read the ledger",
               blurb:
-                "Every row is a real transaction on testnet. Every amount is sealed — published nowhere, held only inside a commitment the payer and the building can open. Open one on the explorer and look for the amount.",
+                "Every row is a real transaction on testnet. Every amount is sealed: published nowhere, held only inside a commitment the payer and the building can open. Open one on the explorer and look for the amount.",
               content: <Ledger audit={audit} />,
             },
             {
@@ -99,7 +99,7 @@ export default async function Demo() {
               id: "check",
               title: "Check it yourself",
               blurb:
-                "Everything so far is something we did and are reporting. The next page is yours: it recomputes the commitment in your own browser from numbers you can edit, and points the client at five archives — three of which lie about this account's history.",
+                "Everything so far is something we did and are reporting. The next page is yours: it recomputes the commitment in your own browser from numbers you can edit, and points the client at five archives, three of which lie about this account's history.",
               content: (
                 <div className="flex flex-wrap gap-3">
                   <StepLink href="/verify">
@@ -119,7 +119,7 @@ export default async function Demo() {
       <Reveal>
         <p className="mt-16 border-t border-rule pt-8 text-xs leading-relaxed text-ink-soft">
           Eight real transactions on Stellar testnet, regenerated from a clone of the
-          repository by <RepoScript path="examples/condominium.mjs" /> — a fixture script, not
+          repository by <RepoScript path="examples/condominium.mjs" />, a fixture script, not
           part of the published package. Testnet only, not audited.
         </p>
       </Reveal>
@@ -133,7 +133,7 @@ export default async function Demo() {
  * A reader watching a "Pay" button on a page about confidential money forms one
  * objection, in this order: whose money is that? Answering it beside the button
  * costs a sentence. It was a clause at the foot of the page before, past the
- * point most readers stop — and phrased as why we did not add wallet-connect,
+ * point most readers stop, and phrased as why we did not add wallet-connect,
  * which is an excuse where a fact belongs.
  *
  * So: state it plainly, and hand over the path that does use their own key,
@@ -143,8 +143,8 @@ function WhoseKey() {
   return (
     <p className="mt-4 text-xs leading-relaxed text-ink-soft">
       <strong className="font-semibold text-ink">The key that signs is ours, not yours.</strong>{" "}
-      This pays from a guest key held on the server, published in the repository on purpose —
-      the transaction and the proof are real, the money is not yours. Paying confidentially
+      This pays from a guest key held on the server, published in the repository on purpose.
+      The transaction and the proof are real, the money is not yours. Paying confidentially
       requires an account already registered, funded and merged, so a freshly connected wallet
       could not do it in one click anyway. To run the whole thing from a key you generate,{" "}
       <RepoScript path="examples/live-payment.mjs" /> in the repository funds a new keypair
@@ -158,7 +158,7 @@ function WhoseKey() {
  *
  * The point of the table is the column that has nothing in it. The verdict is a
  * sentence rather than the two commitment points it rests on, because a reader
- * who wants to see those bytes has a page for it — and a reader who does not
+ * who wants to see those bytes has a page for it, and a reader who does not
  * should still leave knowing what was checked.
  */
 function Ledger({ audit }: { audit: AuditResult }) {
@@ -166,7 +166,7 @@ function Ledger({ audit }: { audit: AuditResult }) {
     <>
       {/* The fixture's units are known at build time; the reader's own payments
           are not, so the table itself is a client component that folds them in
-          after mount. Only what it needs crosses the boundary — no `dues`,
+          after mount. Only what it needs crosses the boundary: no `dues`,
           which is sealed and has no business in a browser bundle. */}
       <LedgerTable
         units={BUILDING.units.map((u) => ({ id: u.id, label: u.label, tx: u.tx ?? null }))}
@@ -174,7 +174,7 @@ function Ledger({ audit }: { audit: AuditResult }) {
         fromUnits={audit.fromUnits}
       />
 
-      {/* Marked with a rule, not a wash — same device as the notes in the docs.
+      {/* Marked with a rule, not a wash, the same device as the notes in the docs.
           The verdict is carried by the badge and the sentence; a green
           rectangle behind them only makes both harder to read. */}
       <div
@@ -200,7 +200,7 @@ function Ledger({ audit }: { audit: AuditResult }) {
           ) : audit.ok ? (
             <>
               The commitment the chain is holding opens to exactly{" "}
-              <strong className="font-semibold">{xlm(audit.published)}</strong> — it could not,
+              <strong className="font-semibold">{xlm(audit.published)}</strong>. It could not,
               had the building overstated or understated by a single stroop.
             </>
           ) : (

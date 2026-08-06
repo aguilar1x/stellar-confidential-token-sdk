@@ -115,7 +115,7 @@ export const ARCHIVES = [
   {
     id: "lagging",
     title: "Lagging",
-    blurb: "Has a real gap — and says so. It does not claim to be complete.",
+    blurb: "Has a real gap, and says so. It does not claim to be complete.",
   },
   {
     id: "omitting",
@@ -131,7 +131,7 @@ export const ARCHIVES = [
     id: "independent",
     title: "Independent (Cloudflare)",
     blurb:
-      "A second archive, deployed separately on another provider — what §7 means by two independent endpoints.",
+      "A second archive, deployed separately on another provider, which is what §7 means by two independent endpoints.",
   },
 ] as const;
 

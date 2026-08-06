@@ -15,7 +15,7 @@ import { ReceiptSlot } from "./receipt-slot";
 export const metadata: Metadata = {
   title: "Break the archive",
   description:
-    "Change the total by one stroop and watch the commitment refuse it. Then point the client at five archives — three of them lie.",
+    "Change the total by one stroop and watch the commitment refuse it. Then point the client at five archives, three of them lie.",
 };
 
 export const dynamic = "force-dynamic";
@@ -72,7 +72,7 @@ export default async function Verify({
         </h1>
         <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-soft">
           Two attacks, both yours to run. Lie about the total and watch the commitment
-          refuse it — computed in your browser, nothing sent anywhere. Then lie to the
+          refuse it, computed in your browser, nothing sent anywhere. Then lie to the
           wallet about its own history, and see which archives it believes.
         </p>
       </Reveal>
@@ -103,7 +103,7 @@ export default async function Verify({
               Overstate the books by one stroop.
             </h2>
             <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
-              A ten-millionth of an XLM — the smallest amount that exists. The building&rsquo;s
+              A ten-millionth of an XLM, the smallest amount that exists. The building&rsquo;s
               real total and blinding are below, read off the chain at this page load.
             </p>
             <div className="mt-8">
@@ -128,7 +128,7 @@ export default async function Verify({
           <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
             Reinstalling a wallet means replaying history from an archive it did not write.
             Below, one real account&rsquo;s history is served five ways. Three of the archives
-            are dishonest — two of them while insisting their history is complete.
+            are dishonest, two of them while insisting their history is complete.
           </p>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-soft">
             Nothing here is staged. Each button runs the published client against a live
@@ -149,7 +149,7 @@ export default async function Verify({
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
               An honest archive with a gap says so, and the client refuses the range before
-              replaying a single event. A partial history does not produce a partial balance —
+              replaying a single event. A partial history does not produce a partial balance,
               it produces a confident, wrong one.
             </p>
           </div>
@@ -158,7 +158,7 @@ export default async function Verify({
               §7 · the chain settles it
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-              A dishonest archive claims completeness, so C3 cannot help — a flag is only as
+              A dishonest archive claims completeness, so C3 cannot help, because a flag is only as
               good as whoever asserts it. The client re-derives its openings and checks them
               against the commitments on-chain. One of these is wrong by a single stroop, and
               is refused anyway.
@@ -175,7 +175,7 @@ export default async function Verify({
           </h2>
           <p className="mt-3 max-w-xl text-[0.94rem] leading-relaxed text-ink-soft">
             A building collecting its dues. Eight neighbours, eight different amounts, none of
-            them on-chain — and a total every resident can audit. That guarantee is what a
+            them on-chain, and a total every resident can audit. That guarantee is what a
             lying archive takes away.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">

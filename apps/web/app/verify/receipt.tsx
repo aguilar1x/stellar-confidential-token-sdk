@@ -161,7 +161,7 @@ export function Receipt({
             {receipts.length > 1 ? "you paid, in total" : "you paid"}
           </dt>
           <dd className="mt-1.5 font-mono text-base font-semibold">
-            {amount !== null ? `${asXlm(amount)} XLM` : "—"}
+            {amount !== null ? `${asXlm(amount)} XLM` : "not read"}
           </dd>
         </div>
         <div>
@@ -169,7 +169,7 @@ export function Receipt({
             the building&rsquo;s total now
           </dt>
           <dd className="mt-1.5 font-mono text-base font-semibold">
-            {/^\d+$/.test(total) ? `${asXlm(BigInt(total))} XLM` : "—"}
+            {/^\d+$/.test(total) ? `${asXlm(BigInt(total))} XLM` : "not read"}
           </dd>
         </div>
         <div>
@@ -177,7 +177,7 @@ export function Receipt({
             recomputed in
           </dt>
           <dd className="mt-1.5 font-mono text-base font-semibold">
-            {recomputed ? `${recomputed.ms.toFixed(1)} ms` : "—"}
+            {recomputed ? `${recomputed.ms.toFixed(1)} ms` : "not read"}
           </dd>
         </div>
       </dl>
@@ -192,7 +192,7 @@ export function Receipt({
               {receipts.length - i}
             </span>
             <span className="font-mono text-sm font-semibold">
-              {/^\d+$/.test(r.amountStroops) ? `${asXlm(BigInt(r.amountStroops))} XLM` : "—"}
+              {/^\d+$/.test(r.amountStroops) ? `${asXlm(BigInt(r.amountStroops))} XLM` : "not read"}
             </span>
             <a
               href={`${EXPLORER}/${r.tx}`}
@@ -218,7 +218,7 @@ export function Receipt({
             <>
               <strong className="font-semibold text-verified">It opens.</strong> Your browser
               recomputed <code className="font-mono text-[0.85em]">commit(v, r)</code> with the
-              published SDK and got back, byte for byte, the point the chain is holding — a
+              published SDK and got back, byte for byte, the point the chain is holding. That is a
               total that now includes your payment. No server was asked.
             </>
           ) : (
@@ -235,7 +235,7 @@ export function Receipt({
         <p className="mt-3 text-sm leading-relaxed text-ink-soft">
           <strong className="font-semibold text-ink">What this does not prove.</strong> The
           check is on the building&rsquo;s total, not on your transaction. It establishes that
-          the published total is the one the chain committed to — not, by itself, which
+          the published total is the one the chain committed to, though not, by itself, which
           payments compose it. Other visitors can pay while you read, so the total may have
           moved again since {receipts.length > 1 ? "your last receipt" : "your receipt"}. The
           amounts themselves are in none of it: open any transaction above and look for one.

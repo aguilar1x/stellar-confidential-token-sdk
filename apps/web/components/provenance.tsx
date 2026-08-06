@@ -40,7 +40,7 @@ export function Provenance({
       </p>
       <p className="mt-2 text-[0.82rem] leading-relaxed text-ink-soft">
         This page read {what} off the chain and handed it to your browser. Do not take that on
-        trust either — the account and the contract are public, so read the balance yourself
+        trust either: the account and the contract are public, so read the balance yourself
         from any RPC and compare it to the commitment above.
       </p>
       <dl className="mt-3 grid gap-2 sm:grid-cols-3">

@@ -150,7 +150,7 @@ export async function runPayment(amountStroops: string, emit: Emit): Promise<voi
       await emit({
         type: "error",
         error:
-          "The demo wallet has run out of testnet funds. Everything else on this page still works — re-run examples/setup-guest.mjs to top it up.",
+          "The demo wallet has run out of testnet funds. Everything else on this page still works. Re-run examples/setup-guest.mjs to top it up.",
       });
       return;
     }

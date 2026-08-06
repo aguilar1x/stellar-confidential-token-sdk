@@ -260,13 +260,13 @@ export function PayButton() {
             Settled in {fmtMs(total)}. The total above has already moved.
           </p>
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            The amount is not in that transaction — only a commitment to it is, inside{" "}
+            The amount is not in that transaction. Only a commitment to it is, inside{" "}
             {done.payloadBytes.toLocaleString("en-US")} bytes of proof. Every other
             payment stayed sealed, and the audit still opens.
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-3">
             {/* The receipt travels to /verify, so the visitor can re-open the
-                commitment their own payment just moved — without a wallet, and
+                commitment their own payment just moved, without a wallet, and
                 without taking this box's word for any of it. */}
             <Link
               href={`/verify?receipt=${done.tx}&amount=${done.amountStroops}`}

@@ -127,7 +127,7 @@ export function Tamper({
           <div className="max-w-lg">
             <h3 className="text-lg font-bold tracking-tight">Now try to lie about it</h3>
             <p className="mt-2 text-[0.94rem] leading-relaxed text-ink-soft">
-              Change the total by one stroop — a ten-millionth of an XLM, the smallest
+              Change the total by one stroop, a ten-millionth of an XLM, the smallest
               amount that exists. Your browser recomputes{" "}
               <code className="font-mono text-[0.85em]">commit(v, r)</code> with the
               published SDK and compares it to what the chain is holding. Nothing is sent
@@ -223,7 +223,7 @@ export function Tamper({
             {matches ? (
               <span className="text-ink-soft">
                 Byte-for-byte identical. The commitment opens to this total, so the
-                building&rsquo;s books are honest — and you did not have to believe us to
+                building&rsquo;s books are honest, and you did not have to believe us to
                 find that out. Recomputed in {result.ms.toFixed(1)} ms.
               </span>
             ) : (
@@ -231,7 +231,7 @@ export function Tamper({
                 <strong className="font-semibold text-refused">Refused.</strong>{" "}
                 {bytesDiffer} of {onchainCommitment.length / 2} bytes differ. That is the
                 point worth noticing: a Pedersen commitment has no locality, so the
-                smallest change that exists — one stroop — moves almost the entire point.
+                smallest change that exists, one stroop, moves almost the entire point.
                 There is no way to be nearly right, and nothing to negotiate with.
               </span>
             )}
@@ -305,7 +305,7 @@ function Hex({
       </span>
       <p className="mt-1.5 break-all font-mono text-[0.74rem] leading-relaxed">
         {pairs.length === 0 ? (
-          <span className="text-ink-soft">—</span>
+          <span className="text-ink-soft">none</span>
         ) : (
           pairs.map((p, i) => {
             const moved = compareTo ? compareTo.slice(i * 2, i * 2 + 2) !== p : false;

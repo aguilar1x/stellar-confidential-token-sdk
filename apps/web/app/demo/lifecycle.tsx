@@ -22,7 +22,7 @@ const STEPS = [
   {
     key: "register",
     title: "Register",
-    body: "The unit publishes its spending and viewing public keys. Its secret was derived from a signature and stored nowhere — which is what lets the account be rebuilt later on a clean device.",
+    body: "The unit publishes its spending and viewing public keys. Its secret was derived from a signature and stored nowhere, which is what lets the account be rebuilt later on a clean device.",
     visible: true,
     reveals: "that the account exists",
   },
@@ -43,7 +43,7 @@ const STEPS = [
   {
     key: "transfer",
     title: "Transfer",
-    body: "The dues are paid. A zero-knowledge proof asserts the sender had enough and that the arithmetic balances — without the amount appearing anywhere in the transaction.",
+    body: "The dues are paid. A zero-knowledge proof asserts the sender had enough and that the arithmetic balances, without the amount appearing anywhere in the transaction.",
     visible: false,
     reveals: "who paid whom, and nothing else",
   },

@@ -2,7 +2,7 @@
 
 # stellar-confidential-token-sdk
 
-**A TypeScript client for [OpenZeppelin Confidential Tokens](https://github.com/OpenZeppelin/stellar-contracts) on Stellar — and the verifiable archive it replays history from.**
+**A TypeScript client for [OpenZeppelin Confidential Tokens](https://github.com/OpenZeppelin/stellar-contracts) on Stellar, and the verifiable archive it replays history from.**
 
 [![CI](https://github.com/aguilar1x/stellar-confidential-token-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/aguilar1x/stellar-confidential-token-sdk/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/stellar-confidential-token-sdk)](https://www.npmjs.com/package/stellar-confidential-token-sdk)
@@ -17,7 +17,7 @@
 
 </div>
 
-Building a conformant client turned up **three defects in this project** — a
+Building a conformant client turned up **three defects in this project**. A
 blinding-factor bug that a building collecting its dues caught in 33 real
 transactions, a domain tag no circuit constrains so nothing could fail on it,
 and two missing fixtures the specification asks for. All three are closed, and
@@ -31,7 +31,7 @@ npm install stellar-confidential-token-sdk
 import { deriveSk, deriveKeys, skSigningMessage } from "stellar-confidential-token-sdk";
 import { proveTransfer } from "stellar-confidential-token-sdk/node";
 
-// The account secret is DERIVED, never stored — same signer, same key, forever.
+// The account secret is DERIVED, never stored. Same signer, same key, forever.
 const root = await wallet.signMessage(skSigningMessage(CONTRACT, ACCOUNT));
 const { sk, addrF } = deriveSk(root, CONTRACT, ACCOUNT);       // SDK.md §5.1
 
@@ -44,13 +44,13 @@ const { payload, next } = await proveTransfer({
 // PERSIST `next` BEFORE SUBMITTING. It is the only thing that can spend the result.
 ```
 
-**224 tests · testnet only · not audited — do not hold value with this.**
+**224 tests · testnet only · not audited. Do not hold value with this.**
 
 <details>
-<summary><b>Why an archive specification matters</b> — the recovery problem in 60 seconds</summary>
+<summary><b>Why an archive specification matters</b>: the recovery problem in 60 seconds</summary>
 
 The chain stores *commitments*; only the wallet holds the *openings* that can
-spend them. So the wallet is load-bearing in a way most wallets are not — an
+spend them. So the wallet is load-bearing in a way most wallets are not. An
 opening that is lost, or derived slightly differently on a second device, is
 money that cannot be moved.
 
@@ -58,11 +58,11 @@ Recovering that state past the RPC's seven-day window means replaying history
 from an archive. An audit of those contracts flagged that the specification for
 such an archive did not exist ([finding N-08, issue #787][issue]: recovery was
 normative while `INDEXER.md` was still "to be added", so implementations could
-diverge with nothing to implement against). July 2026 filled both gaps —
+diverge with nothing to implement against). July 2026 filled both gaps:
 [`SDK.md`][sdk] for the client's obligations, [`INDEXER.md`][indexer] for what an
 archive must serve and how a client must verify it rather than trust it.
 
-This repository implements both — all 17 published primitives byte-for-byte,
+This repository implements both: all 17 published primitives byte-for-byte,
 C1–C4 served and verified.
 
 </details>
@@ -77,7 +77,7 @@ passing test suite.
 
 | # | What | How it hid |
 |---|---|---|
-| 1 | Blinding factors accumulated mod `r`, not mod `p` | one payment reconstructs correctly under either — it took eight |
+| 1 | Blinding factors accumulated mod `r`, not mod `p` | one payment reconstructs correctly under either, so it took eight |
 | 2 | `r_e` derived under domain tag 15; `DESIGN_cont.md` §13 assigns 14 | no circuit constrains `r_e`, so the proofs verify either way |
 | 3 | Two of §6.3's three required fixtures did not exist | nothing to fail against |
 
@@ -99,9 +99,9 @@ Fixed in `0.1.1`. The regression test
 its own falsifiability guard:
 
 ```
-it("at least one partial sum actually wrapped — otherwise this proves nothing")
-it("one payment reconstructs exactly — which is why this hid for so long")
-it("the disagreement moves the commitment by r·H — not by nothing")
+it("at least one partial sum actually wrapped, otherwise this proves nothing")
+it("one payment reconstructs exactly, which is why this hid for so long")
+it("the disagreement moves the commitment by r·H, not by nothing")
 ```
 
 Without the first, the case passes under the old implementation too. It is a
@@ -123,7 +123,7 @@ tag verify exactly like proofs built with the right one. A conformant client
 derives a different `r_e` for the same `(vk, σ)`, and neither can open the
 other's transfers.
 
-Fixed, and the §6.3 vector below was regenerated — it had been produced with the
+Fixed, and the §6.3 vector below was regenerated. It had been produced with the
 wrong tag, so contributing it would have propagated the defect it exists to
 prevent.
 
@@ -131,7 +131,7 @@ prevent.
 
 `SDK.md` §6.3 names three derivations needing fixture coverage. One exists
 upstream. The other two are [generated here](packages/conformance/vectors/) in
-OpenZeppelin's own testdata format: **`δ_eph`**, and **the §5.1 chain** — a fixed
+OpenZeppelin's own testdata format: **`δ_eph`**, and **the §5.1 chain**: a fixed
 root through `addr_f` and `acct_f` to `sk`, `vk`, `Y`, `PVK`, including the
 SEP-0053 preimage and signature.
 
@@ -146,14 +146,14 @@ re-derives its openings and checks them against the chain's own commitments.
 flowchart LR
   CT["<b>Confidential Token contract</b><br/>Stellar testnet<br/>commitments + events"]
 
-  subgraph AR["apps/indexer — INDEXER.md C1-C4"]
+  subgraph AR["apps/indexer · INDEXER.md C1-C4"]
     IX["/v1/health<br/>/v1/tokens/.../events<br/>/v1/tokens/.../checkpoint"]
   end
 
-  subgraph SDK["packages/sdk — SDK.md"]
-    DK["deriveSk / deriveKeys<br/>§5.1 — nothing stored"]
+  subgraph SDK["packages/sdk · SDK.md"]
+    DK["deriveSk / deriveKeys<br/>§5.1 · nothing stored"]
     SE["StateEngine<br/>replay + accumulate"]
-    VC["verifyAgainstChain<br/>§7 — the trust boundary"]
+    VC["verifyAgainstChain<br/>§7 · the trust boundary"]
     PR["proveTransfer<br/>UltraHonk"]
   end
 
@@ -171,7 +171,7 @@ flowchart LR
   CF -.-> IX
 ```
 
-Two arrows enter `verifyAgainstChain` — one from the archive, one from the
+Two arrows enter `verifyAgainstChain`: one from the archive, one from the
 chain. That is the entire argument: **an archive can lie, and the mismatch is
 caught.**
 
@@ -207,7 +207,7 @@ rather than a local variant.
 | | is | why it is separate |
 |---|---|---|
 | `packages/sdk` | the client library, published to npm | The only artifact an integrator consumes. Three entry points, enforced by a runtime boundary. |
-| `packages/conformance` | the `SDK.md` §6 suite | Depends on `stellar-confidential-token-sdk` **by package name**, not by relative path — so it tests the built public surface, not internals. |
+| `packages/conformance` | the `SDK.md` §6 suite | Depends on `stellar-confidential-token-sdk` **by package name**, not by relative path, so it tests the built public surface, not internals. |
 | `apps/indexer` | an `INDEXER.md` archive, as a Web-standard `fetch` handler | A service, not a library. The SDK never imports it; the only coupling is the wire format. |
 | `apps/web` | the demo | Where client, archive and chain all meet. `/verify` runs the same code path as `examples/sabotage.mjs`, so the page and the CLI cannot disagree. |
 
@@ -234,7 +234,7 @@ rather than a browser build.
 The non-obvious ones, with the alternative each rejected.
 
 **The client verifies the archive; it does not trust it.** Two layers, and the
-split is load-bearing. C3 catches an honest gap — `fetchEvents` defaults to
+split is load-bearing. C3 catches an honest gap, and `fetchEvents` defaults to
 `requireComplete: true` and throws `IncompleteHistoryError` rather than returning
 a partial replay. §7 catches a *lying* archive, because a completeness flag is
 only as good as the party asserting it. → `chain/indexer-v1.ts`
@@ -250,7 +250,7 @@ reports as what it is. → `state/engine.ts`
 
 **`sk` is derived from a signature, never stored.** A client that draws `sk`
 randomly can never rebuild the account from a seed, whatever archive it replays.
-The SDK deliberately does not touch the wallet — the caller supplies the root —
+The SDK deliberately does not touch the wallet. The caller supplies the root,
 so `deriveSk` stays pure and testable. → `crypto/sk-derivation.ts`
 
 **Blindings accumulate modulo `p`, not modulo `r`.** The chain adds commitment
@@ -259,7 +259,7 @@ fix is two lines with a test that proves the test is not vacuous.
 
 **The compiled circuits ship inside the npm tarball**, and `proveTransfer` takes
 a `circuit?` override. The artifact must be byte-identical to what the deployed
-verifier expects, so vendoring beats fetching — and the override exists because a
+verifier expects, so vendoring beats fetching, and the override exists because a
 bundler that traces dependencies will prune a path resolved at runtime.
 → `proving/ops.ts`
 
@@ -269,13 +269,13 @@ requirement as thoroughly as one endpoint does. One handler, several runtimes,
 deployment as a config detail. → `apps/indexer/src/handler.js`
 
 **C3 is asserted over the requested range, not over what was returned.** Clamping
-to what the archive holds would make every gap look like an empty range —
+to what the archive holds would make every gap look like an empty range,
 precisely the failure the flag exists to prevent. Empty ranges are recorded as
 ingested for the same reason: "I looked and there was nothing" is a completeness
 fact.
 
 **Each adversary is a `Proxy` over the honest store**, overriding only its one
-lie — so a rejection cannot come from the archive being broken in some unrelated
+lie, so a rejection cannot come from the archive being broken in some unrelated
 way. → `apps/indexer/src/tamper.js`
 
 ---
@@ -284,15 +284,15 @@ way. → `apps/indexer/src/tamper.js`
 
 Nothing to install. The two that matter:
 
-- **[A building collecting its dues](https://stellar-confidential-token-sdk-web.vercel.app/demo)** —
+- **[A building collecting its dues](https://stellar-confidential-token-sdk-web.vercel.app/demo)**:
   eight units pay different amounts, none of them on-chain, and every resident
   can still audit the total. Pedersen commitments add, so the chain ends up
   holding a commitment to the sum without ever holding one to any single
   payment. A normal ledger makes you pick between an auditable total and private
   line items; this does not.
-- **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app/verify)** —
+- **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app/verify)**:
   that guarantee only holds if the history the wallet replays is the real one.
-  Five archives serve one account's history; three are refused — two of them
+  Five archives serve one account's history; three are refused, two of them
   lie outright, and one honestly reports a gap it cannot vouch for.
 
 Or run it yourself:
@@ -321,7 +321,7 @@ REJECTED  corrupting  alters your balance ciphertext, still claims complete: tru
 ```
 
 Three adversaries, caught by two different defences, and the split is the whole
-argument. The lagging archive is caught by C3 — it admits the gap itself. The
+argument. The lagging archive is caught by C3, since it admits the gap itself. The
 other two lie, claiming `complete: true`, so C3 cannot help. They are caught
 because the client re-derives its openings and checks them against the chain
 (§7). Note the last line: wrong by one stroop, and still caught.
@@ -332,7 +332,7 @@ fail the build, because it would mean the adversary had stopped lying.
 
 ### Two operators, because §7 asks for two
 
-§7 asks deployments to run "at least two" independent archives — two instances
+§7 asks deployments to run "at least two" independent archives: two instances
 on one provider share an outage, which is the failure the requirement exists to
 prevent. There are two, on different providers, and the demo checks both the
 same way:
@@ -343,7 +343,7 @@ curl https://confidential-token-archive.aaguilar1x.workers.dev/v1/health
 ```
 
 `curl` shows you the health response; what exercises the contract is
-`IndexerV1Client` — which the demo's `/verify` page and
+`IndexerV1Client`, which the demo's `/verify` page and
 [`examples/sabotage.mjs`](examples/sabotage.mjs) both run against it.
 
 ---
@@ -374,7 +374,7 @@ It prints any divergence rather than hiding it, and **fails** if one appears. A
 fixture it cannot fetch is reported and counted out, never silently counted in. It is the same script CI runs on every push, which is what the badge
 above asserts.
 
-Step 3's timing is whatever your own machine manages — 1.5s on an M-series
+Step 3's timing is whatever your own machine manages: 1.5s on an M-series
 laptop, around 6s on the serverless CPU behind the demo site. Proving cost is a
 property of the hardware, so any single number quoted without one is decoration.
 
@@ -382,7 +382,7 @@ property of the hardware, so any single number quoted without one is decoration.
 
 ## Evidence
 
-Not a test count — a list of claims, and what would fail if each were false.
+Not a test count, but a list of claims and what would fail if each were false.
 
 | Claim | What would fail if it were false | Where |
 |---|---|---|
@@ -393,18 +393,18 @@ Not a test count — a list of claims, and what would fail if each were false.
 | A lying archive is caught even when it claims `complete: true` | 8 checks that each adversary is faithful except in the attacked dimension | `apps/indexer/test/tamper.test.js` |
 | The published tarball does what the source does | installs from the registry and runs the whole flow | `scripts/verify-published.mjs`, CI job `published` |
 
-**224 tests** — 147 in the SDK, 49 in conformance, 28 in the archive. `npm test`
+**224 tests**: 147 in the SDK, 49 in conformance, 28 in the archive. `npm test`
 at the root runs all three; CI runs them on every push and weekly against
 upstream.
 
 ### The suite caught this project running stale contracts
 
-Not a finding about anyone else — a demonstration that the machinery works on
+Not a finding about anyone else, but a demonstration that the machinery works on
 its owner.
 
 Two primitives stopped reproducing OpenZeppelin's fixtures: `ecdh` and
 `encrypt_auditor_sender_balance`. The client was not wrong about the verifier it
-faced; it matched it exactly. The verifier was old — deployed here on 3 July
+faced; it matched it exactly. The verifier was old, deployed here on 3 July
 2026, before OpenZeppelin's own L-03 and N-07 audit fixes merged on the 16th and
 17th. Both vulnerabilities are theirs, both were fixed upstream on time, and
 neither is a discovery of ours. What this project had was a deployment left
@@ -414,7 +414,7 @@ Each divergence was recorded rather than skipped, pinned from BOTH sides: the
 suite fails if our value drifts, if the fixture moves again, **or if the two
 become equal**. That last case is the one that fired. Rebuilding the circuits
 from post-fix source and redeploying made the values converge, the pins failed,
-and the entries had to be deleted — which is exactly what they were written to
+and the entries had to be deleted, which is exactly what they were written to
 force. A suite that merely skipped them would have gone green while coverage
 silently shrank.
 
@@ -424,12 +424,12 @@ silently shrank.
    codebase chose. The fixture suite asserts numbers OpenZeppelin published,
    vendored for hermeticity, with a weekly CI job that re-fetches and
    byte-compares so the copy cannot become a fork.
-2. **The suite tests itself for vacuity.** *"covers every fixture — an unmapped
+2. **The suite tests itself for vacuity.** *"covers every fixture: an unmapped
    primitive is a conformance GAP"*, *"every fixture carries at least one
    vector"*, *"a value that differs in one bit fails"*. That is the difference
    between a suite and a claim.
 3. **It runs the real prover against the real circuits, and shows them saying
-   no.** Unit tests can only prove self-consistency — they cannot distinguish
+   no.** Unit tests can only prove self-consistency, so they cannot distinguish
    "correct" from "consistently wrong", which is exactly the failure mode a ZK
    client has.
 4. **It consumes the SDK as an external package**, by name, so it tests the
@@ -454,7 +454,7 @@ const keys = deriveKeys(sk, addrF);
 
 const engine = new StateEngine({ address: ACCOUNT, keys });
 engine.ingestEvents(await eventsFrom(archive));            // C2/C3 honoured
-engine.verifyAgainstChain({ spendableC, receivingC });     // §7 — never skip this
+engine.verifyAgainstChain({ spendableC, receivingC });     // §7 · never skip this
 
 const { payload, next } = await proveTransfer({
   keys, v: engine.spendable().v, r: engine.spendable().r, amount,
@@ -477,7 +477,7 @@ credentialless`) for `SharedArrayBuffer`.
 it. The C1–C4 checks live in
 [`packages/sdk/src/chain/indexer-v1.test.ts`](packages/sdk/src/chain/indexer-v1.test.ts)
 and are written against the specification rather than against this
-implementation — they should pass for any conformant archive.
+implementation, and should pass for any conformant archive.
 
 ---
 
@@ -488,14 +488,14 @@ None of these ship here; what ships is the layer all four need.
 
 | Use case | Runnable reference |
 |---|---|
-| **Wallets** — derive (§5.1), rebuild balances from events, verify against the chain before showing a number | [`examples/live-payment.mjs`](examples/live-payment.mjs) |
-| **Shared ledgers** — dues, funds, split bills. Every participant audits the total; no line item is ever written | [`examples/condominium.mjs`](examples/condominium.mjs) |
-| **Payroll and treasury** — totals reconcile against the chain, individual figures stay sealed | — |
-| **Compliance without disclosure** — the auditor channel encrypts balances to a designated key | [`packages/sdk/src/auditor`](packages/sdk/src/auditor) |
+| **Wallets**: derive (§5.1), rebuild balances from events, verify against the chain before showing a number | [`examples/live-payment.mjs`](examples/live-payment.mjs) |
+| **Shared ledgers**: dues, funds, split bills. Every participant audits the total; no line item is ever written | [`examples/condominium.mjs`](examples/condominium.mjs) |
+| **Payroll and treasury**: totals reconcile against the chain, individual figures stay sealed | none |
+| **Compliance without disclosure**: the auditor channel encrypts balances to a designated key | [`packages/sdk/src/auditor`](packages/sdk/src/auditor) |
 
 > **What an opened total cannot hide is arithmetic.** Enough participants
 > comparing notes can infer the one who didn't. That is a property of adding
-> numbers, not of this scheme — the privacy here is against the chain and any
+> numbers, not of this scheme. The privacy here is against the chain and any
 > third party, not against a quorum of your own counterparties.
 
 ---
@@ -507,14 +507,14 @@ self-refuting:
 
 - **Testnet only, and not audited.** Do not hold value with this.
 - **The archive is not durable yet, which is the gap that matters most here.**
-  `apps/indexer` ships one store — `MemoryStore` — and a deployment rehydrates by
+  `apps/indexer` ships one store, `MemoryStore`, and a deployment rehydrates by
   scanning the RPC on cold start. So it can serve only history the RPC still
   retains, which is the very window an archive exists to outlive. The C1–C4
   surface, the completeness accounting and the client-side verification are all
   real and independent of the store; persistence is the missing piece, and the
   store interface is the seam it plugs into.
 - **Deposits and withdrawals are public by design.** Only transfers hide amounts.
-- **The disclosure receipt is a bearer token** — anyone holding the URL can read
+- **The disclosure receipt is a bearer token**: anyone holding the URL can read
   the disclosed amount.
 - **Testnet secrets are committed on purpose.** The demo accounts' seeds are in
   `examples/condominium-state.json` and in the web demo's config, because the
@@ -527,7 +527,7 @@ self-refuting:
 
   The PostCSS advisories need attacker-controlled CSS, and ours is hand-written.
   `sharp` arrives through `next/image`, which appears nowhere here. Closing them
-  means a major Next version bump — a larger risk to a working demo than the
+  means a major Next version bump, a larger risk to a working demo than the
   advisories are. `npm audit` on a clean install of the published package is
   empty.
 
@@ -541,16 +541,16 @@ self-refuting:
 |---|---|
 | `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. **147 tests.** |
 | `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **49 tests.** |
-| `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler — C2–C4 required, C1 recommended — with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
+| `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler, C2–C4 required and C1 recommended, with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
 | `apps/web` | The demo. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
-| `circuits/` | The two selective-disclosure circuits, in Noir — this project's own, since OpenZeppelin publishes the disclosure specification and not an implementation. OpenZeppelin's circuit library is vendored under `circuits/lib/` (their copyright, see [NOTICE](./NOTICE)) and pinned to the commit the deployed verifier was built from; `npm run check:lib` re-fetches it and compares bytes. Rebuild with `npm run circuits`. |
+| `circuits/` | The two selective-disclosure circuits, in Noir. They are this project's own, since OpenZeppelin publishes the disclosure specification and not an implementation. OpenZeppelin's circuit library is vendored under `circuits/lib/` (their copyright, see [NOTICE](./NOTICE)) and pinned to the commit the deployed verifier was built from; `npm run check:lib` re-fetches it and compares bytes. Rebuild with `npm run circuits`. |
 | `examples/` | The live payment, the condominium's 33 transactions, and the sabotage. Each is a script a reader can run against testnet, not a transcript. |
 | [`DEPLOY.md`](./DEPLOY.md) | How both halves deploy, and the two clean-clone build failures reproduced before being fixed. |
 
 ## Provenance and license
 
 Apache-2.0. The cryptographic core was originally written by the same author
-inside the Cluster project and is re-published here — see [NOTICE](./NOTICE) for
+inside the Cluster project and is re-published here. See [NOTICE](./NOTICE) for
 the per-file provenance, and for OpenZeppelin's copyright over the vendored
 fixtures.
 

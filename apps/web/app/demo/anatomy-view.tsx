@@ -27,7 +27,7 @@ export function PaymentAnatomy({ data }: { data: Data }) {
         Everything the chain records. Look for the amount.
       </h2>
       <p className="mt-3 max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
-        This is unit 1A&rsquo;s dues — a real transaction, in full. Not a summary of it.
+        This is unit 1A&rsquo;s dues: a real transaction, in full. Not a summary of it.
       </p>
 
       {/* `items-start` matters: the two cards are a pair, not a two-column
@@ -41,7 +41,7 @@ export function PaymentAnatomy({ data }: { data: Data }) {
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule px-5 py-3">
             <span className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
               <Eye className="size-3" />
-              public — anyone can read this
+              public, anyone can read this
             </span>
             {data.txHash && (
               <a
@@ -89,7 +89,7 @@ export function PaymentAnatomy({ data }: { data: Data }) {
           <div className="px-5 py-4">
             <p className="text-[0.86rem] leading-relaxed text-ink-soft">
               The building runs <code className="font-mono text-ink">decryptIncoming</code> over
-              the fields on the left. Nothing else — no side channel, no stored note, no
+              the fields on the left. Nothing else: no side channel, no stored note, no
               server.
             </p>
 

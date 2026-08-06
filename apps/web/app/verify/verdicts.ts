@@ -78,7 +78,7 @@ export async function judge(archive: ArchiveId, origin: string): Promise<Verdict
   const keys = deriveKeys(sk, addrF);
 
   // The independent archive is a real, separately-deployed service; the rest are
-  // served by this deployment. Same client either way — that is the point.
+  // served by this deployment. Same client either way, which is the point.
   const client = new IndexerV1Client({
     baseUrl: archive === "independent" ? EXTERNAL_ARCHIVE : `${origin}/api/archive/${archive}`,
     label: archive,
@@ -88,8 +88,8 @@ export async function judge(archive: ArchiveId, origin: string): Promise<Verdict
   try {
     // Ask C4 what this archive covers before asking for history. An archive
     // built by scanning an RPC begins above genesis, so requesting from ledger
-    // one would draw an honest `complete: false` from every archive — including
-    // the faithful one — and the demo would show four rejections for the wrong
+    // one would draw an honest `complete: false` from every archive, including
+    // the faithful one, and the demo would show four rejections for the wrong
     // reason. A real client does the same thing: it asks within the range the
     // archive claims, and then verifies the result against the chain anyway.
     const status = await client.health();
@@ -109,7 +109,7 @@ export async function judge(archive: ArchiveId, origin: string): Promise<Verdict
         caughtBy: "C3",
         detail:
           "The archive admitted it cannot vouch for the whole range. " +
-          "The client refused it before replaying a single event — a partial " +
+          "The client refused it before replaying a single event. A partial " +
           "history reconstructs a wrong balance.",
       };
     }

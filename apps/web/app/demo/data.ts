@@ -33,7 +33,7 @@ const summary = (state as { summary?: Record<string, unknown> }).summary;
 
 if (!summary) {
   throw new Error(
-    "examples/condominium-state.json has no summary — run `node examples/condominium.mjs` to completion first.",
+    "examples/condominium-state.json has no summary. Run `node examples/condominium.mjs` to completion first.",
   );
 }
 

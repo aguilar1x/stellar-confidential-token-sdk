@@ -23,7 +23,7 @@ export const STAGES = [
   {
     key: "derive",
     label: "Deriving the key",
-    detail: "One signature through §5.1 — nothing stored, reproducible on any device.",
+    detail: "One signature through §5.1. Nothing stored, reproducible on any device.",
   },
   {
     key: "rebuild",
@@ -34,7 +34,7 @@ export const STAGES = [
     key: "prove",
     label: "Proving",
     detail:
-      "Witness generation, then UltraHonk. About 1.5s on a laptop and four times that here — a serverless CPU is not a fast one, and the honest number is the one you are watching.",
+      "Witness generation, then UltraHonk. About 1.5s on a laptop and four times that here, because a serverless CPU is not a fast one, and the honest number is the one you are watching.",
   },
   {
     key: "submit",

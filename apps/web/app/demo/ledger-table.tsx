@@ -134,7 +134,7 @@ export function LedgerTable({
                   {r.tx ? (
                     <ExplorerLink href={`${EXPLORER}/${r.tx}`} label={`${r.tx.slice(0, 10)}…`} />
                   ) : (
-                    <span className="text-ink-soft">—</span>
+                    <span className="text-ink-soft">none</span>
                   )}
                 </td>
               </tr>
@@ -150,7 +150,7 @@ export function LedgerTable({
                 <span className="font-semibold">Collected this month</span>
                 {BigInt(published) > BigInt(fromUnits) && (
                   <span className="ml-2 text-sm text-ink-soft">
-                    — {asXlm(BigInt(fromUnits))} XLM from the eight units,{" "}
+                    · {asXlm(BigInt(fromUnits))} XLM from the eight units,{" "}
                     {asXlm(BigInt(published) - BigInt(fromUnits))} XLM added by visitors
                   </span>
                 )}

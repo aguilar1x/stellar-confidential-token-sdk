@@ -51,7 +51,7 @@ export async function heroCommitment(): Promise<HeroFacts> {
     const keys = deriveKeys(sk, addrF);
 
     const onchain = await client.confidentialBalance(address);
-    if (!onchain) return { commitment: PLACEHOLDER, total: "—", verified: false };
+    if (!onchain) return { commitment: PLACEHOLDER, total: "not read", verified: false };
 
     const engine = new StateEngine({ address, keys });
     const { events } = await hybridFetchEvents(client, undefined, {
@@ -78,6 +78,6 @@ export async function heroCommitment(): Promise<HeroFacts> {
       verified: check.receivingOk,
     };
   } catch {
-    return { commitment: PLACEHOLDER, total: "—", verified: false };
+    return { commitment: PLACEHOLDER, total: "not read", verified: false };
   }
 }
