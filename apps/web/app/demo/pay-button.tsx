@@ -131,7 +131,7 @@ export function PayButton() {
   };
 
   // Re-run the audit above with the payment included, and report the step as
-  // done — a settled transaction is the action of this step, and the only thing
+  // done. A settled transaction is the action of this step, and the only thing
   // that should tick it off.
   useEffect(() => {
     if (!done) return;

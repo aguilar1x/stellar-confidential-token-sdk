@@ -18,7 +18,7 @@ export const stagger: Variants = {
  * Section-level reveal.
  *
  * `once: true` on purpose. Re-animating on scroll back looks livelier, but it
- * means content returns to opacity 0 whenever it leaves the viewport — so
+ * means content returns to opacity 0 whenever it leaves the viewport, so
  * scrolling quickly, or landing mid-page, can show a blank screen for a beat.
  * On a page whose entire job is to be believed by someone skimming it once,
  * that is a bad trade.

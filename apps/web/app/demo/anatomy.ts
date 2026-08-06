@@ -3,8 +3,8 @@
  *
  * The rest of the page argues that amounts are hidden and totals are auditable.
  * This shows the actual bytes: every field the chain stores for a single real
- * transfer, and — from those same public bytes and nothing else — the number the
- * recipient recovers.
+ * transfer, and the number the recipient recovers from those same public bytes
+ * and nothing else.
  *
  * It matters because "hidden" is easy to claim and easy to fake. A table saying
  * "sealed" proves nothing; a list of the event's real fields, with no amount

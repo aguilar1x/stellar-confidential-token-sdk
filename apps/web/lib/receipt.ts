@@ -7,14 +7,14 @@
  * should not have to pay again to see their own check.
  *
  * A LIST rather than one entry, because a visitor who is convinced by the first
- * payment tends to make a second — and overwriting turns their own history into
+ * payment tends to make a second, and overwriting turns their own history into
  * whichever one happened to be last. The building's total folds all of them, so
  * a panel claiming to show "your receipt" while hiding two of three is quietly
  * wrong about the number it is standing next to.
  *
  * sessionStorage rather than a cookie, deliberately. A cookie would be attached
- * to every request the browser makes to this origin — each page, each RSC
- * payload, each asset — to carry state no server reads. It also outlives the tab
+ * to every request the browser makes to this origin, each page, each RSC
+ * payload, each asset, to carry state no server reads. It also outlives the tab
  * by default, which is the opposite of "during this visit". sessionStorage is
  * scoped to the tab and dies with it, which is exactly the lifetime asked for,
  * and it never leaves the machine.
@@ -74,7 +74,7 @@ export function saveReceipt(r: StoredReceipt): void {
  * Read them back, validating on the way out.
  *
  * Anything in storage is user-writable, and these values end up in URLs and in
- * rendered text — so each is re-checked against the same shapes the query string
+ * rendered text, so each is re-checked against the same shapes the query string
  * is, rather than trusted because we were the ones who wrote it. A single object
  * is accepted too, which is what earlier visits in an open tab may still hold.
  */

@@ -15,7 +15,7 @@ import type { PaymentEvent } from "@/app/demo/payment-types";
 
 /**
  * bb.js caches the CRS under `os.homedir() + "/.bb-crs"`, and a serverless
- * filesystem is read-only apart from /tmp — so the default path fails at
+ * filesystem is read-only apart from /tmp, so the default path fails at
  * `mkdir`, at the moment proving starts and not before. Node derives
  * `homedir()` from $HOME on POSIX, so pointing $HOME at /tmp is enough, and it
  * has to happen before the lazy `@aztec/bb.js` import rather than inside the
@@ -62,7 +62,7 @@ export async function POST(req: Request) {
       "content-type": "application/x-ndjson; charset=utf-8",
       "cache-control": "no-store, no-transform",
       // Defeats proxy buffering, which would hold the stages back and deliver
-      // them in one burst at the end — the exact failure this endpoint exists
+      // them in one burst at the end. The exact failure this endpoint exists
       // to avoid.
       "x-accel-buffering": "no",
     },

@@ -2,14 +2,14 @@
  * Wire types for the off-chain selective-disclosure protocol
  * (SELECTIVE_DISCLOSURE.md §5). Everything here is JSON: field elements are
  * 0x-prefixed 32-byte hex, points are `{ x, y }` hex pairs. These objects are
- * what the two parties copy/paste (or POST) between each other — they never
+ * what the two parties copy/paste (or POST) between each other, they never
  * touch the chain.
  *
  * Ported from the demo `@ctd/sdk` `disclosure/types.ts`. The one adaptation for
  * `stellar-confidential-token-sdk`: the demo imported `EventRef`/`TransferEvent` from a
  * network-bound `chain/events.ts`. `stellar-confidential-token-sdk` (Z2) does NO RPC, so the
- * disclosure event shape lives here as {@link DisclosureEvent} — just the
- * transfer fields the prover consumes — and the caller (API/web) is responsible
+ * disclosure event shape lives here as {@link DisclosureEvent}, just the
+ * transfer fields the prover consumes, and the caller (API/web) is responsible
  * for resolving on-chain events and passing them in.
  */
 
@@ -66,7 +66,7 @@ export interface DisclosureEvent {
  * What the disclosure recipient sends to the holder (§12 step 1): their
  * long-lived Grumpkin pubkey and a fresh per-request nonce. `(pR, nu)` binds
  * the resulting proof to this recipient and this request. The request is
- * circuit-agnostic — which claim the prover can make (received vs. sent) is
+ * circuit-agnostic, which claim the prover can make (received vs. sent) is
  * dictated by their relation to the event; the bundle's `circuitId` declares
  * it and pins the VK the verifier loads (§5.2).
  */
@@ -78,7 +78,7 @@ export interface DisclosureRequest {
 /**
  * What the holder returns (§5.2): the proof, the event reference, and the
  * recipient-bound disclosure ciphertext. Deliberately NOT included: the event
- * payload, the disclosing account, or any other public input — the verifier
+ * payload, the disclosing account, or any other public input, the verifier
  * reconstructs those from chain state (§5.2 trust-boundary rule).
  */
 export interface DisclosureBundle {

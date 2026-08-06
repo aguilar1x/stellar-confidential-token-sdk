@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /**
- * Light, white, and quiet — the brief's requirement, and the right register for
+ * Light, white, and quiet, the brief's requirement, and the right register for
  * a project whose whole claim is that you can check its arithmetic yourself.
  *
  * The accent is a deep indigo rather than a green: green already belongs to the
@@ -31,7 +31,7 @@
   /* A sealed value: present, unreadable. Never the same grey as muted text. */
   --sealed: hsl(230 14% 62%);
   /**
-   * The surface code sits on: #303030. Neutral by construction — zero
+   * The surface code sits on: #303030. Neutral by construction, zero
    * saturation, so it has no hue to drift against the palette.
    *
    * Its own token rather than `--ink`, which carries the page's blue cast
@@ -108,7 +108,7 @@ body {
 }
 
 /**
- * The hero's backdrop is not a photograph — it is the subject's own material.
+ * The hero's backdrop is not a photograph. It is the subject's own material.
  * Rows of real commitment hex, set faintly and faded out, so the thing the page
  * argues about is literally what you are looking through.
  */
@@ -121,7 +121,7 @@ body {
   word-break: break-all;
   user-select: none;
   /* Fades from both edges AND from the left, so it never runs under the
-     headline — where it stopped reading as texture and started reading as
+     headline, where it stopped reading as texture and started reading as
      glitch. */
   mask-image:
     linear-gradient(to bottom, transparent, black 30%, black 60%, transparent 88%),

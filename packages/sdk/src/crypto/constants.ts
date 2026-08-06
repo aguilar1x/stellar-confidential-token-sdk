@@ -3,7 +3,7 @@
  * contract. Every value here is a hard contract: if any of these diverges from
  * `circuits/lib/src/lib.nr` (generators, domain tags, IV base) or from the
  * Soroban host's field (the BN254 scalar field `F_r`), proofs silently fail to
- * verify or — worse — verify against the wrong statement.
+ * verify or, worse, verify against the wrong statement.
  *
  * Source of truth:
  *   OpenZeppelin/stellar-contracts @ feat/confidential-verifier-ultrahonk
@@ -23,10 +23,10 @@ export const FR_MODULUS =
   0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001n;
 
 /**
- * BN254 base field order `p`. This is the Grumpkin **scalar** field — the
+ * BN254 base field order `p`. This is the Grumpkin **scalar** field, the
  * modulus that scalars are reduced by during point multiplication.
  *
- * Note `r < p`, so every `F_r` element (key material, blinding factors, salts —
+ * Note `r < p`, so every `F_r` element (key material, blinding factors, salts,
  * all in `[0, r)`) is already a valid Grumpkin scalar with no reduction. That
  * is exactly why a Noir `Field` can be fed to `multi_scalar_mul` unambiguously.
  */
@@ -98,7 +98,7 @@ export const DOMAIN = {
    * Absent from this table until the verifier was rebuilt from post-fix
    * circuits, because the x-only construction it replaced absorbs no domain at
    * all. DESIGN_cont.md §13 assigns 13; sweeping tags 11–16 against
-   * OpenZeppelin's `ecdh` fixture confirms it independently — no other value
+   * OpenZeppelin's `ecdh` fixture confirms it independently, no other value
    * reproduces the vector.
    */
   ECDH_SHARED_SECRET: 13n,
@@ -110,7 +110,7 @@ export const DOMAIN = {
    *
    * This sat at 13 because the disclosure circuits were written against a tag
    * table that ended at AUDITOR_RECIPIENT = 12, making 13 look like the next
-   * free slot. It is not free — it is `delta_ecdh`, directly above. Both
+   * free slot. It is not free. It is `delta_ecdh`, directly above. Both
    * circuits were recompiled against 16 (`nargo 1.0.0-beta.11`, `bb 0.87.0`)
    * and their verification keys regenerated, so client and circuit agree.
    */
@@ -123,13 +123,13 @@ export const DOMAIN = {
   DISCLOSURE_BIND: 15n,
   /**
    * Wallet-side deterministic ephemeral scalar:
-   * `r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma)` — DESIGN.md §5.3, and
+   * `r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma)`, DESIGN.md §5.3, and
    * `delta_eph = 14` in DESIGN_cont.md §13.
    *
    * This was 15, chosen by continuing this file's own list rather than reading
    * that table, and it was wrong in the way the specification warns about
-   * rather than in a way anything would catch. No circuit constrains `r_e` —
-   * only `R_e = r_e·H` and `r_e != 0` are — so proofs built with the wrong tag
+   * rather than in a way anything would catch. No circuit constrains `r_e`:
+   * only `R_e = r_e·H` and `r_e != 0` are, so proofs built with the wrong tag
    * verify exactly like proofs built with the right one. SDK.md §6.3 is
    * explicit about the consequence: "a fixture is the only mechanism keeping a
    * user's clients in agreement; where two disagree, transfers sent from one
@@ -137,7 +137,7 @@ export const DOMAIN = {
    *
    * Because it is unconstrained, correcting it costs nothing against the
    * deployed verifier. It does mean transfers this client sent before the
-   * correction cannot have their `r_e` recomputed by it — which is precisely
+   * correction cannot have their `r_e` recomputed by it, which is precisely
    * the failure being fixed, observed once on our own history.
    */
   EPHEMERAL_KEY: 14n,

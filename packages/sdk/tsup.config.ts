@@ -7,7 +7,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   // Polyfill `import.meta.url` in the CJS output so the node entry's fs-based
-  // circuit resolution (artifacts.ts) works under `require()` — tsup's CJS
+  // circuit resolution (artifacts.ts) works under `require()`, tsup's CJS
   // build otherwise leaves `import.meta` empty and `fileURLToPath(undefined)`
   // crashes at import time.
   shims: true,

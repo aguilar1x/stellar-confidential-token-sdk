@@ -5,14 +5,14 @@
  * `address_to_field`, is already pinned by `address_to_field.json`. The other
  * two are not pinned by anything:
  *
- *   δ_eph      DESIGN.md §5.3 — "No circuit constrains r_e, so a fixture is the
+ *   δ_eph      DESIGN.md §5.3: "No circuit constrains r_e, so a fixture is the
  *              only mechanism keeping a user's clients in agreement."
  *   §5.1 chain from a fixed root through addr_f and acct_f to sk, vk, Y and PVK,
  *              including the SEP-0053 signature preimage and the resulting
  *              signature.
  *
  * The δ_eph gap is the sharper of the two. Because no circuit constrains r_e, a
- * client that derives it differently produces proofs that verify perfectly — and
+ * client that derives it differently produces proofs that verify perfectly, and
  * a second client belonging to the SAME user then cannot recompute the value,
  * so the sender loses the ability to prove what their own transfer contained.
  * Nothing detects that at proving time. A fixture is the only thing that can.
@@ -49,7 +49,7 @@ const b64 = (u8) => Buffer.from(u8).toString("base64");
 const hexBytes = (u8) => `0x${Buffer.from(u8).toString("hex")}`;
 
 /**
- * A fixed, published test seed — never a key holding value. Using a literal
+ * A fixed, published test seed, never a key holding value. Using a literal
  * seed rather than a random one is the point: the vector must be reproducible
  * by anyone, in any language, forever.
  */
@@ -122,7 +122,7 @@ const ephemeral = {
   description:
     "Wallet-side deterministic ephemeral scalar r_e = Poseidon2(EPHEMERAL_KEY, " +
     "vk, sigma). Section 6.3 calls for this fixture because NO CIRCUIT " +
-    "CONSTRAINS r_e — only R_e = r_e*H and r_e != 0 are constrained — so a " +
+    "CONSTRAINS r_e, only R_e = r_e*H and r_e != 0 are constrained, so a " +
     "client that derives it differently still produces proofs that verify. The " +
     "damage appears later and silently: a second client belonging to the same " +
     "user cannot recompute r_e, and the sender loses the ability to prove what " +

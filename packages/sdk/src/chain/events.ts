@@ -1,5 +1,5 @@
 /**
- * Event ingestion over the Soroban RPC `getEvents` API — the ONLY source of
+ * Event ingestion over the Soroban RPC `getEvents` API, the ONLY source of
  * the protocol's client-visible secrets (encrypted amounts, salts, balance
  * checkpoints). There is no indexer.
  *
@@ -37,7 +37,7 @@ interface BaseEvent {
   ledger: number;
   txHash: string;
   /**
-   * Source-independent event id ({@link naturalEventId}) — the SAME string
+   * Source-independent event id ({@link naturalEventId}), the SAME string
    * whether this event came from the RPC or the Goldsky indexer, so the two
    * sources dedupe and cross-resolve. This is NOT the RPC resume cursor; that
    * is the response-level {@link FetchEventsResult.cursor} (still an RPC paging
@@ -170,7 +170,7 @@ export function buildConfidentialEvent(
 
 export interface FetchEventsResult {
   events: ConfidentialEvent[];
-  /** Last RPC cursor seen — pass back as `startCursor` to resume. */
+  /** Last RPC cursor seen, pass back as `startCursor` to resume. */
   cursor: string | undefined;
   /** Latest ledger the RPC has, for staleness/retention checks. */
   latestLedger: number;
@@ -213,7 +213,7 @@ export function naturalEventId(p: {
  * Exported because an indexer ingesting from the RPC must derive these the same
  * way. The pair feeds both the §3.4 total order and {@link naturalEventId}, so
  * an indexer that parses the id differently produces events that no longer
- * dedupe against their RPC twins — the hybrid source would then replay the same
+ * dedupe against their RPC twins. The hybrid source would then replay the same
  * transfer twice and silently inflate a receiving balance.
  */
 export function rpcEventCoords(id: string): { opIndex: number; eventIndex: number } {
@@ -261,7 +261,7 @@ export async function fetchEvents(
     resumeCursor = resp.cursor;
     pageCursor = resp.cursor;
 
-    // A short — even empty — page does NOT mean we reached the chain head:
+    // A short, even empty, page does NOT mean we reached the chain head:
     // the RPC scans a bounded window of ledgers (~10k) per request and stops
     // there, returning a cursor at the end of the SCANNED range. Page until
     // that cursor catches up with the RPC's latest ledger.
@@ -278,7 +278,7 @@ export async function fetchEvents(
  * `id` is the source-independent {@link naturalEventId} (same value as
  * {@link BaseEvent.cursor}), so a reference pinned from an RPC event resolves
  * against the indexer and vice-versa; `ledger`/`txHash` let the verifier bound
- * the lookup and cross-check the resolution. `id` is a match key only — it is
+ * the lookup and cross-check the resolution. `id` is a match key only. It is
  * never part of any proof's public inputs (disclosure/verify.ts §5.2).
  */
 export interface EventRef {
@@ -296,7 +296,7 @@ export const eventRef = (ev: ConfidentialEvent): EventRef => ({
 /**
  * Resolve an {@link EventRef} to the single on-chain event it names, reading
  * ONLY the referenced ledger from the RPC (ledger-range mode). Returns `null`
- * if no token-contract event with that id exists there — including when the
+ * if no token-contract event with that id exists there, including when the
  * ledger has aged out of the RPC's ~7-day retention window, which is this
  * demo's accepted limitation. The disclosure verifier (disclosure/verify.ts)
  * treats the result as the sole source of event-derived public inputs.

@@ -3,7 +3,7 @@ import { addressToField } from "./address.js";
 import { toHex32 } from "./field.js";
 
 describe("addressToField", () => {
-  // THE ANCHOR TEST — proves our Poseidon2 + strkey split/endianness/domain-tag
+  // THE ANCHOR TEST, proves our Poseidon2 + strkey split/endianness/domain-tag
   // pipeline matches the chain. The expected value is the deployed confidential
   // token contract's on-chain `addrF` (storage.rs::address_to_field).
   it("matches the deployed token contract's on-chain addrF", () => {

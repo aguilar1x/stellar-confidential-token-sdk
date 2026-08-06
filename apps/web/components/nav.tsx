@@ -10,7 +10,7 @@ import { Github } from "lucide-react";
  * Docs first is the dev-tool default, and it was fighting the home page: both
  * hero calls to action point at /demo and /verify, so the nav's leading item
  * sent a reader somewhere the page itself was not sending them. This reads
- * left to right as the journey — see it work, understand why, try to break it —
+ * left to right as the journey, see it work, understand why, try to break it,
  * and lands Docs beside GitHub, since both are where someone goes once they are
  * already convinced.
  */
@@ -24,8 +24,8 @@ const LINKS = [
 /**
  * A floating pill rather than a full-width bar.
  *
- * It has to read cleanly against two different backgrounds — the dark hero on
- * the home page and plain white everywhere else — so it stays white with a soft
+ * It has to read cleanly against two different backgrounds, the dark hero on
+ * the home page and plain white everywhere else, so it stays white with a soft
  * shadow in both cases instead of going translucent, which would muddy over the
  * hex field behind it.
  */

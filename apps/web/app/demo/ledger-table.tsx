@@ -11,7 +11,7 @@ import { ExplorerLink } from "./step-actions";
  * The building's month, including whatever the reader has added to it.
  *
  * The table was built from the eight-unit fixture alone, so a visitor who paid
- * saw the total move and the footer gain a clause — but no row. Their own
+ * saw the total move and the footer gain a clause, but no row. Their own
  * transaction, the one thing on the page they caused, was the only one missing
  * from the list of what happened.
  *
@@ -20,7 +20,7 @@ import { ExplorerLink } from "./step-actions";
  * paging is for.
  *
  * One deliberate asymmetry: every unit's amount reads `sealed`, and theirs does
- * not. That is not an inconsistency to hide — they are the payer, so they are
+ * not. That is not an inconsistency to hide. They are the payer, so they are
  * one of the two parties who can open it. The table showing exactly the amounts
  * a reader is entitled to see, and nothing else, is the thesis of the page
  * rendered as a column.

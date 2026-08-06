@@ -3,7 +3,7 @@ import { ExternalLink } from "lucide-react";
 /**
  * A script that lives in the repository, not in the package.
  *
- * `examples/` is deliberately outside the npm tarball — the published `files`
+ * `examples/` is deliberately outside the npm tarball, the published `files`
  * are `dist`, `circuits` and `NOTICE`, because an integrator wants a library and
  * not our fixtures. Which means a bare `node examples/condominium.mjs` set in
  * code type is a small lie by omission: someone who ran `npm i` and copied it

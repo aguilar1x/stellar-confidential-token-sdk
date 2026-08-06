@@ -3,7 +3,7 @@
  *
  * The central property under test is C3. An indexer that serves a partial
  * history without saying so makes a client reconstruct a wrong balance with no
- * signal at all, so `complete` must be honoured — including when it is absent,
+ * signal at all, so `complete` must be honoured, including when it is absent,
  * which is itself non-conformant and must not be read as "fine".
  *
  * Decoding parity with the RPC path is asserted by round-tripping real XDR

@@ -10,7 +10,7 @@
  * neither is written yet. The consequence is not cosmetic and is stated in the
  * README's limitations: without durable backing, a deployment rehydrates by
  * scanning the RPC on cold start, so it can only serve history the RPC still
- * retains — which is the very window an archive is supposed to outlive.
+ * retains, which is the very window an archive is supposed to outlive.
  *
  * Everything else here is independent of that: the C1-C4 surface, the
  * completeness accounting, and the client-side verification are real and are
@@ -18,7 +18,7 @@
  *
  * The store owns the C3 answer, and that is the whole design point. Only the
  * component that knows which ledger ranges were actually ingested can honestly
- * say whether a requested range is gap-free — a serving layer that guesses
+ * say whether a requested range is gap-free, a serving layer that guesses
  * would be asserting exactly the thing a client must not have to trust.
  */
 
@@ -107,8 +107,8 @@ export class MemoryStore {
    *
    * C4 asks for the latest fully-ingested ledger so clients can bound
    * staleness. Publishing the floor as well is strictly more informative and
-   * has a practical use: an archive that starts above genesis — every archive
-   * built by scanning an RPC does, since the RPC only retains about a week —
+   * has a practical use: an archive that starts above genesis (every archive
+   * built by scanning an RPC does, since the RPC only retains about a week)
    * would otherwise have to answer `complete: false` to any client asking from
    * the beginning, with no way for that client to discover which range it
    * COULD have asked for.
@@ -118,14 +118,14 @@ export class MemoryStore {
     return first ? first[0] : 0;
   }
 
-  /** C3 — is `[from, to]` covered by a single gap-free ingested range? */
+  /** C3, is `[from, to]` covered by a single gap-free ingested range? */
   isComplete(from, to) {
     if (to < from) return true;
     return this.ranges.some(([f, t]) => f <= from && t >= to);
   }
 
   /**
-   * C2 — ordered, filtered, paginated history for one account.
+   * C2, ordered, filtered, paginated history for one account.
    * Returns one page plus the cursor to continue from.
    */
   query({ contractId, account, fromLedger, toLedger, types, cursor, limit }) {
@@ -146,7 +146,7 @@ export class MemoryStore {
     };
   }
 
-  /** C1 — the latest checkpoint (a `merge`) at or before `atLedger`. */
+  /** C1, the latest checkpoint (a `merge`) at or before `atLedger`. */
   checkpoint({ contractId, account, atLedger }) {
     const candidates = this.events.filter(
       (ev) =>

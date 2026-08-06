@@ -3,7 +3,7 @@
  *
  * The auditor holds the Grumpkin secret `k` behind the registry key
  * `K_aud = k·H` and decrypts the auditor ciphertexts every withdraw/transfer
- * event carries — using nothing but the public event and `k`. No viewing
+ * event carries, using nothing but the public event and `k`. No viewing
  * keys, no holder cooperation, no extra on-chain data:
  *
  *   S = k · R_e                      (ECDH against the event's ephemeral point;
@@ -21,7 +21,7 @@
  * a single Poseidon call (witness/withdraw.ts `encryptAuditorSenderBalance`),
  * not the two-squeeze sponge; the withdrawn amount is already public.
  *
- * Pure crypto (Poseidon2/ECDH on auditor-only ciphertexts) — browser-safe.
+ * Pure crypto (Poseidon2/ECDH on auditor-only ciphertexts), browser-safe.
  */
 
 import { H, ecdh, scalarMul, type Point } from "../crypto/grumpkin.js";
@@ -42,7 +42,7 @@ export interface AuditedSenderChannel {
 export interface AuditedRecipientChannel {
   /** Transfer amount `v_tx`. */
   amount: bigint;
-  /** Per-transfer Pedersen randomness `r_tx` — with `amount`, a full opening of C_tx. */
+  /** Per-transfer Pedersen randomness `r_tx`, with `amount`, a full opening of C_tx. */
   rTx: bigint;
 }
 
@@ -84,7 +84,7 @@ export interface AuditedTransfer {
 
 /**
  * Decrypt everything a transfer reveals to an auditor holding `k` for BOTH
- * the sender's and the recipient's `auditor_id` — the single-auditor setup
+ * the sender's and the recipient's `auditor_id`, the single-auditor setup
  * this demo deploys (every account registers under auditor id 0).
  */
 export function auditTransfer(k: bigint, ev: TransferEvent): AuditedTransfer {
@@ -109,7 +109,7 @@ export function auditWithdraw(
 ): { senderBalance: bigint } {
   const sX = ecdh(k, ev.rE);
   // Squeeze 1, matching `encryptAuditorSenderBalance`. Squeeze 0 is the amount
-  // pad, and reusing it here is the collision OpenZeppelin's N-07 describes —
+  // pad, and reusing it here is the collision OpenZeppelin's N-07 describes.
   // `decryptWithDomain` computes exactly that slot, so it cannot be used.
   const [, mB] = spongeSqueeze2(DOMAIN.AUDITOR_SENDER, sX, ev.sigma);
   return { senderBalance: frMod(ev.bAudS - mB) };

@@ -1,7 +1,7 @@
 /**
  * Node-only subpath for `stellar-confidential-token-sdk` (`stellar-confidential-token-sdk/node`). Everything here
- * reaches `node:fs` — the vendored-circuit / pinned-VK loaders, the prove ops
- * that read those circuits, and the JSON file store — and so is kept OFF the
+ * reaches `node:fs`, the vendored-circuit / pinned-VK loaders, the prove ops
+ * that read those circuits, and the JSON file store, and so is kept OFF the
  * browser-safe main barrel ({@link ./index.ts}). A browser build (Z5) supplies
  * its own vendored-artifact path and never imports this entry.
  */

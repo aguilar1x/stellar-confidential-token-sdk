@@ -9,14 +9,14 @@ import type { Block, Section } from "./content";
 /**
  * Docs as navigation rather than as one long page.
  *
- * The sidebar looked like navigation and behaved like a table of contents —
- * clicking jumped you into a scroll position, and reading one section ran you
+ * The sidebar looked like navigation and behaved like a table of contents.
+ * Clicking jumped you into a scroll position, and reading one section ran you
  * into the next. Those are two different mental models and mixing them is what
  * made it confusing. Now a section is a destination: one at a time, and the
  * sidebar says which.
  *
  * Deep links still work. The hash is read on mount and written on selection, so
- * a link to a specific section opens on it and the URL stays shareable — which
+ * a link to a specific section opens on it and the URL stays shareable, which
  * a purely client-side tab strip would have quietly broken.
  */
 export function DocsShell({ sections }: { sections: Section[] }) {
@@ -150,7 +150,7 @@ function Blocks({ blocks }: { blocks: Block[] }) {
              * Washing the whole block in the tone's colour is the reflex, and it
              * is why these read as generated: the surface does the shouting and
              * the text inside has to compete with it. A 2px rule down the left
-             * edge is the older, quieter device — it marks the block as an
+             * edge is the older, quieter device, it marks the block as an
              * aside, keeps the tone legible at a glance, and leaves the body on
              * the same surface as every other block on the page.
              */

@@ -6,7 +6,7 @@
  *   sk  (random F_r scalar, the only secret)
  *    ├─ vk  = Poseidon2(VIEWING_KEY, sk, addr_f)
  *    ├─ Y   = sk · H        (spending public key)
- *    └─ PVK = vk · H        (public viewing key — others' ECDH target for you)
+ *    └─ PVK = vk · H        (public viewing key, others' ECDH target for you)
  */
 
 import { H, scalarMul, type Point } from "./grumpkin.js";
@@ -25,14 +25,14 @@ export interface KeyPair {
   /** The `addr_f` these keys are bound to. */
   addrF: bigint;
   /**
-   * `address_to_field(account)` — the account these keys belong to.
+   * `address_to_field(account)`, the account these keys belong to.
    *
    * Carried because the register circuit takes it as a public input: it is
    * referenced by no gate, and that is the point. UltraHonk absorbs every
    * public input into the transcript, so a proof produced for one account
    * fails verification when the contract assembles the blob for another.
-   * Optional so a caller that only needs `(sk, addr_f)` — every path except
-   * registration — is unaffected.
+   * Optional so a caller that only needs `(sk, addr_f)`, every path except
+   * registration, is unaffected.
    */
   acctF?: bigint;
 }

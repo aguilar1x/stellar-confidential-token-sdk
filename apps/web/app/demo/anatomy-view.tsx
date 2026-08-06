@@ -8,7 +8,7 @@ const XLM = 10_000_000;
 /**
  * The moment the page exists for.
  *
- * On the left, every field the chain stores for one real payment — the whole
+ * On the left, every field the chain stores for one real payment, the whole
  * list, so a reader can check for themselves that no amount is among them. On
  * the right, the number the recipient recovers from exactly those bytes.
  *
@@ -32,7 +32,7 @@ export function PaymentAnatomy({ data }: { data: Data }) {
 
       {/* `items-start` matters: the two cards are a pair, not a two-column
           layout. Stretching the right one to the field list's height left a tall
-          block of empty colour under a three-word answer — the space read as
+          block of empty colour under a three-word answer, the space read as
           something missing rather than as room. It now ends where it ends, and
           rides along instead, so the recovered amount stays beside whichever
           field the reader is looking at. */}
@@ -74,8 +74,8 @@ export function PaymentAnatomy({ data }: { data: Data }) {
           </p>
         </div>
 
-        {/* Same anatomy as the card on the left — header rule, body, divided
-            sections — so the two read as a matched pair. The distinction is
+        {/* Same anatomy as the card on the left, header rule, body, divided
+            sections, so the two read as a matched pair. The distinction is
             carried by the one number that came back out, not by washing the
             whole panel in a tint. */}
         <div className="overflow-hidden rounded-2xl border border-rule bg-paper lg:sticky lg:top-24">

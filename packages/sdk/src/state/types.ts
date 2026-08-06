@@ -34,7 +34,7 @@ export function freshState(): AccountState {
 }
 
 /**
- * The confidential-token event union — the same field names/shapes as the
+ * The confidential-token event union, the same field names/shapes as the
  * demo's `chain/events.ts`, minus the source-plumbing (`txHash`, `cursor`)
  * that only the networked fetcher needs. Every event carries the `ledger` it
  * landed at (drives `lastLedger`) and the owner-relative direction fields

@@ -26,8 +26,8 @@ import {
 // Poseidon2(delta_ecdh, S.x, S.y) and the auditor checkpoint pad moved to the
 // second squeeze, so both payloads carry different field values. The demo SDK
 // still implements the pre-fix forms and can no longer serve as the
-// cross-check. What these vectors gate is unchanged — key names, sort order,
-// flat-Point layout, field encoding — and the values are cross-checked instead
+// cross-check. What these vectors gate is unchanged, key names, sort order,
+// flat-Point layout, field encoding, and the values are cross-checked instead
 // by §6.2 circuit parity, which proves the real circuits accept these witnesses
 // and self-verify.
 //
@@ -45,7 +45,7 @@ import {
 const VEC = join(dirname(fileURLToPath(import.meta.url)), "test", "vectors");
 const readVec = (name: string) => readFileSync(join(VEC, `${name}.hex`), "utf8").trim();
 
-// Fixed deterministic inputs — MUST match scratchpad/crosscheck.mjs exactly.
+// Fixed deterministic inputs, MUST match scratchpad/crosscheck.mjs exactly.
 const ADDR = "CCREDIB3DG3IBVUKBL7QMEK4MTPSTODR7MQ34QY4SQ5LZ5L4WFWNVNXG";
 const SK = 0x1122334455667788990011223344556677889900112233445566778899001122n;
 const SK_R = 0x0a0b0c0d0e0f00112233445566778899aabbccddeeff00112233445566778899n;

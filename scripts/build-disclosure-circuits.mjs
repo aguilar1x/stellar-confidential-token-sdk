@@ -3,14 +3,14 @@
  *
  * These are this project's own circuits (OpenZeppelin publishes the disclosure
  * specification, not an implementation), so unlike the core circuits there is
- * no upstream artifact to copy — they have to be built here, and the SDK's
+ * no upstream artifact to copy. They have to be built here, and the SDK's
  * `DOMAIN.DISCLOSURE` has to agree with what they absorb.
  *
  * That agreement was broken for two releases because nothing rebuilt them and
  * nothing executed them: `disclosure.test.ts` stubbed `Noir.execute`, so the
  * client was only ever checked against itself. This script exists so the
  * rebuild is one command rather than a sequence of `bb` flags someone has to
- * remember — `--oracle_hash keccak` in particular, which is not the default and
+ * remember, `--oracle_hash keccak` in particular, which is not the default and
  * silently produces a key the SDK will not match.
  *
  * Run after ANY change to circuits/, then run the SDK tests: the real-circuit
@@ -102,5 +102,5 @@ for (const name of NAMES) {
 
 console.log(
   "\nArtifacts written to packages/sdk/circuits/." +
-    "\nRun the SDK tests now — the real-circuit cases are what prove the client agrees.",
+    "\nRun the SDK tests now. The real-circuit cases are what prove the client agrees.",
 );

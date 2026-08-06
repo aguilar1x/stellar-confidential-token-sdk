@@ -5,12 +5,12 @@
  * never confidentiality or integrity". This module builds the adversaries that
  * scoping implies, so the claim can be tested instead of asserted.
  *
- * Three modes, and they are caught by different things — which is the point:
+ * Three modes, and they are caught by different things, which is the point:
  *
  *   honest-gap  a real gap, honestly reported. C3 catches it: the client
  *               refuses the range before replaying anything.
  *   omit        an event silently dropped while still claiming complete: true.
- *               C3 CANNOT catch this — the indexer is lying, and a completeness
+ *               C3 CANNOT catch this. The indexer is lying, and a completeness
  *               flag is only as good as the party asserting it. The on-chain
  *               commitment check catches it.
  *   corrupt     an event's ciphertext altered, still claiming complete: true.

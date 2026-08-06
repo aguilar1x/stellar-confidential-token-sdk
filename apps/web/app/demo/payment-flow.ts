@@ -10,7 +10,7 @@
  * of the page is that a reader watches this happen. A single call that returns
  * ten seconds later can only be described after the fact; emitting at real
  * stage boundaries means the progress on screen is the server's actual position.
- * The alternative — advancing a progress bar on an estimated schedule — is the
+ * The alternative, advancing a progress bar on an estimated schedule, is the
  * one thing this page must not do.
  *
  * The guest account is pre-funded by `examples/setup-guest.mjs` with far more
@@ -31,7 +31,7 @@ import { ChainClient, keypairSigner, hybridFetchEvents } from "stellar-confident
  * Imported rather than loaded off disk on purpose.
  *
  * The SDK's own loader resolves the vendored artifact at runtime, which Next's
- * build trace cannot see — so the file gets pruned from the deployment and
+ * build trace cannot see, so the file gets pruned from the deployment and
  * proving fails with ENOENT only in production, after two stages have already
  * reported success. A static import puts the 71 KB into the bundle where the
  * tracer can account for it.
@@ -57,7 +57,7 @@ const XLM = 10_000_000n;
  * account instead of sharing the one committed here. The committed file is the
  * fallback rather than the only source because a fresh clone should work with
  * no setup, and because the seed in it is a testnet account holding nothing that
- * exists on no other network — checked, not assumed.
+ * exists on no other network, checked, not assumed.
  */
 function guest() {
   const fromEnv = process.env.GUEST_SECRET;
@@ -130,7 +130,7 @@ export async function runPayment(amountStroops: string, emit: Emit): Promise<voi
     });
 
     // Rebuild its spendable opening from the chain. The guest's own history is
-    // read the same way the building's is — there is no privileged path here.
+    // read the same way the building's is. There is no privileged path here.
     const spendable = await stage("rebuild", async () => {
       const engine = new StateEngine({ address, keys });
       const { events } = await hybridFetchEvents(client, undefined, {

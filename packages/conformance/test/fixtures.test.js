@@ -1,5 +1,5 @@
 /**
- * SDK.md §6.1 — every primitive, byte-for-byte, against OpenZeppelin's own
+ * SDK.md §6.1, every primitive, byte-for-byte, against OpenZeppelin's own
  * published vectors.
  *
  * Cases are generated from the fixture files, not written by hand. Two
@@ -136,14 +136,14 @@ describe("§6.1 · byte-for-byte reproduction", () => {
 
 describe("§6.1 · known divergences, pinned from both sides", () => {
   // These do NOT conform, and the suite says so out loud. Each is pinned by
-  // both the spec's value and ours, so it fails if either moves — including if
+  // both the spec's value and ours, so it fails if either moves, including if
   // they converge, which would mean the divergence should be deleted rather
   // than left standing as a stale excuse.
   for (const { name, doc } of diverging) {
     const d = KNOWN_DIVERGENCES[name];
 
     describe(name, () => {
-      it("still diverges — and from exactly the documented value", () => {
+      it("still diverges, and from exactly the documented value", () => {
         const actual = PRIMITIVES[name](doc.vectors[0].inputs);
         const expected = canonical(doc.vectors[0].output);
 
@@ -153,7 +153,7 @@ describe("§6.1 · known divergences, pinned from both sides", () => {
         expect(actual, "our value changed; re-review this divergence").toEqual(d.actual);
         expect(
           actual,
-          `${name} now MATCHES the spec — delete this divergence and move it to the conforming set`,
+          `${name} now MATCHES the spec, delete this divergence and move it to the conforming set`,
         ).not.toEqual(expected);
       });
 
@@ -166,7 +166,7 @@ describe("§6.1 · known divergences, pinned from both sides", () => {
     });
   }
 
-  it("the divergence list is exhaustive — nothing else silently fails", () => {
+  it("the divergence list is exhaustive. Nothing else silently fails", () => {
     // Guards against a future divergence being absorbed unnoticed: every
     // fixture is either conforming or explicitly listed, never neither.
     const unexpected = [];

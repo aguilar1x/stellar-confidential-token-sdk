@@ -2,13 +2,13 @@
  * Build a condominium's month of dues on testnet.
  *
  * Eight units each pay their monthly dues to the building, confidentially. The
- * amounts differ — a studio does not pay what the penthouse pays — and none of
+ * amounts differ. A studio does not pay what the penthouse pays, and none of
  * them appear on-chain.
  *
  * What makes this worth showing is a property of Pedersen commitments rather
  * than of any clever protocol: commitments ADD. The building's receiving
  * balance on-chain is the sum of the eight payment commitments, so the building
- * can publish one number — what it collected this month — and anyone can check
+ * can publish one number, what it collected this month, and anyone can check
  * that number against the chain WITHOUT learning what any single neighbour
  * paid. A normal ledger makes you choose between an auditable total and private
  * line items. This does not.
@@ -228,7 +228,7 @@ async function main() {
 
     state.payments[p.id] = { tx: res.hash, dues: p.unit.dues.toString() };
     save(state);
-    log(`  ${p.id} paid — tx ${res.hash.slice(0, 12)}…`);
+    log(`  ${p.id} paid, tx ${res.hash.slice(0, 12)}…`);
   }
   log("\nall dues paid");
 
@@ -270,6 +270,6 @@ async function main() {
 
 main().catch((e) => {
   console.error(`\n${e?.message ?? e}`);
-  console.error("Re-run to resume — completed steps are recorded.");
+  console.error("Re-run to resume, completed steps are recorded.");
   process.exit(1);
 });

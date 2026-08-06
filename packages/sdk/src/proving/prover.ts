@@ -4,7 +4,7 @@
  * `KECCAK = { keccak: true }` is MANDATORY on every bb.js call (`generateProof`,
  * `verifyProof`, `getVerificationKey`): the on-chain UltraHonk verifier squeezes
  * challenges with keccak, and a Poseidon transcript silently produces a proof
- * that fails verification on-chain. This flag is load-bearing — do not drop it.
+ * that fails verification on-chain. This flag is load-bearing, do not drop it.
  *
  * The bb.js backend is obtained through a pluggable async loader so a browser
  * build (Z5) can inject a vendored WASM path via {@link setUltraHonkBackendLoader}

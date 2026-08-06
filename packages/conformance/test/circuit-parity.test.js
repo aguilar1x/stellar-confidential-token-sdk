@@ -1,5 +1,5 @@
 /**
- * SDK.md §6.2 — circuit-execution parity.
+ * SDK.md §6.2, circuit-execution parity.
  *
  * The spec asks for two things per supported circuit: build witnesses from the
  * crypto core and execute the REAL compiled circuit asserting success, and
@@ -10,7 +10,7 @@
  * evidence of anything if it also demonstrates the circuit saying no.
  *
  * These run the real UltraHonk prover over the vendored artifacts. That is slow
- * by nature — the timeouts are generous rather than optimistic.
+ * by nature. The timeouts are generous rather than optimistic.
  */
 
 import { describe, expect, it } from "vitest";
@@ -83,7 +83,7 @@ async function proves(circuit, inputs) {
 const CONSTRAINT_FAILURE = /cannot satisfy constraint|constraint.*fail|assert|unsatisfied/i;
 
 /**
- * A tampered witness must not yield a verifying proof — and must fail for the
+ * A tampered witness must not yield a verifying proof, and must fail for the
  * RIGHT reason.
  *
  * Catching every exception would be the classic false positive here: a typo in
@@ -116,7 +116,7 @@ describe("§6.2 · the real circuits accept honest witnesses", () => {
   }
 });
 
-describe("§6.2 · tamper cases — the circuits reject perturbed witnesses", () => {
+describe("§6.2 · tamper cases, the circuits reject perturbed witnesses", () => {
   const built = witnesses();
 
   /**
@@ -146,7 +146,7 @@ describe("§6.2 · tamper cases — the circuits reject perturbed witnesses", ()
 
   for (const { circuit, field, why } of cases) {
     it(
-      `${circuit}: rejects ${field} off by one — ${why}`,
+      `${circuit}: rejects ${field} off by one, ${why}`,
       async () => {
         const tampered = nudge(built[circuit].inputs, field);
         expect(await rejects(circuit, tampered)).toBe(true);
@@ -156,7 +156,7 @@ describe("§6.2 · tamper cases — the circuits reject perturbed witnesses", ()
   }
 
   it(
-    "the tamper harness is not vacuous — the untampered witness still passes",
+    "the tamper harness is not vacuous, the untampered witness still passes",
     async () => {
       // Without this, every rejection above could be an artefact of a broken
       // harness rather than a working constraint system.

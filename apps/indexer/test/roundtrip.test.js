@@ -1,7 +1,7 @@
 /**
  * Round-trip conformance: the SDK's INDEXER.md client talking to this service.
  *
- * Each side was written against the specification independently — the client
+ * Each side was written against the specification independently, the client
  * against what it must consume, the service against what it must serve. A test
  * that only exercised one side would pass with both wrong in the same way, so
  * the meaningful check is that they interoperate over real HTTP shapes without
@@ -41,7 +41,7 @@ function mergeEvent(ledger, account, eventIndex = 0) {
   };
 }
 
-/** Wire the client's global fetch straight into the handler — no socket needed. */
+/** Wire the client's global fetch straight into the handler, no socket needed. */
 function connect(handler) {
   vi.stubGlobal("fetch", (input) => handler(new Request(String(input))));
   return new IndexerV1Client({ baseUrl: "https://archive.test", label: "archive-a" });
@@ -114,7 +114,7 @@ describe("C2 · ordered history", () => {
     expect(events.map((e) => e.ledger)).toEqual([10, 20, 30]);
   });
 
-  it("scopes to the account — Bob's history is not Alice's", async () => {
+  it("scopes to the account, Bob's history is not Alice's", async () => {
     const { events } = await client.fetchEvents({
       contractId: CONTRACT,
       account: BOB,

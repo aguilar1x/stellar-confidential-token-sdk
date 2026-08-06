@@ -7,7 +7,7 @@
  *   curl -fsSL https://raw.githubusercontent.com/aguilar1x/stellar-confidential-token-sdk/master/scripts/verify-published.mjs | node --input-type=module
  *
  * It installs `stellar-confidential-token-sdk` from the npm registry into a
- * throwaway directory — no link to any checkout — and then:
+ * throwaway directory, no link to any checkout, and then:
  *
  *   1. fetches OpenZeppelin's published fixtures from THEIR repository and
  *      reproduces every one byte-for-byte, naming the two that diverge;
@@ -22,7 +22,7 @@
  * against bytes this project does not control, and the second is the whole
  * safety claim reduced to something you can watch fail.
  *
- * Anything needing the network is reported but never fails the run — an outage
+ * Anything needing the network is reported but never fails the run, an outage
  * upstream is not a defect in the package.
  */
 
@@ -101,7 +101,7 @@ const PRIMITIVES = {
  *
  * This once held `ecdh` and `encrypt_auditor_sender_balance` while the deployed
  * verifier was built from pre-fix circuits. Both were fixed and the contracts
- * redeployed, so all 17 now reproduce — and an allowlist that outlives its
+ * redeployed, so all 17 now reproduce, and an allowlist that outlives its
  * reason is worse than none: it is the two entries most likely to regress,
  * pre-approved to exit 0 silently. Anything that diverges now is a failure.
  */
@@ -129,7 +129,7 @@ for (const name of Object.keys(PRIMITIVES)) {
   else diverged.push(name);
 }
 console.log(\`    \${matched} reproduced exactly\`);
-for (const d of diverged) console.log(\`    \${d} DIVERGES — \${KNOWN[d] ?? "UNDOCUMENTED"}\`);
+for (const d of diverged) console.log(\`    \${d} DIVERGES, \${KNOWN[d] ?? "UNDOCUMENTED"}\`);
 if (unreachable) console.log(\`    \${unreachable} could not be fetched (network)\`);
 const undocumented = diverged.filter(d => !KNOWN[d]);
 if (undocumented.length) throw new Error("undocumented divergence: " + undocumented.join(", "));
@@ -190,7 +190,7 @@ if (!bs) {
     if (!chk.receivingOk) throw new Error("could not verify a real balance");
     console.log(\`5 · chain check        \${eng.receiving().v / 10000000n} XLM across many payments, verified\`);
   } catch (e) {
-    console.log(\`5 · chain check        unavailable (\${String(e.message).slice(0,50)}) — not a package defect\`);
+    console.log(\`5 · chain check        unavailable (\${String(e.message).slice(0,50)}), not a package defect\`);
   }
 }
 
@@ -199,7 +199,7 @@ console.log("\\nEverything above ran against the tarball on npm. Nothing was clo
   );
 
   run("node", ["check.mjs"], { stdio: "inherit" });
-  console.log(`\nok — ${PKG}@${installed} does what it says`);
+  console.log(`\nok, ${PKG}@${installed} does what it says`);
 } finally {
   rmSync(dir, { recursive: true, force: true });
 }

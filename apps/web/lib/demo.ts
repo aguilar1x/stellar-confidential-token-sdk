@@ -8,7 +8,7 @@
  *
  * So this seed is published deliberately. It is a testnet account holding
  * nothing of value, created for this demonstration, and anyone may use it. The
- * alternative — asking a visitor to connect a wallet and sign — adds friction
+ * alternative, asking a visitor to connect a wallet and sign, adds friction
  * to the one thing the page exists to show.
  *
  * Its history on testnet: registered, deposited 100 XLM, merged, then sent 40
@@ -49,7 +49,7 @@ export const RPC_URL = process.env.RPC_URL ?? "https://soroban-testnet.stellar.o
 /**
  * Where the archives start scanning.
  *
- * The demo account's history is closed — it sits in ledgers 3992372..3992546
+ * The demo account's history is closed. It sits in ledgers 3992372..3992546
  * and nothing will be added to it. Scanning from the RPC's retention floor
  * instead would examine 120,000 ledgers to find the same fifteen events, which
  * costs about two seconds against a third of a second and grows every day.
@@ -93,7 +93,7 @@ export const EXPLORER_ACCOUNT = `${EXPLORER_ROOT}/account`;
  *
  * INDEXER.md §7 asks wallets to support multiple independent archive endpoints,
  * "with deployments running or contracting at least two". Independent means
- * different operators — two instances on one provider share an outage, which is
+ * different operators. Two instances on one provider share an outage, which is
  * the failure the requirement exists to prevent. This one is a Cloudflare
  * Worker; the page itself runs on Vercel.
  *

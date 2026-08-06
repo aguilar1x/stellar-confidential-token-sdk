@@ -82,7 +82,7 @@ export default async function Landing() {
 
                 The card deliberately has NO entrance animation. Its blur is a
                 backdrop-filter, and an ancestor animating opacity or transform
-                establishes a new backdrop root — so during a reveal the filter
+                establishes a new backdrop root, so during a reveal the filter
                 has no page behind it to sample and renders as nothing, then
                 snaps back when the animation settles. Do not wrap this in
                 Reveal; the credit below it can animate because it has no
@@ -268,7 +268,7 @@ export default async function Landing() {
           <Reveal delay={0.08}>
             <pre className="overflow-x-auto rounded-2xl bg-code p-6 font-mono text-[0.78rem] leading-relaxed text-white/85">
               <code>
-                {/* Lifted off /40, which lands at about 3.6:1 on this surface —
+                {/* Lifted off /40, which lands at about 3.6:1 on this surface,
                     under the 4.5:1 that small text needs to be legible to
                     everyone. /55 clears it and still reads as subordinate. */}
                 <span className="text-white/55">

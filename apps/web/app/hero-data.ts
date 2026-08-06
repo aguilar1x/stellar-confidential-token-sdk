@@ -2,8 +2,8 @@
  * The hero's one live fact.
  *
  * A hero that asserted "amounts are hidden" would be a claim. Showing the
- * building's actual commitment — the bytes the chain holds in place of what it
- * collected — makes the claim checkable in the same breath: the hex discloses
+ * building's actual commitment. The bytes the chain holds in place of what it
+ * collected, makes the claim checkable in the same breath: the hex discloses
  * nothing, and the total beside it is what the client proved that hex opens to.
  *
  * If the chain or the RPC is unreachable, the page must not invent a number.

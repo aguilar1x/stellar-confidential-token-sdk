@@ -1,5 +1,5 @@
 /**
- * `address_to_field` — Poseidon2 compression of a Stellar strkey into one
+ * `address_to_field`, Poseidon2 compression of a Stellar strkey into one
  * `F_r` element, matching `storage.rs::address_to_field`.
  *
  * The contract takes the 56-character strkey ASCII (`C…` for contracts, `G…`

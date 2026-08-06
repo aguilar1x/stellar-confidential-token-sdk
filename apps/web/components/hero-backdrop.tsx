@@ -4,7 +4,7 @@
  * A stock photograph would say nothing about confidential tokens, and a
  * gradient mesh is what every generated landing page reaches for. So the
  * backdrop is the subject: an off-centre indigo field for depth, and the actual
- * Grumpkin curve — y² = x³ − 17 — which is the curve every commitment on this
+ * Grumpkin curve, y² = x³ − 17, which is the curve every commitment on this
  * chain is a point on.
  *
  * The curve is positioned so its VERTEX is on screen. That matters: cropped
@@ -50,7 +50,7 @@ export function HeroBackdrop() {
        *
        * A two-stop radial ramps its alpha linearly and then stops dead at the
        * final offset. The eye finds that discontinuity and reads the whole thing
-       * as a disc with an edge — a purple circle sitting on the page instead of
+       * as a disc with an edge, a purple circle sitting on the page instead of
        * light in it. The intermediate stops approximate a gaussian falloff, so
        * there is no offset where the rate of change jumps.
        */}

@@ -1,6 +1,6 @@
 /**
  * Browser-safe public barrel for `stellar-confidential-token-sdk`. This entry MUST NOT import any
- * `node:*` module (directly or transitively) — it is the surface a browser
+ * `node:*` module (directly or transitively). It is the surface a browser
  * bundle (Z5) consumes. Every node:fs-touching module (circuit/VK loaders, the
  * prove ops that read vendored circuits, the JSON file store) lives on the
  * `stellar-confidential-token-sdk/node` subpath ({@link ./node.ts}) instead.
@@ -17,7 +17,7 @@ export * from "./witness/index.js";
 // top-level barrel leaves the existing StateEngine surface UNCHANGED.
 export * from "./chain/payload.js";
 // `proving/index.ts` re-exports ONLY `prover.js` (CircuitProver, KECCAK,
-// setUltraHonkBackendLoader) — never artifacts.ts/ops.ts (node:fs).
+// setUltraHonkBackendLoader), never artifacts.ts/ops.ts (node:fs).
 export * from "./proving/index.js";
 // Off-chain selective-disclosure surface. Browser-safe: prove.ts/verify.ts take
 // an injected `CircuitProver`, so nothing here pulls the node-only circuit

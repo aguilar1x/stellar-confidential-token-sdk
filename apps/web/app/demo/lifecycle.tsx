@@ -10,7 +10,7 @@ import { EXPLORER } from "@/lib/demo";
  *
  * This was four cards in a row, which threw away the two things the content
  * actually is: an ORDER, and a BOUNDARY. A grid says these are four peers; they
- * are not. So it is a rail instead — the track carries the sequence, and the
+ * are not. So it is a rail instead, the track carries the sequence, and the
  * track itself changes at the step where value stops being public, because that
  * transition is the whole point of the section.
  *

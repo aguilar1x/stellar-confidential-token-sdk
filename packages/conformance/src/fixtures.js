@@ -1,5 +1,5 @@
 /**
- * SDK.md §6.1 — primitive fixtures.
+ * SDK.md §6.1, primitive fixtures.
  *
  * "An implementation MUST reproduce every output in every file byte-for-byte."
  *
@@ -11,7 +11,7 @@
  * instead of a quiet disagreement.
  *
  * Comparison is on the zero-padded 32-byte hex, not on bigints. `0x0a` and
- * `0xa` are the same number and NOT the same fixture output — byte-for-byte is
+ * `0xa` are the same number and NOT the same fixture output, byte-for-byte is
  * the standard the spec sets, so that is the standard used here.
  */
 

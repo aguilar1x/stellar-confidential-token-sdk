@@ -17,7 +17,7 @@ import { Provenance } from "@/components/provenance";
  * commitment the chain is holding right now.
  *
  * Two things are deliberately NOT claimed here. The commitment opening proves
- * the building's published total is the one the chain holds — it does not, on
+ * the building's published total is the one the chain holds. It does not, on
  * its own, prove which payments compose it. And the total may have moved again
  * between the payment and this page load, because other visitors can pay too.
  * Both are said out loud below rather than papered over: a check that overstates
@@ -56,7 +56,7 @@ export function Receipt({
    * What this visitor put in, across the whole visit.
    *
    * There is still only ONE commitment check, because the chain holds one
-   * commitment for the building's whole balance — not one per payment. So the
+   * commitment for the building's whole balance, not one per payment. So the
    * panel sums their payments and lists them, and the check underneath is the
    * same single check it always was, now standing next to a number that
    * accounts for all of it rather than for whichever payment was last.
@@ -79,7 +79,7 @@ export function Receipt({
   /**
    * Computed after mount, never during render.
    *
-   * This is a client component, which Next still renders once on the server —
+   * This is a client component, which Next still renders once on the server,
    * so a `useMemo` here ran the curve arithmetic there too and stamped a server
    * timing into the HTML. The client then measured its own and React reported a
    * hydration mismatch, because the two numbers are never the same number.
@@ -120,7 +120,7 @@ export function Receipt({
           {/**
            * The heading used to read "here is the check", which a reader takes
            * to mean their transaction was verified. It was not, and still is
-           * not: what gets checked is the building's total — the number their
+           * not: what gets checked is the building's total, the number their
            * payment moved. The claim now matches the arithmetic underneath it,
            * because a check that is real and mislabelled is worse on this page
            * than one that is obviously decorative.

@@ -68,7 +68,7 @@ export function createHandler({ store, now, transform }) {
     }
     if (request.method !== "GET") return json({ error: "method not allowed" }, 405);
 
-    // C4 — ingestion status.
+    // C4, ingestion status.
     if (path === "/v1/health") {
       const ingested = store.ingestedThrough();
       const latest = store.latestLedger;
@@ -106,7 +106,7 @@ export function createHandler({ store, now, transform }) {
     const toLedger = toParam === null ? undefined : Number(toParam);
     if (!Number.isFinite(requestedFrom)) return badRequest("from_ledger must be a number");
     // `from_ledger=0` is how a client says "from the beginning". Stellar ledger
-    // sequences start at 1, so raising it to 1 cannot conceal a gap — there is
+    // sequences start at 1, so raising it to 1 cannot conceal a gap. There is
     // no ledger 0 to have missed. Note this clamp only ever moves the bound UP
     // to the first real ledger; clamping it up to whatever we happen to hold
     // would turn a genuine gap into a confident `complete: true`.
@@ -128,7 +128,7 @@ export function createHandler({ store, now, transform }) {
       limit,
     });
 
-    // C3 — completeness is asserted over the REQUESTED range, not over what we
+    // C3, completeness is asserted over the REQUESTED range, not over what we
     // happened to return. Clamping to what we hold would make every gap look
     // like an empty range, which is the failure this flag exists to prevent.
     const complete = store.isComplete(fromLedger, toLedger ?? store.ingestedThrough());

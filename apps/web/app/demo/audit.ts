@@ -6,14 +6,14 @@
  * payment appearing on it.
  *
  * Worth being precise about who that hides amounts from: the chain, the
- * archive, and any third party. Not a quorum of the payers themselves — an
+ * archive, and any third party. Not a quorum of the payers themselves, an
  * opened total minus n-1 known contributions leaves the nth, and no commitment
  * scheme can prevent that. The guarantee is against observers, not against
  * everyone you transact with.
  *
  * That works because Pedersen commitments add. Each confidential payment
  * contributes `commit(vᵢ, rᵢ) = vᵢ·G + rᵢ·H` to the building's receiving
- * balance, and the sum of those points is `commit(Σvᵢ, Σrᵢ)` — a commitment to
+ * balance, and the sum of those points is `commit(Σvᵢ, Σrᵢ)`, a commitment to
  * the total, with no term that leaks an individual amount. So the chain already
  * holds a commitment to the total; the building only has to open it.
  *
@@ -49,7 +49,7 @@ export interface AuditResult {
   onchainCommitment: string;
   /** The same commitment, recomputed from the total and its blinding. */
   recomputedCommitment: string;
-  /** Whether the two match — the audit. */
+  /** Whether the two match, the audit. */
   ok: boolean;
   /** How many payments were folded into it. */
   paymentCount: number;
@@ -123,7 +123,7 @@ export async function auditBuilding(): Promise<AuditResult> {
     // The audit is exactly one question: does the commitment the chain holds
     // open to the total the building publishes? Comparing against a hardcoded
     // figure instead would make the page fail the moment a visitor adds a
-    // payment — reporting a mismatch while the cryptography agreed perfectly.
+    // payment, reporting a mismatch while the cryptography agreed perfectly.
     return {
       published: receiving.v.toString(),
       fromUnits: fromUnits.toString(),

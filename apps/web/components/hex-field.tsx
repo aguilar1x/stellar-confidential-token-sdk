@@ -3,7 +3,7 @@
  *
  * Where the sibling project uses a photograph, this uses the subject's own
  * material: rows of real commitment hex, faint and faded at both edges. It is
- * the honest version of a hero image here — a stock photo would say nothing
+ * the honest version of a hero image here. A stock photo would say nothing
  * about confidential tokens, while this is literally the thing the page is
  * about, rendered as texture.
  *

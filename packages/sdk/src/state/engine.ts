@@ -2,7 +2,7 @@
  * Offline state reconstruction from the contract event stream.
  *
  * Replays confidential-token events to recover the local openings (`v`, `r`) of
- * an account's spendable and receiving balances — the secrets needed to build
+ * an account's spendable and receiving balances, the secrets needed to build
  * the next proof. Unlike the demo's networked engine, this is OFFLINE: it never
  * fetches events. Z5 (web) fetches them and feeds them into
  * {@link StateEngine.ingestEvents}.
@@ -43,7 +43,7 @@ export class StateEngine {
   /**
    * Load persisted state from the configured store, replacing the current
    * in-memory state. No-op (fresh zero-state kept) when there is no store or no
-   * saved entry. Optional — the offline engine is fully usable without it.
+   * saved entry. Optional. The offline engine is fully usable without it.
    */
   async load(): Promise<AccountState> {
     if (this.cfg.store) {
@@ -80,7 +80,7 @@ export class StateEngine {
       case "merge":
         if (ev.account === me) {
           // Merge adds the two commitment POINTS on-chain, so the openings
-          // combine as Grumpkin scalars — modulo p, not r. See groupAdd.
+          // combine as Grumpkin scalars, modulo p, not r. See groupAdd.
           state.spendable = {
             v: state.spendable.v + state.receiving.v,
             r: groupAdd(state.spendable.r, state.receiving.r),
@@ -185,8 +185,8 @@ export class StateEngine {
     receivingOk: boolean;
   } {
     // Compare the on-chain 64-byte commitment encodings directly. Byte-wise
-    // (rather than decode-then-Point.equals) so arbitrary tampering — including
-    // bytes that would decode off-curve — is reported as a mismatch instead of
+    // (rather than decode-then-Point.equals) so arbitrary tampering, including
+    // bytes that would decode off-curve, is reported as a mismatch instead of
     // throwing.
     const spendableOk = bytesEqual(commitmentBytes(this.#state.spendable), onchain.spendableC);
     const receivingOk = bytesEqual(commitmentBytes(this.#state.receiving), onchain.receivingC);

@@ -3,8 +3,8 @@
  * take a recipient's request `(P_R, nu)` and a `Transfer` event, produce the
  * proof bundle to hand back. One entry point per role:
  *
- *   - proveRecipientDisclosure — the event paid me (D-recipient, §6)
- *   - proveSenderDisclosure    — I sent the event (D-sender, §7; r_e is
+ *   - proveRecipientDisclosure, the event paid me (D-recipient, §6)
+ *   - proveSenderDisclosure   , I sent the event (D-sender, §7; r_e is
  *                                re-derived from vk + the event's sigma, §15.2)
  *
  * `proveDisclosure` is the frozen `stellar-confidential-token-sdk` surface: a thin dispatcher over
@@ -37,7 +37,7 @@ function eventRef(event: DisclosureEvent): EventRef {
 }
 
 export async function proveRecipientDisclosure(params: {
-  /** Holder's key set — must be the event's `to` account. */
+  /** Holder's key set, must be the event's `to` account. */
   keys: KeyPair;
   /** The inbound transfer event being disclosed. */
   event: DisclosureEvent;
@@ -58,7 +58,7 @@ export async function proveRecipientDisclosure(params: {
 }
 
 export async function proveSenderDisclosure(params: {
-  /** Originator's key set — must be the event's `from` account. */
+  /** Originator's key set, must be the event's `from` account. */
   keys: KeyPair;
   /** The transfer's ephemeral scalar, re-derived via `deriveEphemeralRE` (§15.2). */
   rEScalar: bigint;

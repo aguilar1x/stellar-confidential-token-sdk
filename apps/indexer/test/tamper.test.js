@@ -7,7 +7,7 @@
  * the layering is the actual claim.
  *
  * If a change ever made C3 appear to catch the lying archives, that would not
- * be an improvement — it would mean the test is no longer modelling an indexer
+ * be an improvement. It would mean the test is no longer modelling an indexer
  * that lies, and the commitment check would be going unexercised.
  */
 
@@ -68,7 +68,7 @@ describe("honest baseline", () => {
 });
 
 describe("adversary · honest-gap", () => {
-  it("serves the events but refuses to vouch — C3 is the defence", () => {
+  it("serves the events but refuses to vouch, C3 is the defence", () => {
     const bad = dishonestStore(honest, { mode: "honest-gap" });
     expect(query(bad).events).toHaveLength(3);
     expect(bad.isComplete(1, 1000)).toBe(false);

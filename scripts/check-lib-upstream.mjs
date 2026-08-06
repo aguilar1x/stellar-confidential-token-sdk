@@ -5,13 +5,13 @@
  * `circuits/lib/` is OpenZeppelin's, copied in so `nargo compile` works from a
  * fresh clone. Nargo can pin a git dependency to a branch or tag name but never
  * to a commit, so a git dependency would let this project's circuits change
- * meaning without a line of it changing — vendoring is the only way to pin.
+ * meaning without a line of it changing, vendoring is the only way to pin.
  *
  * The cost of vendoring is that the copy can silently become a fork. This
  * closes that: it fetches the library at the pinned commit and compares bytes.
  *
  * Note this pins a COMMIT, not `main`. The sibling fixtures check compares
- * against `main` on purpose — it is asking "has the spec moved?". This one asks
+ * against `main` on purpose. It is asking "has the spec moved?". This one asks
  * the opposite: "is the code we compile against still exactly what the verifier
  * on chain was built from?" Those two questions want different answers, so they
  * are two scripts rather than one.
@@ -65,15 +65,15 @@ for (const rel of FILES) {
 }
 
 if (unreachable) {
-  console.log(`\n${unreachable} file(s) unreachable — network, not a mismatch.`);
+  console.log(`\n${unreachable} file(s) unreachable, network, not a mismatch.`);
 }
 
 if (drifted) {
   console.error(
     `\n${drifted} file(s) differ from OpenZeppelin's at ${PINNED.slice(0, 7)}.\n` +
       `\nThis copy is meant to be theirs, unmodified. A difference means either\n` +
-      `someone edited the vendored library — in which case the circuits no longer\n` +
-      `compile against what the deployed verifier was built from — or the pin is\n` +
+      `someone edited the vendored library, in which case the circuits no longer\n` +
+      `compile against what the deployed verifier was built from, or the pin is\n` +
       `being moved deliberately, which needs the circuits recompiled, their\n` +
       `verification keys regenerated, and the verifier redeployed. Neither is\n` +
       `mechanical, so this fails rather than guessing.`,

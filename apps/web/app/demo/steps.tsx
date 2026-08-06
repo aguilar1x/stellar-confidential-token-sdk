@@ -18,7 +18,7 @@ import { ArrowRight, Check } from "lucide-react";
  * Three things this has to get right, and none of them are about looks.
  *
  * A tick means the visitor DID the step, never that they opened it. Marking a
- * tab complete on arrival is a progress bar that fills itself — it tells a judge
+ * tab complete on arrival is a progress bar that fills itself, it tells a judge
  * their own attention is an accomplishment, and it lies about the one thing this
  * page is asking them to establish. So completion arrives from the panel
  * content, through `useStepAction`, when a real event happens: a block explorer
@@ -26,7 +26,7 @@ import { ArrowRight, Check } from "lucide-react";
  *
  * Panels stay MOUNTED and are hidden with the `hidden` attribute instead of
  * being conditionally rendered. A visitor pays under tab 2, clicks tab 3 to see
- * what checking involves, and comes back — unmounting would have thrown away
+ * what checking involves, and comes back, unmounting would have thrown away
  * their transaction hash, their timings and their receipt link, which is the one
  * piece of state on this page that cannot be recreated without paying again.
  *
@@ -116,7 +116,7 @@ export function Steps({ steps }: { steps: Step[] }) {
            * alone: per spec, an `overflow-y: visible` beside a non-visible
            * `overflow-x` computes to `auto`. The tabs carry `-mb-px` so the
            * active underline lands on the container's rule instead of above
-           * it — one pixel of vertical overflow, which was enough for that
+           * it: one pixel of vertical overflow, which was enough for that
            * silently-promoted `auto` to render a scrollbar down the strip.
            */
           className="-mx-6 flex gap-1 overflow-x-auto overflow-y-hidden border-b border-rule px-6"

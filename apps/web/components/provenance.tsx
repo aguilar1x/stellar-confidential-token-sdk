@@ -6,7 +6,7 @@ import { EXPLORER_ACCOUNT, EXPLORER_CONTRACT } from "@/lib/demo";
  * Where the numbers being checked came from.
  *
  * Both verification panels let a reader redo the arithmetic on their own
- * machine — and then hand them the inputs. So the honest objection is not about
+ * machine, and then hand them the inputs. So the honest objection is not about
  * the maths, which they can watch: it is that the total, the blinding and the
  * on-chain commitment all arrive from this server. A sceptic can reasonably say
  * we could have produced three numbers that agree with each other and none of
@@ -14,7 +14,7 @@ import { EXPLORER_ACCOUNT, EXPLORER_CONTRACT } from "@/lib/demo";
  *
  * That objection costs two links to close. The contract and the account are
  * public, the balance is a public ledger entry, and any RPC or explorer will
- * serve it — so the reader can check the INPUT against a source we do not
+ * serve it, so the reader can check the INPUT against a source we do not
  * control, not just the arithmetic against itself.
  *
  * `rpcUrl` is shown as text rather than linked: it answers a `POST` and a link

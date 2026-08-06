@@ -28,8 +28,8 @@ const isTxHash = (s: string) => /^[0-9a-f]{64}$/i.test(s);
  * The page a judge decides on.
  *
  * It used to be watch-only: five preset adversaries, five buttons, five
- * verdicts we had arranged in advance. The interactive half — recomputing a
- * commitment from numbers the reader edits — lived on /demo, where it competed
+ * verdicts we had arranged in advance. The interactive half, recomputing a
+ * commitment from numbers the reader edits, lived on /demo, where it competed
  * with the product. They have swapped. The reader now does arithmetic first
  * against a number they can change, and only then hands the client to archives
  * that lie.
@@ -77,7 +77,7 @@ export default async function Verify({
         </p>
       </Reveal>
 
-      {/* If they paid at any point this visit, their own numbers come first —
+      {/* If they paid at any point this visit, their own numbers come first,
           whether they arrived straight from the payment or wandered off and
           came back. The slot decides; the server just hands it the live audit
           and whatever the URL carried. */}

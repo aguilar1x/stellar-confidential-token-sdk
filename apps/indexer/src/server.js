@@ -3,13 +3,13 @@
  *
  * The handler itself is a Web-standard `fetch` function, so this file is only
  * the Node adapter. A Cloudflare Worker or Deno deployment imports the same
- * handler and skips everything here — which is how two independent endpoints
+ * handler and skips everything here, which is how two independent endpoints
  * (INDEXER.md §7) stay behaviourally identical instead of drifting.
  *
  * Env:
  *   PORT               default 8787
  *   RPC_URL            default https://soroban-testnet.stellar.org
- *   TOKEN_CONTRACT_ID  required — the confidential-token contract to index
+ *   TOKEN_CONTRACT_ID  required, the confidential-token contract to index
  *   POLL_SECONDS       default 10
  */
 
@@ -61,7 +61,7 @@ createServer(async (req, res) => {
     res.end(JSON.stringify({ error: String(e?.message ?? e) }));
   }
 }).listen(PORT, () => {
-  console.log(`indexer on :${PORT} — contract ${CONTRACT}, rpc ${RPC_URL}`);
+  console.log(`indexer on :${PORT}, contract ${CONTRACT}, rpc ${RPC_URL}`);
 });
 
 await poll();

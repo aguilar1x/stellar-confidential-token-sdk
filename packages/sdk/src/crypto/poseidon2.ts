@@ -2,7 +2,7 @@
  * Poseidon2 over BN254 `F_r`, reconstructed on top of the raw permutation from
  * `@zkpassport/poseidon2` so the sponge matches `circuits/lib/src/lib.nr`
  * byte-for-byte. We deliberately do NOT use the package's own `poseidon2Hash`
- * sponge — its padding/IV convention is its own and we cannot let it drift from
+ * sponge. Its padding/IV convention is its own and we cannot let it drift from
  * the circuit's.
  *
  * Sponge (lib.nr `sponge`): width 4, rate 3, capacity 1.
@@ -89,16 +89,16 @@ export const deriveTxBlind = (s: bigint, sigma: bigint): bigint =>
  * Deterministic ephemeral scalar `r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma)`.
  *
  * The circuits leave `r_e` a free witness, so deriving it (instead of
- * sampling) changes nothing on-chain — but it lets the SENDER re-derive the
+ * sampling) changes nothing on-chain, but it lets the SENDER re-derive the
  * scalar for any past outgoing transfer from `vk` plus the event's public
  * `sigma`, which is what makes D-sender disclosures work without retaining
  * per-transfer state. Uniqueness comes from `sigma` (fresh per attempt,
  * DESIGN.md §9.6); secrecy from `vk`. Throws on the ~2⁻²⁵⁴-probability zero
- * output (T8/W8 require `r_e ≠ 0`) — resample `sigma` if that ever happens.
+ * output (T8/W8 require `r_e ≠ 0`), resample `sigma` if that ever happens.
  */
 export const deriveEphemeralRE = (vk: bigint, sigma: bigint): bigint => {
   const rE = poseidonWithDomain(DOMAIN.EPHEMERAL_KEY, [vk, sigma]);
-  if (rE === 0n) throw new Error("derived r_e is zero — resample sigma");
+  if (rE === 0n) throw new Error("derived r_e is zero, resample sigma");
   return rE;
 };
 
@@ -128,7 +128,7 @@ export const encryptEscDvk = (dvk: bigint, s: bigint, opI: bigint): bigint =>
  * The SECOND squeeze, and the reason is the whole finding behind OpenZeppelin's
  * audit item N-07 (fixed upstream in #792). Squeeze 0 is the *amount* pad, and
  * `Poseidon2(δ, s, σ)` is the same field element as `SpongeSqueeze_2(δ, s, σ)[0]`
- * — so using it here would make a withdraw's balance-checkpoint pad identical to
+ *, so using it here would make a withdraw's balance-checkpoint pad identical to
  * a transfer's amount pad. Under `(r_e, σ)` reuse, anyone who knows a transfer
  * amount could then recover the pad and decrypt a later checkpoint.
  *
@@ -141,7 +141,7 @@ export const encryptAuditorSenderBalance = (
 ): bigint => frAdd(vNew, spongeSqueeze2(DOMAIN.AUDITOR_SENDER, sAsX, sigma)[1]);
 
 /**
- * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, s_disc_x, nu)` — the U3 stage
+ * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, s_disc_x, nu)`, the U3 stage
  * of every selective-disclosure circuit (SELECTIVE_DISCLOSURE.md §4). The
  * recipient inverts it with {@link decryptWithDomain} after ECDH-recovering
  * `s_disc_x` from the bundle's `R_disc`.

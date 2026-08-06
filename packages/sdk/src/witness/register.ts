@@ -19,7 +19,7 @@ export function buildRegisterWitness(keys: KeyPair, acctF?: bigint): RegisterWit
   const account = acctF ?? keys.acctF;
   if (account === undefined) {
     throw new Error(
-      "register needs acct_f — pass it, or derive the keys with deriveKeys(sk, addrF, acctF). " +
+      "register needs acct_f, pass it, or derive the keys with deriveKeys(sk, addrF, acctF). " +
         "The circuit takes it as a public input so a proof cannot be replayed for another account.",
     );
   }

@@ -13,7 +13,7 @@ Two things get deployed: the demo page, and the archive it reads from.
 
 `INDEXER.md` §7 says wallets "SHOULD support multiple independent archive
 endpoints, with deployments running or contracting at least two". Independent
-means different operators — two instances on one provider share an outage, and
+means different operators, two instances on one provider share an outage, and
 sharing an outage is the failure the requirement exists to prevent. So the
 archive goes somewhere other than the page.
 
@@ -28,7 +28,7 @@ Cloudflare, Deno Deploy, Vercel or plain Node. Only the entry file differs.
 2. **Root Directory**: `apps/web`
 3. Deploy.
 
-No environment variables are required — the demo account and contract IDs are
+No environment variables are required. The demo account and contract IDs are
 committed in `apps/web/lib/demo.ts`, deliberately, since they are testnet
 values that hold nothing.
 
@@ -57,7 +57,7 @@ Optional, if the page should read a remote archive instead of serving its own:
 
 Serverless functions keep no memory between cold starts, so the archive can
 re-ingest on a page load. Scanning from the RPC's retention floor examines about
-120,000 ledgers to find the same fifteen events — roughly two seconds, growing
+120,000 ledgers to find the same fifteen events, roughly two seconds, growing
 daily. Scanning from the pinned floor takes about a third of a second and stays
 constant.
 
@@ -110,7 +110,7 @@ the page.
 
 ## Plain Node
 
-For a host that keeps a process alive — a VM, Fly.io, Render — use the Node
+For a host that keeps a process alive (a VM, Fly.io, Render), use the Node
 entry instead. It ingests on a timer rather than on first request, so requests
 never wait on a scan:
 
@@ -146,5 +146,5 @@ import("stellar-confidential-token-sdk/chain").then(async ({ IndexerV1Client }) 
 ```
 
 A conformant deployment answers all three. If `fetchEvents` throws
-`IncompleteHistoryError`, the archive is telling you it has a gap — which is C3
+`IncompleteHistoryError`, the archive is telling you it has a gap, which is C3
 working, not a bug.

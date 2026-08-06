@@ -1,5 +1,5 @@
 /**
- * Selective-disclosure tests — OFFLINE, MOCKED bb.js backend. No real proof or
+ * Selective-disclosure tests, OFFLINE, MOCKED bb.js backend. No real proof or
  * verification-key derivation runs: `Noir.execute` is stubbed and the
  * UltraHonkBackend is injected via `setUltraHonkBackendLoader`. What IS exercised
  * for real: the disclosure witness/ciphertext crypto (Grumpkin, Poseidon2) in
@@ -108,7 +108,7 @@ describe("disclosure round-trip helpers (real crypto, no proving)", () => {
   });
 });
 
-describe("proveDisclosure / verifyDisclosure — mocked backend", () => {
+describe("proveDisclosure / verifyDisclosure, mocked backend", () => {
   const generateProof =
     vi.fn<(w: Uint8Array, o?: unknown) => Promise<ProofResult>>(async () => ({
       proof: FAKE_PROOF,
@@ -220,7 +220,7 @@ describe("proveDisclosure / verifyDisclosure — mocked backend", () => {
 
     // And the VK-derivation was actually consulted for the compare.
     expect(getVerificationKey).toHaveBeenCalled();
-    // The proof itself was never verified — pinning fails first.
+    // The proof itself was never verified, pinning fails first.
     expect(verifyProof).not.toHaveBeenCalled();
   });
 
@@ -302,7 +302,7 @@ describe("loadDisclosureVk (node-only pinned VK)", () => {
 });
 
 /**
- * The circuit, actually executed — the guard that was missing.
+ * The circuit, actually executed. The guard that was missing.
  *
  * Every test above stubs `Noir.execute`, so the client's arithmetic is checked
  * only against itself. That is how `DOMAIN.DISCLOSURE` was moved off the value
@@ -314,7 +314,7 @@ describe("loadDisclosureVk (node-only pinned VK)", () => {
  * the client's tag and the circuit's global ever diverge again, the constraint
  * is unsatisfiable and this fails here rather than in someone's wallet.
  */
-describe("disclose_recipient — real circuit execution (no mock)", () => {
+describe("disclose_recipient, real circuit execution (no mock)", () => {
   const load = async () => (await import("../proving/artifacts.js")).loadCircuit("disclose_recipient" as never);
 
   it("executes the compiled circuit against an SDK-built witness", async () => {
@@ -327,7 +327,7 @@ describe("disclose_recipient — real circuit execution (no mock)", () => {
     await expect(new Noir(await load()).execute(w.inputs as never)).resolves.toBeDefined();
   }, 120_000);
 
-  it("is not vacuous — an amount sealed under the old tag is rejected", async () => {
+  it("is not vacuous. An amount sealed under the old tag is rejected", async () => {
     const { DOMAIN } = await import("../crypto/constants.js");
     const { poseidonWithDomain } = await import("../crypto/poseidon2.js");
     const { frMod } = await import("../crypto/field.js");
@@ -341,7 +341,7 @@ describe("disclose_recipient — real circuit execution (no mock)", () => {
       keys: holder, event, pR: pointFromJson(rk.pR), nu, rDisc: rDiscScalar,
     });
 
-    // Re-seal under 13 — what this client used before the tag was corrected.
+    // Re-seal under 13, what this client used before the tag was corrected.
     const sDiscX = ecdh(rDiscScalar, pointFromJson(rk.pR));
     const stale = frMod(w.vTx + poseidonWithDomain(13n, [sDiscX, nu]));
     expect(DOMAIN.DISCLOSURE).toBe(16n);

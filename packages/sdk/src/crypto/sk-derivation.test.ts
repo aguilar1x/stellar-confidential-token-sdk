@@ -1,12 +1,12 @@
 /**
  * SDK.md §5.1 derivation tests.
  *
- * OpenZeppelin has not published fixtures for this chain — §6.3 lists it as a
+ * OpenZeppelin has not published fixtures for this chain, §6.3 lists it as a
  * vector the specification still *requires* and does not yet supply. So these
  * tests do two things fixtures can't: they pin the structure the spec dictates
  * (so a future official fixture can only agree or reveal a real bug), and they
  * cross-check every sub-step that CAN be checked against an independent
- * implementation — SEP-0053 against @stellar/stellar-sdk's own `signMessage`,
+ * implementation, SEP-0053 against @stellar/stellar-sdk's own `signMessage`,
  * and HKDF-SHA-512 against RFC 5869 test vector 3.
  */
 
@@ -117,7 +117,7 @@ describe("§4.7 · rejection sampling", () => {
     b[31] = 5;
     const v = rejectionSample(b);
     expect(v).not.toBeNull();
-    // 0xc1 & 0x3f === 0x01 — had we cleared the whole byte this would be 0.
+    // 0xc1 & 0x3f === 0x01, had we cleared the whole byte this would be 0.
     expect(toBytes32BE(v as bigint)[0]).toBe(0x01);
   });
 
@@ -148,7 +148,7 @@ describe("§5.1 · sk derivation", () => {
     const out = hkdf(sha512, ikm, new Uint8Array(0), new Uint8Array(0), 42);
     expect(out).toHaveLength(42);
     // Extract-then-expand with an empty salt must equal a zero-filled salt of
-    // the hash length — the property RFC 5869 §2.2 specifies.
+    // the hash length, the property RFC 5869 §2.2 specifies.
     expect(out).toEqual(hkdf(sha512, ikm, new Uint8Array(64), new Uint8Array(0), 42));
   });
 
@@ -173,7 +173,7 @@ describe("§5.1 · sk derivation", () => {
     expect(got.sk).toBe(expectedSk);
   });
 
-  it("is deterministic — same inputs, same secret, every time", () => {
+  it("is deterministic, same inputs, same secret, every time", () => {
     const a = deriveSk(ROOT, CONTRACT, ACCOUNT);
     const b = deriveSk(ROOT, CONTRACT, ACCOUNT);
     expect(a.sk).toBe(b.sk);
@@ -182,14 +182,14 @@ describe("§5.1 · sk derivation", () => {
     expect(new Uint8Array(ROOT)).toEqual(ROOT);
   });
 
-  it("binds the contract — a different deployment yields a different sk", () => {
+  it("binds the contract, a different deployment yields a different sk", () => {
     const other = "CB64D3G7SM2RTH6JSGG34DDTFTQ5CFDKVDZJZSODMCX4NJ2HV2KN7OHT";
     expect(deriveSk(ROOT, CONTRACT, ACCOUNT).sk).not.toBe(
       deriveSk(ROOT, other, ACCOUNT).sk,
     );
   });
 
-  it("binds the account — accounts are unlinkable across the same deployment", () => {
+  it("binds the account, accounts are unlinkable across the same deployment", () => {
     expect(deriveSk(ROOT, CONTRACT, ACCOUNT).sk).not.toBe(
       deriveSk(ROOT, CONTRACT, OTHER_ACCOUNT).sk,
     );

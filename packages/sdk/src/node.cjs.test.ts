@@ -5,7 +5,7 @@
  *     browser-safe (no node:fs), so its CJS build has no top-level
  *     `import.meta.url` → `fileURLToPath(undefined)` crash.
  *  2. `require('stellar-confidential-token-sdk/node').loadCircuit` must be a function and resolve
- *     vendored circuits under CJS — the `shims: true` polyfill makes
+ *     vendored circuits under CJS. The `shims: true` polyfill makes
  *     `import.meta.url` work in the node subpath's CJS output.
  *
  * These exercise the BUILT `dist/*.cjs`, so they only pass after `npm run build`.

@@ -3,7 +3,7 @@
  * actually usable: it must drive the REAL register circuit to a proof that
  * self-verifies, and a transfer from that account must do the same.
  *
- * Without this, "conformant derivation" would be an untested claim — the
+ * Without this, "conformant derivation" would be an untested claim, the
  * derived `sk` could be structurally valid yet land outside whatever range the
  * circuit constrains.
  */

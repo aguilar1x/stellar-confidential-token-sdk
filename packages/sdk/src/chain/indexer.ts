@@ -1,5 +1,5 @@
 /**
- * Goldsky indexer client — the durable, full-history event source that
+ * Goldsky indexer client, the durable, full-history event source that
  * complements the RPC `getEvents` API (which only retains ~7 days).
  *
  * The indexer is a Cloudflare Worker (see `packages/indexer/`) backed by a
@@ -8,7 +8,7 @@
  * (JSON array of ScVal topics) and `value` (JSON ScVal map) for each row, and
  * ALL decoding into a {@link ConfidentialEvent} happens here in the SDK. That
  * keeps a single decoding path that the parity test (`test/indexer-parity.mjs`)
- * pins against the RPC XDR decoder in `events.ts` — the decoded `bigint`s and
+ * pins against the RPC XDR decoder in `events.ts`, the decoded `bigint`s and
  * `Point`s must be byte-identical or reconstructed balances silently diverge.
  *
  * ⚠️ Goldsky's exact JSON encoding of Soroban ScVals (hex vs base64 bytes, the
@@ -140,7 +140,7 @@ export class IndexerClient {
     if (!resp.ok) return null;
     const page = (await resp.json()) as EventsPage;
     // Match on the normalized cursor (naturalEventId), so a ref pinned from the
-    // RPC resolves here too — Goldsky's raw row id never equals an RPC ref id.
+    // RPC resolves here too, Goldsky's raw row id never equals an RPC ref id.
     const ev = (page.events ?? [])
       .map(parseIndexerEvent)
       .find((e): e is ConfidentialEvent => e !== null && e.cursor === ref.id);
@@ -168,7 +168,7 @@ async function safeText(resp: Response): Promise<string> {
  * id is `<ledger>-<txHash>-op-<N>-event-<M>`; we take the `op`/`event` indices
  * from it and pair them with the row's `ledger`/`txHash`. If the id doesn't
  * match that shape we fall back to it verbatim (unique within the indexer, but
- * it won't cross-match an RPC event — warn so a Goldsky id-format change is
+ * it won't cross-match an RPC event, warn so a Goldsky id-format change is
  * visible rather than silently breaking dedup/disclosure resolution).
  */
 function indexerEventId(rowId: string, ledger: number, txHash: string): string {
@@ -200,7 +200,7 @@ export function parseIndexerEvent(row: IndexerRow): ConfidentialEvent | null {
     if (!a) throw new Error(`indexer event "${name}" missing address topic ${i}`);
     return a;
   };
-  // Shared shape definition (events.ts) — only the addr/data adapters differ.
+  // Shared shape definition (events.ts), only the addr/data adapters differ.
   return buildConfidentialEvent(name, base, addr, dataMap(row.value));
 }
 
@@ -255,7 +255,7 @@ function parseScValMap(value: unknown): Record<string, unknown> {
   if (!rec) return {};
   const entries = asArray(rec.map);
   if (entries.length === 0) {
-    // Already-plain `{ field: val }` form — return as-is.
+    // Already-plain `{ field: val }` form, return as-is.
     return rec;
   }
   const out: Record<string, unknown> = {};

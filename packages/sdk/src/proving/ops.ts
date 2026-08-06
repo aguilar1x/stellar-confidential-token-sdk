@@ -33,14 +33,14 @@ export type TransferEnvelope = ProofEnvelope & {
 /**
  * Extract the `data: Bytes` argument from an encoder's envelope.
  *
- * The encoders in `chain/payload.ts` already return `scvBytes(<map XDR>)` — the
+ * The encoders in `chain/payload.ts` already return `scvBytes(<map XDR>)`, the
  * finished `Bytes` ScVal. What the contract wants is the raw bytes INSIDE it,
  * because the invocation layer applies its own `scvBytes` wrap when building
  * the argument.
  *
  * Calling `.toXDR()` here instead would serialize the whole `scvBytes(...)`
  * wrapper, so the contract receives bytes-of-a-bytes-ScVal and rejects the call
- * with `InvalidData` (#3507) — after the proof has already been generated, so
+ * with `InvalidData` (#3507), after the proof has already been generated, so
  * the failure looks like a proving problem when it is purely an encoding one.
  */
 function envelopeBytes(scVal: { bytes(): Uint8Array }): Uint8Array {
@@ -72,7 +72,7 @@ export async function proveRegister(keys: KeyPair, acctF?: bigint): Promise<Proo
  * Prove a confidential transfer described by `params`.
  *
  * `circuit` overrides where the compiled artifact comes from. The default reads
- * the vendored one off disk, which needs the file to still be there at runtime —
+ * the vendored one off disk, which needs the file to still be there at runtime,
  * and a bundler that cannot see a path resolved at runtime will prune it. Any
  * caller whose deployment traces its own dependencies (Next, Vercel, a Lambda
  * zip) should import the artifact so the bundle includes it, and hand it in here

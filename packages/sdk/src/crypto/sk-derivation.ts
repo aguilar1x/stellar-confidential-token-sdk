@@ -1,5 +1,5 @@
 /**
- * SDK.md §5.1 — deterministic account-secret derivation.
+ * SDK.md §5.1, deterministic account-secret derivation.
  *
  * This is the obligation that makes a confidential-token client recoverable:
  * given the same signer root and the same (contract, account) pair, every
@@ -17,7 +17,7 @@
  *            salt = "openzeppelin/confidential-token/v1/sk",
  *            info = be_32(addr_f) || be_32(acct_f) || le_4(j)))
  *
- * `j` starts at 0 and increments on every rejection — both when `RS` rejects
+ * `j` starts at 0 and increments on every rejection, both when `RS` rejects
  * the candidate (§4.7) and when the resulting `vk` would be zero, which the
  * spec additionally forbids.
  *
@@ -49,7 +49,7 @@ const LF = 0x0a;
 /**
  * Guard against a runaway derivation. Each rejection has probability well
  * under 1/2, so needing even 8 counter increments is a ~1-in-10^2 event and
- * needing 64 is impossible in practice — reaching it means the inputs or the
+ * needing 64 is impossible in practice, reaching it means the inputs or the
  * primitives are wrong, and failing loudly beats spinning.
  */
 const MAX_REJECTIONS = 64;
@@ -76,7 +76,7 @@ function concatBytes(...parts: Uint8Array[]): Uint8Array {
   return out;
 }
 
-/** `le_4(j)` — 4-byte little-endian encoding of the rejection counter. */
+/** `le_4(j)`, 4-byte little-endian encoding of the rejection counter. */
 export function le4(j: number): Uint8Array {
   if (!Number.isInteger(j) || j < 0 || j > 0xffff_ffff) {
     throw new Error(`le_4 expects a uint32, got ${j}`);
@@ -103,7 +103,7 @@ export function skSigningMessage(contract: string, account: string): Uint8Array 
 
 /**
  * The SEP-0053 signing payload: `SHA-256(prefix || msg)`. This 32-byte digest
- * — not the message — is what ed25519 signs, so a wallet's `signMessage` and a
+ *, not the message, is what ed25519 signs, so a wallet's `signMessage` and a
  * raw `Keypair.sign` agree only if the caller hashes exactly this way.
  */
 export function sep53Payload(message: Uint8Array): Uint8Array {
@@ -127,7 +127,7 @@ export interface DerivedSecret {
 /**
  * Derive `sk` (and the `vk` it implies) from a signer root, per §5.1.
  *
- * @param root      the root's bytes verbatim — a 64-byte ed25519 SEP-0053
+ * @param root      the root's bytes verbatim, a 64-byte ed25519 SEP-0053
  *                  signature, or a 32-byte raw value.
  * @param addrF     `address_to_field(contract)`.
  * @param acctF     `address_to_field(account)`.
@@ -144,7 +144,7 @@ export function deriveSkFromRoot(root: Uint8Array, addrF: bigint, acctF: bigint)
     const okm = hkdf(sha512, root, salt, info, 32);
     const sk = rejectionSample(okm);
     // Reject exactly as §4.7 says, and additionally when the induced vk is
-    // zero — the spec requires a nonzero vk, and vk is a function of sk.
+    // zero. The spec requires a nonzero vk, and vk is a function of sk.
     if (sk === null) continue;
     const vk = vkFromSk(sk, addrF);
     if (vk === 0n) continue;

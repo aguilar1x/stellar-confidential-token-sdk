@@ -1,9 +1,9 @@
 /**
- * SDK.md §6.3 — the vectors the specification requires and does not supply.
+ * SDK.md §6.3. The vectors the specification requires and does not supply.
  *
  * These are read from `vectors/` exactly the way §6.1's are read from
  * `fixtures/`: the file is the contract, the code reproduces it. Generating
- * them and then testing against the generator would prove nothing — the
+ * them and then testing against the generator would prove nothing, the
  * committed file has to be the thing under test, because that is what would be
  * contributed upstream and what another language would implement against.
  *
@@ -58,7 +58,7 @@ describe("§6.3 · δ_eph", () => {
     expect(outs.size).toBe(doc.vectors.length);
   });
 
-  it("no output is zero — the circuit constrains r_e != 0", () => {
+  it("no output is zero, the circuit constrains r_e != 0", () => {
     for (const v of doc.vectors) expect(BigInt(v.output)).not.toBe(0n);
   });
 });
@@ -95,7 +95,7 @@ describe("§6.3 · the §5.1 derivation chain", () => {
 
   it("reproduces the root signature bit-for-bit", () => {
     // ed25519 is deterministic, so the root is reproducible by anyone holding
-    // the published seed — which is what makes this a usable cross-language
+    // the published seed, which is what makes this a usable cross-language
     // vector rather than a snapshot of one run.
     const root = new Uint8Array(
       keypair.sign(Buffer.from(skSigningPayload(inputs.contract, inputs.account))),

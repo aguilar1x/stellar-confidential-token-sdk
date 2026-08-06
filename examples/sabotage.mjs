@@ -2,8 +2,8 @@
  * Break the indexer. Watch the client refuse it.
  *
  * The same account, the same chain, four different archives. One is honest;
- * three are not, in three different ways. The client is unchanged throughout —
- * every rejection comes from a check it performs by default.
+ * three are not, in three different ways. The client is unchanged throughout.
+ * Every rejection comes from a check it performs by default.
  *
  * Run:  node examples/sabotage.mjs
  *
@@ -126,7 +126,7 @@ async function main() {
   if (!secret) {
     console.error(
       "Set ALICE_SECRET to an account that has already made a confidential transfer.\n" +
-        "Run `node examples/live-payment.mjs` first — it prints the accounts it creates.",
+        "Run `node examples/live-payment.mjs` first, it prints the accounts it creates.",
     );
     process.exit(1);
   }
@@ -226,14 +226,14 @@ async function main() {
   );
 
   console.log(
-    `${DIM}The lagging archive was caught by INDEXER.md C3 — it said so itself.\n` +
+    `${DIM}The lagging archive was caught by INDEXER.md C3, it said so itself.\n` +
       `The other two LIED about completeness, so C3 could not help. They were caught\n` +
       `because the client re-derived its openings and checked them against the chain's\n` +
       `commitments (§7). That check is why the indexer never has to be trusted.${OFF}\n`,
   );
 
   if (accepted.length !== 1 || accepted[0] !== "honest" || rejected.length !== 3) {
-    console.error(`${RED}Unexpected outcome — the demo did not behave as specified.${OFF}`);
+    console.error(`${RED}Unexpected outcome. The demo did not behave as specified.${OFF}`);
     process.exit(1);
   }
   console.log(`${GREEN}✓ Only the honest archive was believed.${OFF}\n`);

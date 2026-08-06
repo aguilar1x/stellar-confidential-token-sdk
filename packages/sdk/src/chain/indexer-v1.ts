@@ -1,5 +1,5 @@
 /**
- * INDEXER.md client — the conformant archive source.
+ * INDEXER.md client, the conformant archive source.
  *
  * The spec defines four capabilities. Three are REQUIRED:
  *
@@ -16,7 +16,7 @@
  * indexer API tends to omit. Without it a client cannot distinguish "here is
  * your history" from "here is some of your history": it replays what it got,
  * reconstructs a balance that is simply wrong, and has no signal that anything
- * was missing. This client therefore treats `complete` as load-bearing —
+ * was missing. This client therefore treats `complete` as load-bearing:
  * {@link IndexerV1Client.orderedHistory} surfaces it, and
  * {@link IndexerV1Client.fetchEvents} REFUSES an incomplete range by default
  * rather than quietly returning a partial replay.
@@ -45,7 +45,7 @@ export interface IndexerV1Config {
   label?: string;
 }
 
-/** C4 — ingestion status. */
+/** C4, ingestion status. */
 export interface IngestionStatus {
   /** Chain head as the indexer sees it. */
   latestLedger: number;
@@ -75,7 +75,7 @@ export interface IndexerEventRow {
   operation_index?: number;
 }
 
-/** C2 + C3 — an ordered, paginated page that states its own completeness. */
+/** C2 + C3, an ordered, paginated page that states its own completeness. */
 export interface OrderedHistoryPage {
   events: ConfidentialEvent[];
   /** Opaque continuation cursor, or `null` when the range is exhausted. */
@@ -139,7 +139,7 @@ export class IndexerV1Client {
     return (await resp.json()) as T;
   }
 
-  /** C4 — `GET /v1/health`. */
+  /** C4, `GET /v1/health`. */
   async health(): Promise<IngestionStatus> {
     const body = await this.getJson<{
       latest_ledger?: number;
@@ -156,7 +156,7 @@ export class IndexerV1Client {
   }
 
   /**
-   * C2 + C3 — one page of ordered history. The `complete` flag is returned
+   * C2 + C3, one page of ordered history. The `complete` flag is returned
    * verbatim; callers that replay events MUST honour it.
    */
   async orderedHistory(q: HistoryQuery): Promise<OrderedHistoryPage> {
@@ -215,7 +215,7 @@ export class IndexerV1Client {
   }
 
   /**
-   * C1 (RECOMMENDED) — the latest checkpoint at or before `atLedger`. Returns
+   * C1 (RECOMMENDED), the latest checkpoint at or before `atLedger`. Returns
    * `null` when the indexer has none, which is a legitimate answer: a client
    * falls back to scanning ordered history.
    */

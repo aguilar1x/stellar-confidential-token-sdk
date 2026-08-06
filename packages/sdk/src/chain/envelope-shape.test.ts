@@ -4,7 +4,7 @@
  * The encoders return `scvBytes(<map XDR>)`. Whoever builds the invocation must
  * pass the bytes INSIDE that ScVal, because the invocation layer applies its own
  * `scvBytes` wrap. Passing `.toXDR()` instead double-wraps, and the contract
- * rejects it with `InvalidData` (#3507) — a failure that surfaces only against a
+ * rejects it with `InvalidData` (#3507), a failure that surfaces only against a
  * live node, long after the proof was generated, and reads like a proving bug.
  *
  * These tests decode the envelope back and assert it is the payload/proof map,
@@ -33,7 +33,7 @@ const PROOF = new Uint8Array(64).fill(0xab);
 function decodeEnvelope(scVal: xdr.ScVal): xdr.ScVal {
   // Step 1: the encoder's result is already a Bytes ScVal.
   expect(scVal.switch().name).toBe("scvBytes");
-  // Step 2: those bytes are the XDR of the {payload, proof} map — NOT the XDR
+  // Step 2: those bytes are the XDR of the {payload, proof} map, NOT the XDR
   // of another scvBytes wrapper.
   return xdr.ScVal.fromXDR(Buffer.from(scVal.bytes()));
 }
@@ -80,7 +80,7 @@ describe("data envelope shape", () => {
 
     // What a correct caller sends.
     const correct = new Uint8Array(scVal.bytes());
-    // What `.toXDR()` would send instead — the serialized Bytes WRAPPER.
+    // What `.toXDR()` would send instead, the serialized Bytes WRAPPER.
     const doubleWrapped = new Uint8Array(scVal.toXDR());
 
     expect(doubleWrapped).not.toEqual(correct);

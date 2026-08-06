@@ -4,7 +4,7 @@
  * Each is the actual `INDEXER.md` handler from `apps/indexer`, over the actual
  * chain history, differing only in how it serves it. The page then points the
  * actual `IndexerV1Client` at them over HTTP. Nothing here is a fixture or a
- * simulation of a rejection — the client genuinely fetches, genuinely
+ * simulation of a rejection, the client genuinely fetches, genuinely
  * reconstructs, and genuinely refuses three of the four.
  */
 
@@ -24,7 +24,7 @@ import { CONTRACTS, INDEX_FROM_LEDGER, RPC_URL, type ArchiveId } from "@/lib/dem
 
 export const runtime = "nodejs";
 // The chain history for a fixed demo account does not change, so ingesting once
-// per server lifetime is enough — and keeps a page load from waiting on a full
+// per server lifetime is enough, and keeps a page load from waiting on a full
 // RPC scan every time.
 export const dynamic = "force-dynamic";
 
@@ -54,7 +54,7 @@ type TamperOptions = Parameters<typeof dishonestStore>[1];
 
 /**
  * Archives this deployment serves itself. `honest` needs no transform, and
- * `independent` is not served here at all — it is a separately-deployed Worker
+ * `independent` is not served here at all. It is a separately-deployed Worker
  * on another provider, which is the whole point of it.
  */
 type LocalAdversary = Exclude<ArchiveId, "honest" | "independent">;

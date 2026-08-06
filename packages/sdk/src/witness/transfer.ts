@@ -64,11 +64,11 @@ export interface TransferWitness {
    */
   recipientView: { vTx: bigint; rTx: bigint; cTx: Point };
   /**
-   * The ephemeral SCALAR `r_e` for this transfer — the witness that lets the
+   * The ephemeral SCALAR `r_e` for this transfer, the witness that lets the
    * sender later prove what the event ciphertext contains (D-sender,
    * SELECTIVE_DISCLOSURE.md §15.2). Derived as
    * `Poseidon2(EPHEMERAL_KEY, vk, sigma)`, so the sender can recompute it
-   * from `vk` + the event's public `sigma` at any time — nothing to retain.
+   * from `vk` + the event's public `sigma` at any time, nothing to retain.
    */
   rEScalar: bigint;
 }

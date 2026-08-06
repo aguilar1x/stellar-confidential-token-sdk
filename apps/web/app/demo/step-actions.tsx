@@ -10,7 +10,7 @@ import { useStepAction } from "./steps";
  *
  * Both are ordinary links that also report. Kept apart from the markup they
  * live in so the ledger table and the closing call-to-action can stay server
- * components — only the anchor itself needs to be interactive.
+ * components, only the anchor itself needs to be interactive.
  */
 
 /**
@@ -38,7 +38,7 @@ export function ExplorerLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-/** Leaving for the page that lets them attack it — the action of step three. */
+/** Leaving for the page that lets them attack it, the action of step three. */
 export function StepLink({
   href,
   children,

@@ -59,7 +59,7 @@ jobs:
           node-version: 22
 
       # Everything above tests the source. This tests the tarball a reader
-      # actually installs — a package can be broken by a bad files list, a wrong
+      # actually installs. A package can be broken by a bad files list, a wrong
       # exports map or a missing asset while every source test stays green. The
       # double-wrapped proof envelope shipped in 0.1.0 was exactly that shape.
       - name: Install from the registry and run the real flow

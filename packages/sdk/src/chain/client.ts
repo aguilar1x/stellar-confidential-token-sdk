@@ -4,12 +4,12 @@
  *
  * Browser-safe: `rpc.Server` is fetch-based (no `node:*`). The invoke side
  * takes an injected {@link Signer}, so the web app can wrap Freighter and a
- * Node script can wrap a {@link Keypair} via {@link keypairSigner} — neither
+ * Node script can wrap a {@link Keypair} via {@link keypairSigner}, neither
  * pulls a node-only dependency into this module.
  *
  * No indexer here. State that the protocol exposes only through events is read
  * with the RPC `getEvents` API (see `events.ts`), accepting its ~7-day
- * retention window — the central trade-off of this demo.
+ * retention window, the central trade-off of this demo.
  */
 
 import {

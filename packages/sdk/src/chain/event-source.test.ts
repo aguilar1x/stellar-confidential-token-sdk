@@ -13,7 +13,7 @@ import type { IndexerClient } from "./indexer.js";
 
 const TOKEN = "CCREDIB3DG3IBVUKBL7QMEK4MTPSTODR7MQ34QY4SQ5LZ5L4WFWNVNXG";
 
-// Minimal events — dedupeById/hybrid only read `.cursor` (id), `.ledger`, type.
+// Minimal events, dedupeById/hybrid only read `.cursor` (id), `.ledger`, type.
 const ev = (cursor: string, ledger: number, type = "deposit"): ConfidentialEvent =>
   ({ type, cursor, ledger, txHash: "tx" }) as unknown as ConfidentialEvent;
 
@@ -80,7 +80,7 @@ function mockClient(opts: {
 // parseEvent from choking, RPC-leg events here are unknown-type (skipped).
 function rpcShape(_e: ConfidentialEvent): any {
   // An unknown-symbol event: parseEvent returns null and skips it, so the RPC
-  // leg contributes nothing — the indexer leg drives the assertions.
+  // leg contributes nothing, the indexer leg drives the assertions.
   return { id: "0-0", ledger: 0, txHash: "tx", topic: [{ sym: () => ({ toString: () => "noop" }) }], value: {} };
 }
 

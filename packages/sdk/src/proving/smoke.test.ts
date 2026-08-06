@@ -1,7 +1,7 @@
 /**
  * Real end-to-end proving smoke (Z2.13). ONE non-mocked UltraHonk proof over the
- * vendored `register` circuit, proving the whole pipeline — witness build →
- * bb.js WASM proof (keccak transcript) → self-verify — works on-chain-compatibly.
+ * vendored `register` circuit, proving the whole pipeline, witness build →
+ * bb.js WASM proof (keccak transcript) → self-verify, works on-chain-compatibly.
  *
  * This is intentionally slow: bb.js loads WASM and may fetch a structured
  * reference string on the first proof. Hence the 120s timeout. It runs in the

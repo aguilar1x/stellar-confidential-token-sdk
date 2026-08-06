@@ -179,7 +179,7 @@ caught.**
 > and the event decoder can all be wrong or hostile; the client's position is
 > that it does not matter, because reconstructed openings are re-committed and
 > compared byte-for-byte against the points the chain holds. `INDEXER.md` §7
-> scopes archive trust to "availability and completeness only — never
+> scopes archive trust to "availability and completeness only, never
 > confidentiality or integrity", and this is the code that makes that scoping
 > real rather than aspirational.
 

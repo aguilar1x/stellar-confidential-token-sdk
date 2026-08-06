@@ -1,5 +1,5 @@
 /**
- * Full chain-layer barrel — the `stellar-confidential-token-sdk/chain` subpath surface (see
+ * Full chain-layer barrel, the `stellar-confidential-token-sdk/chain` subpath surface (see
  * `src/chain.ts`).
  *
  * ⚠️ Name collision: this module's `events.ts` defines a chain-layer

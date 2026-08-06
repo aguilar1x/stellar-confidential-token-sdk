@@ -3,7 +3,7 @@
  *
  * The demo page lets a visitor add a real payment to the building. That needs a
  * funded confidential balance sitting ready, because proving and submitting is
- * already several seconds — nobody is waiting through a register, a deposit and
+ * already several seconds, nobody is waiting through a register, a deposit and
  * a merge as well.
  *
  * It deposits far more than the demo will ever spend so the button keeps

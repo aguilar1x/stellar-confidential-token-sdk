@@ -1,7 +1,7 @@
 /**
  * Offline event-parse test. Builds synthetic Map-format RPC event responses
  * (the soroban-sdk 26 `#[contractevent]` shape) and drives them through
- * `fetchEvents` with a mocked `rpc.Server.getEvents` — no network. Asserts the
+ * `fetchEvents` with a mocked `rpc.Server.getEvents`, no network. Asserts the
  * typed `ConfidentialEvent` union comes back with the right topics/data, that
  * the RPC cursor→`naturalEventId` normalization holds, that unknown events are
  * skipped, and that pagination follows the returned cursor.

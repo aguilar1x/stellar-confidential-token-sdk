@@ -13,12 +13,12 @@ import { Provenance } from "@/components/provenance";
  * reader's own arithmetic: the total and its blinding go in, `commit(v, r)` runs
  * IN THIS BROWSER via the published SDK, and the result is compared byte-for-byte
  * against the commitment the chain is holding. No server is consulted, so there
- * is nothing to take on trust — the refusal is computed on the reader's machine
+ * is nothing to take on trust. The refusal is computed on the reader's machine
  * from numbers they can edit.
  *
  * Why the byte-difference count is on screen: the interesting thing about a
  * one-stroop lie is not that it is caught, it is that it cannot be caught
- * *partially*. Pedersen commitments have no locality — the smallest possible
+ * *partially*. Pedersen commitments have no locality, the smallest possible
  * change to the value moves almost every byte of the point. A tamperer cannot
  * get close.
  *
@@ -72,7 +72,7 @@ export function Tamper({
   const rNum = parse(r);
 
   /**
-   * After mount, not during render — the same hydration trap the receipt panel
+   * After mount, not during render, the same hydration trap the receipt panel
    * fell into. A `useMemo` here runs on the server too, and the `performance`
    * timing it stamps into the HTML can never match the one the browser
    * measures, so React discards the tree. An effect also keeps the promise the

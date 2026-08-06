@@ -3,13 +3,13 @@
  * `@noble/curves`.
  *
  *   - Equation: `y^2 = x^3 - 17`
- *   - Base field  (coordinates): BN254 `F_r`  — Noir's `Field`
+ *   - Base field  (coordinates): BN254 `F_r` , Noir's `Field`
  *   - Scalar field (multipliers): BN254 `F_p`
  *
  * Generators G and H are Barretenberg's `derive_generators(
  * "DEFAULT_DOMAIN_SEPARATOR")` outputs (indices 0 and 1), matching
  * `circuits/lib/src/lib.nr`. There is NO known discrete-log relation between
- * them — do not assume `H = k·G`.
+ * them, do not assume `H = k·G`.
  *
  * On-chain a point is `BytesN<64>` = `be(x) || be(y)`, and the identity is all
  * 64 bytes zero. `pointToBytes` / `pointFromBytes` implement exactly that.
@@ -87,7 +87,7 @@ export function commit(value: bigint, randomness: bigint): Point {
  * ECDH shared secret, DESIGN.md §2.4: `s = Poseidon2(δ_ecdh, S.x, S.y)`.
  *
  * Absorbing both coordinates is the point. An x-only secret is invariant under
- * point negation — `P` and `−P` share an x — and `−PVK = (−vk)·H` is itself a
+ * point negation, `P` and `−P` share an x, and `−PVK = (−vk)·H` is itself a
  * valid registration, so an x-only construction makes the key→secret map
  * two-to-one. That is OpenZeppelin's audit finding L-03, fixed upstream in #778.
  *

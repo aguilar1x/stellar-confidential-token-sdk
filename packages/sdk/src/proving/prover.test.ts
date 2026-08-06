@@ -21,7 +21,7 @@ const FAKE_CIRCUIT = { bytecode: "fake-acir" } as unknown as CompiledCircuit;
 /** Deterministic proof result the mock backend returns. */
 const FAKE_RESULT: ProofResult = { proof: new Uint8Array([1, 2, 3]), publicInputs: ["0x01"] };
 
-describe("CircuitProver — keccak transcript", () => {
+describe("CircuitProver, keccak transcript", () => {
   const generateProof =
     vi.fn<(witness: Uint8Array, options?: unknown) => Promise<ProofResult>>(async () => FAKE_RESULT);
   const verifyProof =

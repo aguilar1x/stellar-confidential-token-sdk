@@ -1,7 +1,7 @@
 /**
  * Disclosure-recipient (verifier-side) key and request handling
- * (SELECTIVE_DISCLOSURE.md §2.1). The recipient is any third party — a
- * compliance desk, tax authority, KYC provider — that wants one fact proven.
+ * (SELECTIVE_DISCLOSURE.md §2.1). The recipient is any third party (a
+ * compliance desk, tax authority, KYC provider) that wants one fact proven.
  * They hold a long-lived Grumpkin keypair `(r_R, P_R)` and mint a fresh nonce
  * `nu` per request; both are independent of the token contract and of any
  * Stellar account.
@@ -46,7 +46,7 @@ export function newDisclosureRequest(keys: RecipientKeys): DisclosureRequest {
 }
 
 /**
- * §5.3 step 6 — open the disclosure ciphertext:
+ * §5.3 step 6, open the disclosure ciphertext:
  * `S_disc = r_R · R_disc`, `v_tx = v_tilde_disc - Poseidon2(δ_disc, S_disc.x, nu)`.
  * Only meaningful after the proof verified; callers must not surface the
  * value from a bundle that failed any §5.3 step.

@@ -140,7 +140,7 @@ async function main() {
   console.log(`    Alice vk = ${aliceId.keys.vk.toString(16).slice(0, 16)}…`);
   console.log(`    Bob   vk = ${bobId.keys.vk.toString(16).slice(0, 16)}…`);
 
-  // Deriving twice must give the same key — that is the recoverability property.
+  // Deriving twice must give the same key. That is the recoverability property.
   const again = confidentialIdentity(alice);
   if (again.keys.sk !== aliceId.keys.sk) throw new Error("derivation is not deterministic");
   console.log("    re-derived Alice from the same signer → identical sk ✓");
@@ -167,7 +167,7 @@ async function main() {
       [addr(id.address), u32(AUDITOR_ID), bytesVal(payload)],
       signer,
     );
-    console.log(`    ${name} registered — tx ${res.hash}`);
+    console.log(`    ${name} registered, tx ${res.hash}`);
   }
 
   log("5", `Alice deposits ${DEPOSIT_STROOPS / 10_000_000n} XLM (public, by design)…`);

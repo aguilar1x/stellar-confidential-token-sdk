@@ -14,7 +14,7 @@
  * Env:
  *   TOKEN_CONTRACT_ID  required
  *   RPC_URL            default https://soroban-testnet.stellar.org
- *   FROM_LEDGER        default 0 (the retention floor — slow; pin it)
+ *   FROM_LEDGER        default 0 (the retention floor, slow; pin it)
  */
 
 import { rpc } from "@stellar/stellar-sdk";
@@ -25,7 +25,7 @@ import { ingestFromRpc } from "./ingest.js";
 
 /**
  * Cached per isolate. Concurrent requests during a cold start share one
- * ingestion rather than each launching their own — the promise is stored, not
+ * ingestion rather than each launching their own. The promise is stored, not
  * the result.
  */
 let ingestion = null;

@@ -3,13 +3,13 @@
  *
  * The fixtures are vendored so CI stays hermetic and the suite runs offline.
  * The cost of vendoring is that the copy can silently become a fork of the
- * specification — at which point the suite would keep passing against a
+ * specification, at which point the suite would keep passing against a
  * snapshot of what the spec used to say, which is a more convincing kind of
  * wrong than failing outright.
  *
  * This closes that gap: it fetches upstream and compares bytes. A difference is
- * not automatically an error in either direction — it means the spec moved and
- * a human has to decide what that implies — so the message says exactly that
+ * not automatically an error in either direction. It means the spec moved and
+ * a human has to decide what that implies, so the message says exactly that
  * rather than pretending the fix is mechanical.
  */
 
@@ -29,7 +29,7 @@ const sha = (buf) => createHash("sha256").update(buf).digest("hex").slice(0, 16)
 
 const files = readdirSync(FIXTURES).filter((f) => f.endsWith(".json")).sort();
 if (files.length === 0) {
-  console.error("No vendored fixtures found — the suite would be vacuous.");
+  console.error("No vendored fixtures found. The suite would be vacuous.");
   process.exit(1);
 }
 

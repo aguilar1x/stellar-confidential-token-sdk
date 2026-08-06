@@ -2,8 +2,8 @@
  * Browser-safe `stellar-confidential-token-sdk/chain` subpath: the on-chain reader, event fetch,
  * and auditor decrypt layer the Z6 web pages consume.
  *
- * This entry MUST NOT import any `node:*` module (directly or transitively) —
- * everything here is fetch-based (`@stellar/stellar-sdk` `rpc.Server`, the
+ * This entry MUST NOT import any `node:*` module (directly or transitively).
+ * Everything here is fetch-based (`@stellar/stellar-sdk` `rpc.Server`, the
  * indexer's global `fetch`) or pure crypto (auditor decrypt). It is exposed on
  * a DEDICATED subpath rather than the top-level `stellar-confidential-token-sdk` barrel because
  * the chain-layer `ConfidentialEvent` union (`chain/events.ts`) collides by

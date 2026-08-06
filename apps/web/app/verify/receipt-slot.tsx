@@ -11,14 +11,14 @@ import { Receipt } from "./receipt";
  * Two sources, in this order:
  *
  *   1. The query string, when they arrived by following the link from a payment
- *      they just made — or reopened one they had pasted somewhere. An explicit
+ *      they just made, or reopened one they had pasted somewhere. An explicit
  *      URL is always the stronger signal and stays shareable.
  *   2. sessionStorage, when they paid earlier in this visit and have since been
  *      to other pages. This is the case the query string alone could not cover.
  *
  * Storage is read after mount rather than during render: it does not exist on
  * the server, so seeding state from it would hydrate against different HTML.
- * The panel is absent on the first paint and appears once — which is honest,
+ * The panel is absent on the first paint and appears once, which is honest,
  * since until then the page genuinely does not know whether anyone paid.
  */
 export function ReceiptSlot({
@@ -47,7 +47,7 @@ export function ReceiptSlot({
   }, []);
 
   /**
-   * The URL's receipt goes first when there is one — it is the payment they
+   * The URL's receipt goes first when there is one. It is the payment they
    * just made, and it must show even on a machine whose storage is empty
    * (a pasted link, a fresh tab). Everything else follows, deduped.
    */

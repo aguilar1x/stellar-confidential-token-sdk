@@ -6,8 +6,8 @@
  * opening. Every page shows one, because it is the thing being argued about.
  *
  * It is rendered as the full hex rather than a truncated preview wherever there
- * is room. Truncating it would make it read as an id — a handle for something
- * stored elsewhere — when the point is the opposite: this IS the stored value,
+ * is room. Truncating it would make it read as an id, a handle for something
+ * stored elsewhere, when the point is the opposite: this IS the stored value,
  * and it discloses nothing.
  */
 export function Commitment({

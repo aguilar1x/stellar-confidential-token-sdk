@@ -4,7 +4,7 @@
  * Events are stored as the XDR the RPC served, never as a decoded form. The
  * client decodes them with the same XDR path it uses for live RPC reads, so an
  * archived event and its live twin are byte-identical. Decoding here would fork
- * that path and let the two sources disagree — which reconstructs a wrong
+ * that path and let the two sources disagree, which reconstructs a wrong
  * balance without anything looking broken.
  *
  * The indexer's reason to exist is that the RPC keeps only about seven days.
@@ -54,7 +54,7 @@ function toStored(raw, contractId) {
   }
 
   // An RPC event id is `<toid>-<eventOrder>`, where the operation index lives
-  // in the low bits of the toid — NOT two plain numbers. Parsing it any other
+  // in the low bits of the toid, NOT two plain numbers. Parsing it any other
   // way yields events whose cursor no longer matches the RPC's for the same
   // event, and the hybrid source stops deduping them. Reuse the SDK's parser
   // so there is exactly one definition of that mapping.
@@ -89,7 +89,7 @@ export async function ingestFromRpc({ server, store, contractId, fromLedger }) {
   const oldest = health.oldestLedger ?? fromLedger;
 
   // Asking below the retention floor is rejected by the RPC, so the honest
-  // start is the floor — and the range we then claim to have examined must
+  // start is the floor, and the range we then claim to have examined must
   // start there too, never at the ledger we wished we could read.
   const start = Math.max(fromLedger, oldest);
   if (start > head) return { ingested: 0, from: start, to: head };
@@ -97,7 +97,7 @@ export async function ingestFromRpc({ server, store, contractId, fromLedger }) {
   const collected = [];
   let cursor;
   // `getEvents` scans a bounded slice of ledgers per call, so an EMPTY page
-  // with a cursor means "nothing in this slice, keep going" — not "done".
+  // with a cursor means "nothing in this slice, keep going", not "done".
   // Treating an empty page as the end is why a cold start from the retention
   // floor silently finds nothing: the first slice is usually quiet, and the
   // scan stops before ever reaching the ledgers that matter.

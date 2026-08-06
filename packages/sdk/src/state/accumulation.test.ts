@@ -3,14 +3,14 @@
  *
  * A commitment is `v·G + r·H`, and the chain folds an incoming payment in by
  * adding POINTS. So the openings combine as Grumpkin scalars, modulo the group
- * order `p` — not modulo `r`. Individual blindings are `F_r` elements and need
+ * order `p`, not modulo `r`. Individual blindings are `F_r` elements and need
  * no reduction; their sums do not stay in `F_r`, and since `r < p`, reducing a
  * sum modulo `r` subtracts `r` where the group subtracts nothing. The opening
  * is then wrong by exactly `r·H`.
  *
  * This is invisible with one payment and near-certain with several: two random
  * blindings cross `r` about half the time. Found against a real testnet
- * account that had received eight — six of the seven additions wrapped.
+ * account that had received eight, six of the seven additions wrapped.
  *
  * The consequence is not cosmetic. A wallet in that state computes an opening
  * its own on-chain commitment does not verify against, so it reports its state
@@ -83,7 +83,7 @@ describe("the moduli are genuinely different", () => {
     expect(groupAdd(5n, 7n)).toBe(frAdd(5n, 7n));
   });
 
-  it("the disagreement moves the commitment by r·H — not by nothing", () => {
+  it("the disagreement moves the commitment by r·H, not by nothing", () => {
     const wrong = commit(100n, frAdd(FR_MODULUS - 10n, 100n));
     const right = commit(100n, groupAdd(FR_MODULUS - 10n, 100n));
     expect(pointToBytes(wrong)).not.toEqual(pointToBytes(right));
@@ -92,7 +92,7 @@ describe("the moduli are genuinely different", () => {
 });
 
 describe("receiving balance accumulation", () => {
-  it("one payment reconstructs exactly — which is why this hid for so long", () => {
+  it("one payment reconstructs exactly, which is why this hid for so long", () => {
     const p = incoming(12n, 1n, 10);
     const engine = new StateEngine({ address: ME, keys: recipient });
     engine.ingestEvents([p.event]);
@@ -118,7 +118,7 @@ describe("receiving balance accumulation", () => {
     );
   });
 
-  it("at least one partial sum actually wrapped — otherwise this proves nothing", () => {
+  it("at least one partial sum actually wrapped, otherwise this proves nothing", () => {
     // Guards the test above: if no sum crossed r, both moduli would agree and
     // the case would pass under the old, wrong implementation too.
     const dues = [12n, 18n, 25n, 25n, 34n, 34n, 51n, 63n];
