@@ -122,12 +122,23 @@ export const encryptAllowance = (vA: bigint, dvk: bigint, sigmaA: bigint): bigin
 export const encryptEscDvk = (dvk: bigint, s: bigint, opI: bigint): bigint =>
   frAdd(dvk, poseidonWithDomain(DOMAIN.ESCROWED_DELEGATION_VIEWING_KEY, [s, opI]));
 
-/** `b_tilde_aud_s = v_new + Poseidon2(AUDITOR_SENDER, s_a_s_x, sigma)`. */
+/**
+ * `b_tilde_aud_s = v_new + SpongeSqueeze_2(AUDITOR_SENDER, s_a_s_x, sigma)[1]`.
+ *
+ * The SECOND squeeze, and the reason is the whole finding behind OpenZeppelin's
+ * audit item N-07 (fixed upstream in #792). Squeeze 0 is the *amount* pad, and
+ * `Poseidon2(δ, s, σ)` is the same field element as `SpongeSqueeze_2(δ, s, σ)[0]`
+ * — so using it here would make a withdraw's balance-checkpoint pad identical to
+ * a transfer's amount pad. Under `(r_e, σ)` reuse, anyone who knows a transfer
+ * amount could then recover the pad and decrypt a later checkpoint.
+ *
+ * This used squeeze 0 until the verifier was rebuilt from post-fix circuits.
+ */
 export const encryptAuditorSenderBalance = (
   vNew: bigint,
   sAsX: bigint,
   sigma: bigint,
-): bigint => frAdd(vNew, poseidonWithDomain(DOMAIN.AUDITOR_SENDER, [sAsX, sigma]));
+): bigint => frAdd(vNew, spongeSqueeze2(DOMAIN.AUDITOR_SENDER, sAsX, sigma)[1]);
 
 /**
  * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, s_disc_x, nu)` — the U3 stage

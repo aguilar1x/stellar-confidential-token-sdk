@@ -92,12 +92,24 @@ export const DOMAIN = {
   /** Recipient-auditor channel tag. */
   AUDITOR_RECIPIENT: 12n,
   /**
+   * ECDH shared-secret scalar extraction, DESIGN.md §2.4:
+   * `s = Poseidon2(ECDH_SHARED_SECRET, S.x, S.y)`.
+   *
+   * Absent from this table until the verifier was rebuilt from post-fix
+   * circuits, because the x-only construction it replaced absorbs no domain at
+   * all. DESIGN_cont.md §13 assigns 13; sweeping tags 11–16 against
+   * OpenZeppelin's `ecdh` fixture confirms it independently — no other value
+   * reproduces the vector.
+   */
+  ECDH_SHARED_SECRET: 13n,
+  /**
    * Off-chain selective-disclosure ciphertext to a disclosure recipient:
    * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, S_disc.x, nu)`.
-   * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`); continues the on-chain
-   * tag list. Source of truth: packages/disclosure circuits.
+   * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`), which takes its value
+   * from DESIGN_cont.md §13. Was 13 here, from before that table existed —
+   * which is `delta_ecdh`'s value.
    */
-  DISCLOSURE: 13n,
+  DISCLOSURE: 16n,
   /**
    * Aggregate-disclosure nonce binding (`delta_disc_bind`). Reserved, unused.
    * DESIGN_cont.md §13 assigns 15; it previously sat at 14 here, which is

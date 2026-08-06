@@ -18,6 +18,9 @@
 import { weierstrassN, type WeierstrassPoint } from "@noble/curves/abstract/weierstrass";
 import { Field } from "@noble/curves/abstract/modular";
 
+import { DOMAIN } from "./constants.js";
+import { poseidonWithDomain } from "./poseidon2.js";
+
 import { FR_MODULUS, FP_MODULUS, G_X, G_Y, H_X, H_Y } from "./constants.js";
 import { fromBytesBE, toBytes32BE } from "./field.js";
 
@@ -80,11 +83,23 @@ export function commit(value: bigint, randomness: bigint): Point {
   return scalarMul(value, G).add(scalarMul(randomness, H));
 }
 
-/** ECDH shared-secret x-coordinate: `(scalar · P).x`. Throws on identity. */
+/**
+ * ECDH shared secret, DESIGN.md §2.4: `s = Poseidon2(δ_ecdh, S.x, S.y)`.
+ *
+ * Absorbing both coordinates is the point. An x-only secret is invariant under
+ * point negation — `P` and `−P` share an x — and `−PVK = (−vk)·H` is itself a
+ * valid registration, so an x-only construction makes the key→secret map
+ * two-to-one. That is OpenZeppelin's audit finding L-03, fixed upstream in #778.
+ *
+ * This returned `(scalar · P).x` until the verifier this project deploys against
+ * was rebuilt from post-fix circuits. It matched the deployment, not the
+ * specification, and the divergence was recorded rather than hidden.
+ */
 export function ecdh(scalar: bigint, p: Point): bigint {
   const s = scalarMul(scalar, p);
   if (s.is0()) throw new Error("ecdh produced the identity (degenerate key)");
-  return s.toAffine().x;
+  const { x, y } = s.toAffine();
+  return poseidonWithDomain(DOMAIN.ECDH_SHARED_SECRET, [x, y]);
 }
 
 /** Affine coordinates, returning `(0, 0)` for the identity. */
