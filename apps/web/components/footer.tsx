@@ -97,9 +97,10 @@ export function Footer() {
             own, and it is the one thing on this page pushed hard right, so it
             reads as a signature on the notice rather than as another link.
 
-            No `brightness-0 invert` here, unlike the hero: that pair exists to
-            force a dark mark white on the dark hero, and repeating it on paper
-            would erase the logo into the background. */}
+            The black variant of the mark, not the one the hero uses. That file
+            is white throughout, which is right on the hero and invisible on
+            paper, and no CSS filter recovers a dark mark from a white source
+            without also flattening the shape it is cut out of. */}
         <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-rule pt-6">
           <p className="max-w-xl text-[0.82rem] leading-relaxed text-ink-soft">
             Apache-2.0 · testnet only, not audited, do not hold value with this
@@ -113,7 +114,7 @@ export function Footer() {
             Built by
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/logos/oppia.svg"
+              src="/logos/oppia-black.svg"
               alt="Oppia Labs"
               className="h-5 w-auto opacity-80"
             />
