@@ -17,7 +17,7 @@ const FINDINGS = [
   },
   {
     title: "An ephemeral scalar nothing constrains",
-    body: "r_e was derived under the wrong domain tag. No circuit constrains it, so every proof still verified — the damage only shows when a second client cannot recompute it and the transfer stops being disclosable.",
+    body: "r_e was derived under the wrong domain tag. No circuit constrains it, so every proof still verified. The damage only shows when a second client cannot recompute it and the transfer stops being disclosable.",
     where: "found by the conformance suite",
   },
   {
@@ -42,7 +42,7 @@ export default async function Landing() {
             {/* Left: the claim. */}
             <div>
               <Reveal>
-                <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/50">
+                <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-accent-lift/85">
                   OpenZeppelin Confidential Tokens · Stellar
                 </p>
                 <h1 className="mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl lg:text-[3.4rem]">
@@ -51,11 +51,10 @@ export default async function Landing() {
                   A total everybody can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
-                  Getting there means deriving keys that match byte-for-byte on every
-                  device, rebuilding balances from an archive you did not write, and
-                  generating proofs. All three fail silently — as money that will not move.
-                  This ships all three. One signature in, a sealed transfer out — and the
-                  page below times every stage of it in front of you.
+                  Three things have to hold: keys that derive identically on every
+                  device, balances rebuilt from an archive you did not write, and proofs
+                  the chain accepts. All three fail silently, as money that will not move.
+                  This ships all three, and times every stage in front of you.
                 </p>
               </Reveal>
 
@@ -128,7 +127,7 @@ export default async function Landing() {
                     What the opening proves
                   </p>
                   <p className="mt-1.5 font-mono text-3xl font-bold text-white">
-                    {hero.verified ? hero.total : "—"}
+                    {hero.verified ? hero.total : "not read"}
                   </p>
                 </div>
               </figure>
@@ -194,7 +193,7 @@ export default async function Landing() {
               </h3>
               <p className="mt-3 flex-1 text-[0.94rem] leading-relaxed text-ink-soft">
                 Rebuilding a wallet means replaying events from an archive it did not write.
-                Corrupt one yourself and watch the client refuse it — including the archives
+                Corrupt one yourself and watch the client refuse it, including the archives
                 that claim to be complete while quietly dropping an event.
               </p>
               <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-refused">
@@ -217,7 +216,7 @@ export default async function Landing() {
               Three defects, every one ours, every one silent until real money moved.
             </h2>
             <p className="mt-5 max-w-xl text-[0.94rem] leading-relaxed text-ink-soft">
-              None of these throw. Each produces a wallet that looks fine and is wrong — which
+              None of these throw. Each produces a wallet that looks fine and is wrong, which
               is the whole reason OpenZeppelin wrote the obligations down.
             </p>
           </Reveal>
@@ -250,7 +249,7 @@ export default async function Landing() {
             </h2>
             <p className="mt-5 text-[0.94rem] leading-relaxed text-ink-soft">
               Same signer, same key, on any device, forever. That is what makes an account
-              recoverable — and it is the obligation §5.1 exists to make enforceable.
+              recoverable, and it is the obligation §5.1 exists to make enforceable.
             </p>
             <code className="mt-7 inline-block rounded-lg border border-rule bg-paper-sunk px-4 py-2.5 font-mono text-[0.82rem]">
               npm i stellar-confidential-token-sdk

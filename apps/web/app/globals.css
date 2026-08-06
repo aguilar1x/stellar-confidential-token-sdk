@@ -19,6 +19,13 @@
   --rule-strong: hsl(228 14% 82%);
   --accent: hsl(243 56% 44%);
   --accent-soft: hsl(243 60% 96%);
+  /**
+   * The accent lifted for dark ground. `--accent` is tuned to carry weight on
+   * white and goes muddy on the hero, where it has to survive an indigo field
+   * behind it. Same hue, lifted past the backdrop so it reads as colour rather
+   * than as grey that lost its way.
+   */
+  --accent-lift: hsl(243 76% 80%);
   --verified: hsl(160 66% 28%);
   --refused: hsl(2 66% 47%);
   /* A sealed value: present, unreadable. Never the same grey as muted text. */
@@ -44,6 +51,7 @@
   --color-rule-strong: var(--rule-strong);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-lift: var(--accent-lift);
   --color-verified: var(--verified);
   --color-refused: var(--refused);
   --color-sealed: var(--sealed);
