@@ -46,13 +46,13 @@ export default async function Landing() {
                   OpenZeppelin Confidential Tokens · Stellar
                 </p>
                 <h1 className="mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl lg:text-[3.4rem]">
-                  {/* Two words carry the colour, not two lines. The claim is an
-                      antithesis and these are its poles: the same ledger is opaque
-                      to everyone and checkable by everyone, which is the part that
-                      sounds contradictory until the page explains it. Colouring
-                      the pair makes the sentence's shape legible before it is
-                      read; colouring a whole line only makes it louder. */}
-                  An amount <span className="text-accent-lift">nobody</span> can read.
+                  {/* Two words, not two lines. They are deliberately not a
+                      matched pair: `amount` is the thing that is hidden, and
+                      `everybody` is who can still check the sum it belongs to.
+                      Read together they state the whole claim, which a symmetric
+                      pair like nobody/everybody does not. Colouring a whole line
+                      only makes it louder. */}
+                  An <span className="text-accent-lift">amount</span> nobody can read.
                   <br />A total <span className="text-accent-lift">everybody</span> can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
