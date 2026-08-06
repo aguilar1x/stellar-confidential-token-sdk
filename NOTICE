@@ -46,6 +46,24 @@ Apache-2.0; not covered by this project's copyright.
 fixture from that source and byte-compares it, on every push and on a weekly
 schedule, so the vendored copy cannot silently diverge from upstream.
 
+`circuits/lib/` — including its README.md — is a verbatim, unmodified copy of
+OpenZeppelin's Noir circuit library, taken at commit 98090b3 from:
+
+  https://github.com/OpenZeppelin/stellar-contracts/tree/98090b3e59785454f55b3617992c2f84250c7173/packages/tokens/src/confidential/circuits/lib
+
+That is the commit the verifier deployed on testnet was built from. It is
+vendored rather than fetched because Nargo can pin a git dependency to a branch
+or tag name but never to a commit, and a branch pin would let this project's
+circuits change meaning without a line of this project changing. Copyright
+OpenZeppelin, Apache-2.0; not covered by this project's copyright.
+
+`scripts/check-lib-upstream.mjs` re-fetches it at that exact commit and
+byte-compares it on every push.
+
+The circuits that USE that library — `circuits/disclose_sender/` and
+`circuits/disclose_recipient/` — are this project's own work: OpenZeppelin
+publishes a selective-disclosure specification, not an implementation.
+
 ------------------------------------------------------------------------------
 Third-party dependencies
 ------------------------------------------------------------------------------

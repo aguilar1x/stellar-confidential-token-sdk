@@ -35,6 +35,11 @@ jobs:
         # from quietly becoming a fork of the specification.
         run: node packages/conformance/scripts/check-fixtures-upstream.mjs
 
+      - name: Check the vendored circuit library still matches the pinned commit
+        # circuits/lib/ is OpenZeppelin's, vendored because nargo cannot pin a
+        # git dependency to a commit. This is what keeps the pin honest.
+        run: node scripts/check-lib-upstream.mjs
+
       - name: SDK tests
         run: npm run test --workspace=stellar-confidential-token-sdk
 

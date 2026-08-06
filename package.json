@@ -12,7 +12,9 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "conformance": "npm run test --workspace=@stellar-confidential/conformance"
+    "conformance": "npm run test --workspace=@stellar-confidential/conformance",
+    "check:lib": "node scripts/check-lib-upstream.mjs",
+    "circuits": "node scripts/build-disclosure-circuits.mjs"
   },
   "devDependencies": {
     "tsup": "^8.3.0",

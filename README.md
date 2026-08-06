@@ -543,6 +543,7 @@ self-refuting:
 | `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **49 tests.** |
 | `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler — C2–C4 required, C1 recommended — with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
 | `apps/web` | The demo. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
+| `circuits/` | The two selective-disclosure circuits, in Noir — this project's own, since OpenZeppelin publishes the disclosure specification and not an implementation. OpenZeppelin's circuit library is vendored under `circuits/lib/` (their copyright, see [NOTICE](./NOTICE)) and pinned to the commit the deployed verifier was built from; `npm run check:lib` re-fetches it and compares bytes. Rebuild with `npm run circuits`. |
 | `examples/` | The live payment, the condominium's 33 transactions, and the sabotage. Each is a script a reader can run against testnet, not a transcript. |
 | [`DEPLOY.md`](./DEPLOY.md) | How both halves deploy, and the two clean-clone build failures reproduced before being fixed. |
 

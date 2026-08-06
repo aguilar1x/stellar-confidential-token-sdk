@@ -1,0 +1,11 @@
+[package]
+name = "disclose_sender"
+type = "bin"
+authors = ["stellar-confidential-token-sdk"]
+compiler_version = ">=0.30.0"
+
+# `../lib` is OpenZeppelin's circuit library, vendored at commit 98090b3 — the
+# commit the deployed verifier was built from. See circuits/lib/README.md for
+# why it is vendored rather than pinned as a git dependency.
+[dependencies]
+stellar_confidential_lib = { path = "../lib" }
