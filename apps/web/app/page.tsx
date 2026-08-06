@@ -31,8 +31,8 @@ const FINDINGS = [
     where: "found in the reference core",
   },
   {
-    title: "Deployed circuits predate the spec",
-    body: "Two primitives diverge from OpenZeppelin's own fixtures, and both spec changes were security fixes — an ECDH secret invariant under point negation, and a pad that could collide with an amount pad.",
+    title: "An ephemeral scalar nothing constrains",
+    body: "r_e was derived under the wrong domain tag. No circuit constrains it, so every proof still verified — the damage only shows when a second client cannot recompute it and the transfer stops being disclosable.",
     where: "found by the conformance suite",
   },
 ];
