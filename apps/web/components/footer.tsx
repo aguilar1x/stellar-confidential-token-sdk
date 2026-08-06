@@ -91,12 +91,34 @@ export function Footer() {
 
         {/* The disclaimers sit under a rule of their own. They are the last thing
             read and they are load-bearing: someone who skims this page and puts
-            real money behind it has misread it. */}
-        <p className="mt-10 border-t border-rule pt-6 text-[0.82rem] leading-relaxed text-ink-soft">
-          Apache-2.0 · testnet only, not audited, do not hold value with this ·
-          an independent implementation, not endorsed by or affiliated with
-          OpenZeppelin
-        </p>
+            real money behind it has misread it.
+
+            The authorship mark shares the bar rather than taking a row of its
+            own, and it is the one thing on this page pushed hard right, so it
+            reads as a signature on the notice rather than as another link.
+
+            No `brightness-0 invert` here, unlike the hero: that pair exists to
+            force a dark mark white on the dark hero, and repeating it on paper
+            would erase the logo into the background. */}
+        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-rule pt-6">
+          <p className="max-w-xl text-[0.82rem] leading-relaxed text-ink-soft">
+            Apache-2.0 · testnet only, not audited, do not hold value with this
+            · an independent implementation, not endorsed by or affiliated with
+            OpenZeppelin
+          </p>
+          {/* Not a link. Neither the hero nor the sibling project links this
+              mark, and inventing a destination for it would be putting a URL in
+              front of a reader that nobody chose. */}
+          <span className="inline-flex shrink-0 items-center gap-2.5 text-[0.82rem] text-ink-soft sm:ml-auto">
+            Built by
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logos/oppia.svg"
+              alt="Oppia Labs"
+              className="h-5 w-auto opacity-80"
+            />
+          </span>
+        </div>
       </div>
     </footer>
   );
