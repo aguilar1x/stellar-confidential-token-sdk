@@ -26,6 +26,12 @@ function haystack(s: Section): string {
   return parts.join("\n");
 }
 
+/**
+ * Room left above the section when a selection scrolls to it: the fixed nav
+ * plus a little air, so the heading does not sit flush under the bar.
+ */
+const HEADER_CLEARANCE = 96;
+
 /** Where the term appears, with enough either side to recognise it. */
 function snippet(text: string, q: string): string | null {
   const i = text.toLowerCase().indexOf(q.toLowerCase());
@@ -81,6 +87,7 @@ export function DocsShell({ sections }: { sections: Section[] }) {
   const [activeId, setActiveId] = useState(sections[0]!.id);
   const [query, setQuery] = useState("");
   const box = useRef<HTMLInputElement>(null);
+  const shell = useRef<HTMLDivElement>(null);
 
   const q = query.trim();
 
@@ -146,7 +153,25 @@ export function DocsShell({ sections }: { sections: Section[] }) {
     // replaceState rather than a hash assignment: it keeps the URL shareable
     // without the browser also scrolling to an anchor that no longer exists.
     window.history.replaceState(null, "", `#${id}`);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    /**
+     * Put the reader at the top of the new section, and do nothing if they are
+     * already above it.
+     *
+     * This used to smooth-scroll to the top of the document on every
+     * selection. Two things then moved at once, the panel swapping under a
+     * sidebar that stays put and the page travelling several hundred pixels,
+     * which reads as being dragged rather than as arriving. Nothing here is a
+     * scroll position the reader chose, so animating the trip only makes the
+     * correction longer.
+     *
+     * Instant, and only when the section actually starts above the viewport.
+     */
+    const el = shell.current;
+    if (!el) return;
+    const top =
+      el.getBoundingClientRect().top + window.scrollY - HEADER_CLEARANCE;
+    if (window.scrollY > top) window.scrollTo({ top });
   };
 
   const active = sections.find((s) => s.id === activeId) ?? sections[0]!;
@@ -193,7 +218,10 @@ export function DocsShell({ sections }: { sections: Section[] }) {
         </div>
       </div>
 
-      <div className="mt-8 gap-14 border-t border-rule pt-12 lg:grid lg:grid-cols-[210px_1fr]">
+      <div
+        ref={shell}
+        className="mt-8 gap-14 border-t border-rule pt-12 lg:grid lg:grid-cols-[210px_1fr]"
+      >
         <nav aria-label="Sections" className="mb-10 lg:mb-0">
           <div className="lg:sticky lg:top-24">
             {hits && (
