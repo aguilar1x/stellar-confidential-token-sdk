@@ -1,6 +1,6 @@
 {
   "name": "stellar-confidential-token-sdk",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Conformant TypeScript client for OpenZeppelin Confidential Tokens on Stellar — implements the SDK.md client obligations (key derivation, witness building, UltraHonk proving, local state, selective disclosure).",
   "license": "Apache-2.0",
   "type": "module",
