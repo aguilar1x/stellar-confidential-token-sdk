@@ -15,12 +15,12 @@ compatibility_date = "2026-08-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
-TOKEN_CONTRACT_ID = "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY"
+TOKEN_CONTRACT_ID = "CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF"
 RPC_URL = "https://soroban-testnet.stellar.org"
 # Pinned near the demo history. A cold start scans from here, not from the RPC's
 # retention floor — a third of a second instead of two seconds, and it does not
 # grow as the chain advances.
-FROM_LEDGER = "3976100"
+FROM_LEDGER = "3992372"
 
 [observability]
 enabled = true

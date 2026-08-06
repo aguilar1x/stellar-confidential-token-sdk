@@ -92,23 +92,50 @@ export const DOMAIN = {
   /** Recipient-auditor channel tag. */
   AUDITOR_RECIPIENT: 12n,
   /**
+   * ECDH shared-secret scalar extraction, DESIGN.md §2.4:
+   * `s = Poseidon2(ECDH_SHARED_SECRET, S.x, S.y)`.
+   *
+   * Absent from this table until the verifier was rebuilt from post-fix
+   * circuits, because the x-only construction it replaced absorbs no domain at
+   * all. DESIGN_cont.md §13 assigns 13; sweeping tags 11–16 against
+   * OpenZeppelin's `ecdh` fixture confirms it independently — no other value
+   * reproduces the vector.
+   */
+  ECDH_SHARED_SECRET: 13n,
+  /**
    * Off-chain selective-disclosure ciphertext to a disclosure recipient:
    * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, S_disc.x, nu)`.
-   * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`); continues the on-chain
-   * tag list. Source of truth: packages/disclosure circuits.
+   * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`), which takes its value
+   * from DESIGN_cont.md §13. Was 13 here, from before that table existed —
+   * which is `delta_ecdh`'s value.
    */
-  DISCLOSURE: 13n,
-  /** Aggregate-disclosure nonce binding (`delta_disc_bind`, §10). Reserved. */
-  DISCLOSURE_BIND: 14n,
+  DISCLOSURE: 16n,
+  /**
+   * Aggregate-disclosure nonce binding (`delta_disc_bind`). Reserved, unused.
+   * DESIGN_cont.md §13 assigns 15; it previously sat at 14 here, which is
+   * `delta_eph`'s value upstream.
+   */
+  DISCLOSURE_BIND: 15n,
   /**
    * Wallet-side deterministic ephemeral scalar:
-   * `r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma)`. Never absorbed inside a
-   * circuit — `r_e` is a free private witness there (only `R_e = r_e·H` and
-   * `r_e ≠ 0` are constrained), so this is a client convention, not a wire
-   * contract. It continues the tag list to stay collision-free with the other
-   * `(vk, sigma)`-keyed calls (SPEND_RANDOMNESS, ENCRYPTED_BALANCE).
+   * `r_e = Poseidon2(EPHEMERAL_KEY, vk, sigma)` — DESIGN.md §5.3, and
+   * `delta_eph = 14` in DESIGN_cont.md §13.
+   *
+   * This was 15, chosen by continuing this file's own list rather than reading
+   * that table, and it was wrong in the way the specification warns about
+   * rather than in a way anything would catch. No circuit constrains `r_e` —
+   * only `R_e = r_e·H` and `r_e != 0` are — so proofs built with the wrong tag
+   * verify exactly like proofs built with the right one. SDK.md §6.3 is
+   * explicit about the consequence: "a fixture is the only mechanism keeping a
+   * user's clients in agreement; where two disagree, transfers sent from one
+   * are not disclosable from the other."
+   *
+   * Because it is unconstrained, correcting it costs nothing against the
+   * deployed verifier. It does mean transfers this client sent before the
+   * correction cannot have their `r_e` recomputed by it — which is precisely
+   * the failure being fixed, observed once on our own history.
    */
-  EPHEMERAL_KEY: 15n,
+  EPHEMERAL_KEY: 14n,
 } as const;
 
 /** Verifier circuit-type discriminants (verifier/mod.rs `CircuitType`). */

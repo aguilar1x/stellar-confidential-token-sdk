@@ -19,6 +19,7 @@ import {
   skSigningMessage,
   pointToBytes,
   StateEngine,
+  addressToField,
 } from "stellar-confidential-token-sdk";
 import {
   ChainClient,
@@ -34,9 +35,9 @@ import { dishonestStore } from "../apps/indexer/src/tamper.js";
 const RPC_URL = "https://soroban-testnet.stellar.org";
 const NETWORK = Networks.TESTNET;
 const CONTRACTS = {
-  token: "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY",
-  verifier: "CC6NG5LWW6QA4YSW2RP7RR2CE5FF6IHAGJEYY4STG6QP563EWSZU5DG7",
-  auditor: "CAEYYDRJPJ73UR3UZWYLSIWW4CHUZILTSENAWOUYXGSR4LPY4HQ23R4L",
+  token: process.env.TOKEN_CONTRACT ?? "CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF",
+  verifier: process.env.VERIFIER_CONTRACT ?? "CBXEPTSEC3433EH3TKUZSSZCIWIDMGZDY2FB7BN5IJ76A2JISQF4YTN6",
+  auditor: process.env.AUDITOR_CONTRACT ?? "CDCPR4AURWJQRY4KXSRU7H7ABKIHTDORSQABIOUH37DU3IGYV5LRCHEK",
 };
 
 const GREEN = "\x1b[32m";
@@ -164,7 +165,7 @@ async function main() {
   const keys = (() => {
     const root = new Uint8Array(kp.signMessage(Buffer.from(skSigningMessage(CONTRACTS.token, address))));
     const { sk, addrF } = deriveSk(root, CONTRACTS.token, address);
-    return deriveKeys(sk, addrF);
+    return deriveKeys(sk, addrF, addressToField(address));
   })();
 
   const scenarios = [

@@ -66,14 +66,14 @@ const transferEvent = makeEvent(
   "bb".repeat(32),
   [sym("transfer"), addrTopic(A), addrTopic(B)],
   dataMapVal({
-    r_e: pointVal(rE),
+    r_e_point: pointVal(rE),
     v_tilde: fieldVal(11n),
     sigma: fieldVal(22n),
     b_tilde: fieldVal(33n),
-    v_aud_r: fieldVal(44n),
-    r_aud_r: fieldVal(55n),
-    v_aud_s: fieldVal(66n),
-    b_aud_s: fieldVal(77n),
+    v_tilde_aud_r: fieldVal(44n),
+    r_tilde_aud_r: fieldVal(55n),
+    v_tilde_aud_s: fieldVal(66n),
+    b_tilde_aud_s: fieldVal(77n),
   }),
 );
 

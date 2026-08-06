@@ -47,9 +47,17 @@ function envelopeBytes(scVal: { bytes(): Uint8Array }): Uint8Array {
   return new Uint8Array(scVal.bytes());
 }
 
-/** Prove account registration for `keys`. */
-export async function proveRegister(keys: KeyPair): Promise<ProofEnvelope> {
-  const witness = buildRegisterWitness(keys);
+/**
+ * Prove account registration for `keys`.
+ *
+ * `acctF` is `address_to_field(account)`. The register circuit takes it as a
+ * public input that no gate reads: UltraHonk absorbs every public input into
+ * the transcript, so a proof made for one account will not verify when the
+ * contract assembles the blob for another. Omit it only if `keys` already
+ * carries it from `deriveKeys(sk, addrF, acctF)`.
+ */
+export async function proveRegister(keys: KeyPair, acctF?: bigint): Promise<ProofEnvelope> {
+  const witness = buildRegisterWitness(keys, acctF);
   const prover = new CircuitProver(loadCircuit("register"));
   try {
     const { proof } = await prover.prove(witness.inputs);

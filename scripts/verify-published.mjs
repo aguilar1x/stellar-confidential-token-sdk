@@ -64,7 +64,7 @@ import {
 import { proveTransfer } from "${PKG}/node";
 import { ChainClient, hybridFetchEvents } from "${PKG}/chain";
 
-const TOKEN = "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY";
+const TOKEN = "CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF";
 const hex = v => "0x" + (typeof v === "bigint" ? v : BigInt(v)).toString(16).padStart(64, "0");
 const f = v => BigInt(v);
 const pt = p => { const { x, y } = pointCoords(p); return { x: hex(x), y: hex(y) }; };

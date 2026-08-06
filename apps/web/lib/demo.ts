@@ -23,12 +23,12 @@ export const DEMO = {
 
   /** What actually happened, so the page can state it rather than assert it. */
   history: [
-    { step: "register", tx: "8068ac25610586ac84f869355120e953706a67a132657970fc0b4d9eb4ad9dfd" },
-    { step: "deposit 100 XLM", tx: "746434c6794d9e6b26fe660404ba342a8c54d4be43d1f4d077f63a67aecfd1ac" },
-    { step: "merge", tx: "9c1e4fd8a2d2d52fccba5e531999210076a13a3ac286f1b511557f879be14aa0" },
+    { step: "register", tx: "c5359bbf902d7fac8ca6f4817d512a8812c0a26e0be351daacaef1f4658ca37a" },
+    { step: "deposit 100 XLM", tx: "92edaf47da40bf1c16676308bc3af9dbc3c50551dbce67b811841dd2fa06d0a5" },
+    { step: "merge", tx: "4728271456edc05bed163c8425947cdd0bf3a1e9d8fbe261f7f674e00a3b6226" },
     {
       step: "transfer 40 XLM (amount hidden)",
-      tx: "b67729493245ed3046980d8aa8adca2c276661d935b6dc9188d7f7b1bbb4dba5",
+      tx: "01877be5d8eb125e7a36fa6ec22b6fa620645a4f4990e696627df8abe295c5c9",
     },
   ],
 
@@ -49,7 +49,7 @@ export const RPC_URL = process.env.RPC_URL ?? "https://soroban-testnet.stellar.o
 /**
  * Where the archives start scanning.
  *
- * The demo account's history is closed — it sits in ledgers 3976175..3976748
+ * The demo account's history is closed — it sits in ledgers 3992372..3992546
  * and nothing will be added to it. Scanning from the RPC's retention floor
  * instead would examine 120,000 ledgers to find the same fifteen events, which
  * costs about two seconds against a third of a second and grows every day.
@@ -60,16 +60,16 @@ export const RPC_URL = process.env.RPC_URL ?? "https://soroban-testnet.stellar.o
  * It stays honest: the archive reports this as its `ingested_from`, so a client
  * asking for earlier history is truthfully told the range is not covered.
  */
-export const INDEX_FROM_LEDGER = Number(process.env.INDEX_FROM_LEDGER ?? 3_976_100);
+export const INDEX_FROM_LEDGER = Number(process.env.INDEX_FROM_LEDGER ?? 3_992_372);
 export const NETWORK_PASSPHRASE =
   process.env.NETWORK_PASSPHRASE ?? "Test SDF Network ; September 2015";
 
 export const CONTRACTS = {
-  token: process.env.TOKEN_CONTRACT ?? "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY",
+  token: process.env.TOKEN_CONTRACT ?? "CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF",
   verifier:
-    process.env.VERIFIER_CONTRACT ?? "CC6NG5LWW6QA4YSW2RP7RR2CE5FF6IHAGJEYY4STG6QP563EWSZU5DG7",
+    process.env.VERIFIER_CONTRACT ?? "CBXEPTSEC3433EH3TKUZSSZCIWIDMGZDY2FB7BN5IJ76A2JISQF4YTN6",
   auditor:
-    process.env.AUDITOR_CONTRACT ?? "CAEYYDRJPJ73UR3UZWYLSIWW4CHUZILTSENAWOUYXGSR4LPY4HQ23R4L",
+    process.env.AUDITOR_CONTRACT ?? "CDCPR4AURWJQRY4KXSRU7H7ABKIHTDORSQABIOUH37DU3IGYV5LRCHEK",
 } as const;
 
 export const EXPLORER =

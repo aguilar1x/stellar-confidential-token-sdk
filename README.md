@@ -17,10 +17,11 @@
 
 </div>
 
-Building a conformant client turned up **five defects** — including two of
-OpenZeppelin's own audit fixes that never reached the deployed testnet verifier,
-and a blinding-factor bug that a building collecting its dues caught in 33 real
-transactions.
+Building a conformant client turned up **three defects in this project** — a
+blinding-factor bug that a building collecting its dues caught in 33 real
+transactions, a domain tag no circuit constrains so nothing could fail on it,
+and two missing fixtures the specification asks for. All three are closed, and
+the suite reproduces all 17 of OpenZeppelin's published fixtures byte-for-byte.
 
 ```bash
 npm install stellar-confidential-token-sdk
@@ -43,7 +44,7 @@ const { payload, next } = await proveTransfer({
 // PERSIST `next` BEFORE SUBMITTING. It is the only thing that can spend the result.
 ```
 
-**224 tests · testnet only · not audited — do not hold value with this.**
+**222 tests · testnet only · not audited — do not hold value with this.**
 
 <details>
 <summary><b>Why an archive specification matters</b> — the recovery problem in 60 seconds</summary>
@@ -61,9 +62,8 @@ diverge with nothing to implement against). July 2026 filled both gaps —
 [`SDK.md`][sdk] for the client's obligations, [`INDEXER.md`][indexer] for what an
 archive must serve and how a client must verify it rather than trust it.
 
-This repository implements both — 15 of 17 published primitives byte-for-byte,
-C1–C4 served and verified, and the two exceptions documented below with their
-upstream audit findings.
+This repository implements both — all 17 published primitives byte-for-byte,
+C1–C4 served and verified.
 
 </details>
 
@@ -71,21 +71,69 @@ upstream audit findings.
 
 ## What building this surfaced
 
-| # | What | Status |
+Three defects, found by implementing `SDK.md` and `INDEXER.md` rather than by
+reading them. All three were this project's, and none would have surfaced from a
+passing test suite.
+
+| # | What | How it hid |
 |---|---|---|
-| 1 | Deployed testnet verifier predates OpenZeppelin's [L-03][l03] ECDH fix ([#778][pr778], merged 17 Jul) | reproducible via `examples/drift.mjs` |
-| 2 | Deployed testnet verifier predates their [N-07][n07] pad fix ([#792][pr792], merged 16 Jul) | same |
-| 3 | `δ_ecdh` and `DISCLOSURE` both claim domain tag 13 | pinned in `divergences.js` |
-| 4 | Blinding factors accumulated mod `r`, not mod `p` | found by the condominium, fixed in 0.1.1 |
-| 5 | Two of §6.3's three required vectors did not exist | generated, in OpenZeppelin's testdata format |
+| 1 | Blinding factors accumulated mod `r`, not mod `p` | one payment reconstructs correctly under either — it took eight |
+| 2 | `r_e` derived under domain tag 15; `DESIGN_cont.md` §13 assigns 14 | no circuit constrains `r_e`, so the proofs verify either way |
+| 3 | Two of §6.3's three required fixtures did not exist | nothing to fail against |
 
-Neither vulnerability in 1 or 2 is our discovery — both are OpenZeppelin's own
-audit findings, already fixed upstream. What this project adds is that **the
-deployed verifier still behaves the pre-fix way.** The fixtures moved on 16–17
-July; the deployment did not follow.
+### 1 · The bug the condominium found
 
-**→ [FINDINGS.md](./FINDINGS.md)** for all five in full, with the reproduction
-for each.
+Blindings were accumulated modulo `r` when the chain accumulates commitment
+**points**, whose scalars reduce modulo the group order `p`. Since `r < p`, a
+sum that crosses `r` came out short by exactly `r·H`, and the wallet
+reconstructed an opening its own on-chain commitment rejects.
+
+One payment reconstructs perfectly under either modulus, which is why nothing
+caught it: every example shipped so far moved value with a single transfer. Two
+random blindings cross `r` about half the time, so the building's eight payments
+wrapped six times out of seven and the audit came out red against a chain that
+was perfectly correct.
+
+Fixed in `0.1.1`. The regression test
+([`accumulation.test.ts`](packages/sdk/src/state/accumulation.test.ts)) carries
+its own falsifiability guard:
+
+```
+it("at least one partial sum actually wrapped — otherwise this proves nothing")
+it("one payment reconstructs exactly — which is why this hid for so long")
+it("the disagreement moves the commitment by r·H — not by nothing")
+```
+
+Without the first, the case passes under the old implementation too. It is a
+test that tests whether the test would fail.
+
+### 2 · `r_e` derived under the wrong domain tag
+
+`DESIGN_cont.md` §13 assigns `δ_eph = 14`. This client used **15**, chosen by
+continuing its own tag list rather than reading that table.
+
+Nothing catches this, and `SDK.md` §6.3 says why:
+
+> No circuit constrains `r_e`, so a fixture is the only mechanism keeping a
+> user's clients in agreement; where two disagree, transfers sent from one are
+> not disclosable from the other.
+
+Only `R_e = r_e·H` and `r_e ≠ 0` are constrained, so proofs built with the wrong
+tag verify exactly like proofs built with the right one. A conformant client
+derives a different `r_e` for the same `(vk, σ)`, and neither can open the
+other's transfers.
+
+Fixed, and the §6.3 vector below was regenerated — it had been produced with the
+wrong tag, so contributing it would have propagated the defect it exists to
+prevent.
+
+### 3 · The §6.3 fixtures the spec asks for and nobody published
+
+`SDK.md` §6.3 names three derivations needing fixture coverage. One exists
+upstream. The other two are [generated here](packages/conformance/vectors/) in
+OpenZeppelin's own testdata format: **`δ_eph`**, and **the §5.1 chain** — a fixed
+root through `addr_f` and `acct_f` to `sk`, `vk`, `Y`, `PVK`, including the
+SEP-0053 preimage and signature.
 
 ---
 
@@ -134,6 +182,25 @@ caught.**
 > scopes archive trust to "availability and completeness only — never
 > confidentiality or integrity", and this is the code that makes that scoping
 > real rather than aspirational.
+
+### What it runs against
+
+Everything on the live site reads these, on Stellar testnet. They are public, so
+a reader can check the commitment the demo opens against a source this project
+does not control:
+
+| | |
+|---|---|
+| Confidential token | [`CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF`](https://stellar.expert/explorer/testnet/contract/CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF) |
+| UltraHonk verifier | [`CBXEPTSEC3433EH3TKUZSSZCIWIDMGZDY2FB7BN5IJ76A2JISQF4YTN6`](https://stellar.expert/explorer/testnet/contract/CBXEPTSEC3433EH3TKUZSSZCIWIDMGZDY2FB7BN5IJ76A2JISQF4YTN6) |
+| Auditor registry | [`CDCPR4AURWJQRY4KXSRU7H7ABKIHTDORSQABIOUH37DU3IGYV5LRCHEK`](https://stellar.expert/explorer/testnet/contract/CDCPR4AURWJQRY4KXSRU7H7ABKIHTDORSQABIOUH37DU3IGYV5LRCHEK) |
+| RPC | `https://soroban-testnet.stellar.org` |
+
+The verifier holds one registered key per circuit, extracted from the compiled
+artifacts with OpenZeppelin's pinned toolchain (`nargo 1.0.0-beta.11`,
+`bb 0.87.0`). Those keys come out byte-identical to the ones they commit under
+`circuits/vks/`, which is how you can tell the deployment runs their circuits
+rather than a local variant.
 
 ### The four pieces, and why they are four
 
@@ -234,7 +301,7 @@ Or run it yourself:
 |---|---|
 | A real confidential payment on testnet, from a single signer | `npm install && node examples/live-payment.mjs` |
 | Break the archive it depends on, watch the client refuse it | `ALICE_SECRET=… node examples/sabotage.mjs` |
-| Reproduce both circuit divergences against OpenZeppelin's live fixtures | `node examples/drift.mjs` |
+| Compare our primitives against OpenZeppelin's live fixtures | `node examples/drift.mjs` |
 | The building's 33 transactions, from scratch | `node examples/condominium.mjs` |
 
 ```
@@ -297,17 +364,14 @@ curl -fsSL https://raw.githubusercontent.com/aguilar1x/stellar-confidential-toke
 installed stellar-confidential-token-sdk@0.1.2
 
 1 · OpenZeppelin's published fixtures, byte-for-byte
-    15 reproduced exactly
-    ecdh DIVERGES — deployed circuits use x-only; spec absorbs both coordinates
-    encrypt_auditor_sender_balance DIVERGES — deployed circuits use the first sponge squeeze; spec the second
+    17 reproduced exactly
 2 · §5.1 derivation    same signer, same key, twice
 3 · UltraHonk proof    15308 XDR bytes in 1.5s
 4 · one-stroop tamper  rejected: commitment differs, so the opening cannot verify
 ```
 
-It prints the two divergences rather than hiding them, and **fails** if a third
-appears. A fixture it cannot fetch is reported and counted out, never silently
-counted in. It is the same script CI runs on every push, which is what the badge
+It prints any divergence rather than hiding it, and **fails** if one appears. A
+fixture it cannot fetch is reported and counted out, never silently counted in. It is the same script CI runs on every push, which is what the badge
 above asserts.
 
 Step 3's timing is whatever your own machine manages — 1.5s on an M-series
@@ -322,16 +386,37 @@ Not a test count — a list of claims, and what would fail if each were false.
 
 | Claim | What would fail if it were false | Where |
 |---|---|---|
-| The primitives match OpenZeppelin's published fixtures | 28 checks against **their** fixture files | `packages/conformance/test/fixtures.test.js` |
+| The primitives match OpenZeppelin's published fixtures | 26 checks against **their** fixture files, all 17 reproducing byte-for-byte | `packages/conformance/test/fixtures.test.js` |
 | The witness builders produce witnesses the deployed circuits accept | 9 checks that execute the **real compiled circuits**, including tamper cases | `test/circuit-parity.test.js` |
 | §5.1 derivation is byte-identical across devices and runs | 14 checks over the §6.3 vectors, pinning the SEP-0053 preimage, the signature, `sk`/`vk`/`Y`/`PVK` and the rejection counter | `test/vectors-63.test.js` |
 | The archive answers C1–C4 honestly, including about its own gaps | 20 checks incl. "refuses a range with a hole in the middle" | `apps/indexer/test/roundtrip.test.js` |
 | A lying archive is caught even when it claims `complete: true` | 8 checks that each adversary is faithful except in the attacked dimension | `apps/indexer/test/tamper.test.js` |
 | The published tarball does what the source does | installs from the registry and runs the whole flow | `scripts/verify-published.mjs`, CI job `published` |
 
-**224 tests** — 145 in the SDK, 51 in conformance, 28 in the archive. `npm test`
+**222 tests** — 145 in the SDK, 49 in conformance, 28 in the archive. `npm test`
 at the root runs all three; CI runs them on every push and weekly against
 upstream.
+
+### The suite caught this project running stale contracts
+
+Not a finding about anyone else — a demonstration that the machinery works on
+its owner.
+
+Two primitives stopped reproducing OpenZeppelin's fixtures: `ecdh` and
+`encrypt_auditor_sender_balance`. The client was not wrong about the verifier it
+faced; it matched it exactly. The verifier was old — deployed here on 3 July
+2026, before OpenZeppelin's own L-03 and N-07 audit fixes merged on the 16th and
+17th. Both vulnerabilities are theirs, both were fixed upstream on time, and
+neither is a discovery of ours. What this project had was a deployment left
+behind, and a suite that would not let it stay quiet about it.
+
+Each divergence was recorded rather than skipped, pinned from BOTH sides: the
+suite fails if our value drifts, if the fixture moves again, **or if the two
+become equal**. That last case is the one that fired. Rebuilding the circuits
+from post-fix source and redeploying made the values converge, the pins failed,
+and the entries had to be deleted — which is exactly what they were written to
+force. A suite that merely skipped them would have gone green while coverage
+silently shrank.
 
 ### What the conformance suite proves that unit tests cannot
 
@@ -420,8 +505,7 @@ None of these ship here; what ships is the layer all four need.
 Stated plainly, because a conformance project that hid its own gaps would be
 self-refuting:
 
-- **Testnet only.** The two divergences are unresolved until the circuits are
-  regenerated and the verifier redeployed. Do not hold value with this.
+- **Testnet only, and not audited.** Do not hold value with this.
 - **The archive is not durable yet, which is the gap that matters most here.**
   `apps/indexer` ships one store — `MemoryStore` — and a deployment rehydrates by
   scanning the RPC on cold start. So it can serve only history the RPC still
@@ -429,9 +513,13 @@ self-refuting:
   surface, the completeness accounting and the client-side verification are all
   real and independent of the store; persistence is the missing piece, and the
   store interface is the seam it plugs into.
+- **The disclosure domain tags are stale against `DESIGN_cont.md` §13.** It
+  assigns `δ_disc = 16` and `δ_disc_bind = 15`; this client uses 13 and 15.
+  `δ_disc_bind` is reserved and unused, so it was moved. `δ_disc` is absorbed by
+  this project's own disclosure circuits, so moving it means recompiling them —
+  It does not affect the core transfer path, whose tags 1–12 and 14 match the
+  table exactly.
 - **Deposits and withdrawals are public by design.** Only transfers hide amounts.
-- **The two divergences are not fixable from the client side** without breaking
-  compatibility with the deployed verifier.
 - **The disclosure receipt is a bearer token** — anyone holding the URL can read
   the disclosed amount.
 - **Testnet secrets are committed on purpose.** The demo accounts' seeds are in
@@ -461,8 +549,7 @@ self-refuting:
 | `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **51 tests.** |
 | `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler — C2–C4 required, C1 recommended — with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
 | `apps/web` | The demo. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
-| `examples/` | The live payment, the condominium's 33 transactions, the sabotage, and `drift.mjs` — which reproduces both divergences from OpenZeppelin's live fixtures against the real circuits. |
-| [`FINDINGS.md`](./FINDINGS.md) | The five defects in full. |
+| `examples/` | The live payment, the condominium's 33 transactions, the sabotage, and `drift.mjs` — which compares this client's primitives against OpenZeppelin's fixtures, fetched live, against the real circuits. |
 | [`DEPLOY.md`](./DEPLOY.md) | How both halves deploy, and the two clean-clone build failures reproduced before being fixed. |
 
 ## Provenance and license
@@ -475,7 +562,3 @@ fixtures.
 [sdk]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/SDK.md
 [indexer]: https://github.com/OpenZeppelin/stellar-contracts/blob/main/packages/tokens/src/confidential/docs/INDEXER.md
 [issue]: https://github.com/OpenZeppelin/stellar-contracts/issues/787
-[l03]: https://github.com/OpenZeppelin/stellar-contracts/issues/771
-[pr778]: https://github.com/OpenZeppelin/stellar-contracts/pull/778
-[n07]: https://github.com/OpenZeppelin/stellar-contracts/issues/785
-[pr792]: https://github.com/OpenZeppelin/stellar-contracts/pull/792

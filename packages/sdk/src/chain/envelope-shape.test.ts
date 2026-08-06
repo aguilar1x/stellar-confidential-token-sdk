@@ -22,7 +22,9 @@ import { buildWithdrawWitness } from "../witness/withdraw.js";
 import { H, scalarMul } from "../crypto/grumpkin.js";
 
 const ADDR_F = 0x2222n;
-const keys = deriveKeys(0x1234_5678_9abc_deffn, ADDR_F);
+/** Any field element: no gate reads acct_f, its presence is the binding. */
+const ACCT_F = 0x00ac_c700_0000_0001n;
+const keys = deriveKeys(0x1234_5678_9abc_deffn, ADDR_F, ACCT_F);
 const other = deriveKeys(0x0fed_cba9_8765_4321n, ADDR_F);
 const kAud = scalarMul(0xabcdefn, H);
 const PROOF = new Uint8Array(64).fill(0xab);

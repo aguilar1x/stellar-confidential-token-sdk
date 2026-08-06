@@ -51,7 +51,7 @@ Optional, if the page should read a remote archive instead of serving its own:
 
 | Variable | Meaning |
 |---|---|
-| `INDEX_FROM_LEDGER` | First ledger the built-in archives scan. Defaults to `3976100`, just below the demo account's history. |
+| `INDEX_FROM_LEDGER` | First ledger the built-in archives scan. Defaults to `3992372`, just below the demo account's history. |
 
 ### Why the ledger floor is pinned
 
@@ -87,7 +87,7 @@ Deploying prints a URL like
 
 ```bash
 curl https://confidential-token-archive.<subdomain>.workers.dev/v1/health
-# {"latest_ledger":…,"ingested_through":…,"ingested_from":3976100,"lag_seconds":…}
+# {"latest_ledger":…,"ingested_through":…,"ingested_from":3992372,"lag_seconds":…}
 ```
 
 To change the indexed contract without editing the file:
@@ -116,8 +116,8 @@ never wait on a scan:
 
 ```bash
 cd apps/indexer
-TOKEN_CONTRACT_ID=CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY \
-FROM_LEDGER=3976100 \
+TOKEN_CONTRACT_ID=CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF \
+FROM_LEDGER=3992372 \
 PORT=8787 \
 npm start
 ```
@@ -136,7 +136,7 @@ import("stellar-confidential-token-sdk/chain").then(async ({ IndexerV1Client }) 
   const h = await c.health();
   console.log("C4:", h);
   const { events, complete } = await c.fetchEvents({
-    contractId: "CAPLH4ZW7EDSYRBCQN77Y4K7W5RNA6TO76JQ5CGHHIPY4ALWVQZ2WFAY",
+    contractId: "CBFOJTALVTO3LPZZHEXDD44K7RQKQJGAASF6XOKP5FWZD6WYKV4WN7HF",
     account: "GDPKVZUNM2G632S53NBYB5PLERIYNBDKXC3GAO2LNHRVQDVGKNQWLAUK",
     fromLedger: h.ingestedFrom,
     toLedger: h.ingestedThrough,

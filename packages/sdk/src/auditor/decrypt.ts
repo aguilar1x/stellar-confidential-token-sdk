@@ -108,7 +108,11 @@ export function auditWithdraw(
   ev: Pick<WithdrawEvent, "rE" | "sigma" | "bAudS">,
 ): { senderBalance: bigint } {
   const sX = ecdh(k, ev.rE);
-  return { senderBalance: decryptWithDomain(ev.bAudS, DOMAIN.AUDITOR_SENDER, sX, ev.sigma) };
+  // Squeeze 1, matching `encryptAuditorSenderBalance`. Squeeze 0 is the amount
+  // pad, and reusing it here is the collision OpenZeppelin's N-07 describes —
+  // `decryptWithDomain` computes exactly that slot, so it cannot be used.
+  const [, mB] = spongeSqueeze2(DOMAIN.AUDITOR_SENDER, sX, ev.sigma);
+  return { senderBalance: frMod(ev.bAudS - mB) };
 }
 
 /** The registry public key `K_aud = k·H` for an auditor secret `k`. */

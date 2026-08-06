@@ -203,16 +203,16 @@ function parseAccount(val: xdr.ScVal): OnChainAccount {
   for (const e of entries) {
     const key = e.key().sym().toString();
     switch (key) {
-      case "spending_key":
+      case "spending_public_key":
         out.spendingKey = pointFromBytes(new Uint8Array(e.val().bytes()));
         break;
       case "viewing_public_key":
         out.viewingPublicKey = pointFromBytes(new Uint8Array(e.val().bytes()));
         break;
-      case "spendable_balance":
+      case "spendable_commitment":
         out.spendableBalance = pointFromBytes(new Uint8Array(e.val().bytes()));
         break;
-      case "receiving_balance":
+      case "receiving_commitment":
         out.receivingBalance = pointFromBytes(new Uint8Array(e.val().bytes()));
         break;
       case "auditor_id":

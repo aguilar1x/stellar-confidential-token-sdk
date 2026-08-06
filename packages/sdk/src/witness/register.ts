@@ -15,12 +15,23 @@ export interface RegisterWitness {
   payload: { y: Point; pvk: Point };
 }
 
-export function buildRegisterWitness(keys: KeyPair): RegisterWitness {
+export function buildRegisterWitness(keys: KeyPair, acctF?: bigint): RegisterWitness {
+  const account = acctF ?? keys.acctF;
+  if (account === undefined) {
+    throw new Error(
+      "register needs acct_f — pass it, or derive the keys with deriveKeys(sk, addrF, acctF). " +
+        "The circuit takes it as a public input so a proof cannot be replayed for another account.",
+    );
+  }
   const inputs: NoirInputs = {
     sk: fieldIn(keys.sk),
     ...pointIn("y", keys.Y),
     ...pointIn("pvk", keys.PVK),
     addr_f: fieldIn(keys.addrF),
+    // Underscore-prefixed upstream: no gate reads it. Its presence in the
+    // public-input set IS the binding, because UltraHonk absorbs every public
+    // input into the transcript.
+    _acct_f: fieldIn(account),
   };
   return { inputs, payload: { y: keys.Y, pvk: keys.PVK } };
 }
