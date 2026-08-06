@@ -155,129 +155,137 @@ export function DocsShell({ sections }: { sections: Section[] }) {
   const prev = sections[index - 1];
 
   return (
-    <div className="mt-12 gap-14 border-t border-rule pt-12 lg:grid lg:grid-cols-[210px_1fr]">
-      <nav aria-label="Sections" className="mb-10 lg:mb-0">
-        <div className="lg:sticky lg:top-24">
-          <div className="relative mb-3">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-ink-soft" />
-            <input
-              ref={box}
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search the docs"
-              aria-label="Search the docs"
-              className="w-full rounded-lg border border-rule bg-paper-sunk py-2 pl-9 pr-8 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
-            />
-            {q ? (
-              <button
-                onClick={() => {
-                  setQuery("");
-                  box.current?.focus();
-                }}
-                aria-label="Clear search"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-ink-soft transition-colors hover:text-ink"
-              >
-                <X className="size-3.5" />
-              </button>
-            ) : (
-              // The hint occupies the slot the clear button will take, so
-              // nothing shifts when the first character is typed.
-              <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-rule bg-paper px-1.5 font-mono text-[0.6rem] text-ink-soft lg:block">
-                /
-              </kbd>
-            )}
-          </div>
-
-          {hits && (
-            <p className="mb-2 px-1 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft">
-              {hits.length === 0
-                ? "nothing matched"
-                : `${hits.length} of ${sections.length} sections`}
-            </p>
-          )}
-
-          <ul className="space-y-0.5 border-l border-rule">
-            {(hits ?? sections.map((s) => ({ section: s, where: null }))).map(
-              ({ section: s, where }) => {
-                const current = s.id === active.id;
-                return (
-                  <li key={s.id}>
-                    <a
-                      href={`#${s.id}`}
-                      aria-current={current ? "page" : undefined}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        select(s.id);
-                      }}
-                      className={`-ml-px block border-l py-1.5 pl-4 text-sm transition-colors ${
-                        current
-                          ? "border-accent font-semibold text-ink"
-                          : "border-transparent text-ink-soft hover:border-rule-strong hover:text-ink"
-                      }`}
-                    >
-                      <Highlight text={s.title} q={q} />
-                      {where && (
-                        <span className="mt-0.5 block font-mono text-[0.62rem] leading-snug text-ink-soft">
-                          <Highlight text={where} q={q} />
-                        </span>
-                      )}
-                    </a>
-                  </li>
-                );
-              },
-            )}
-          </ul>
-        </div>
-      </nav>
-
-      <div className="min-w-0">
-        <article>
-          <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
-            {String(index + 1).padStart(2, "0")} of{" "}
-            {String(sections.length).padStart(2, "0")}
-          </p>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-            <Highlight text={active.title} q={q} />
-          </h2>
-          {active.lede && (
-            <p className="mt-2.5 text-[0.94rem] text-ink-soft">
-              <Highlight text={active.lede} q={q} />
-            </p>
-          )}
-          <Blocks blocks={active.blocks} q={q} />
-        </article>
-
-        {/* Sequence is the point of the ordering, so the way out of a section is
-            the next one rather than a scroll. */}
-        <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
-          {prev ? (
+    <>
+      {/* Above the rule and hard right, opposite the page's own heading. It
+          belongs to the whole document rather than to the section list, and a
+          reader looking for a search box looks at the top of the page before
+          they look inside a column. */}
+      <div className="mt-8 flex justify-end lg:-mt-12">
+        <div className="relative w-full sm:w-72">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-ink-soft" />
+          <input
+            ref={box}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search the docs"
+            aria-label="Search the docs"
+            className="w-full rounded-lg border border-rule bg-paper-sunk py-2 pl-9 pr-8 text-sm text-ink outline-none transition-colors placeholder:text-ink-soft focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
+          />
+          {q ? (
             <button
-              onClick={() => select(prev.id)}
-              className="text-left text-sm text-ink-soft transition-colors hover:text-ink"
+              onClick={() => {
+                setQuery("");
+                box.current?.focus();
+              }}
+              aria-label="Clear search"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-ink-soft transition-colors hover:text-ink"
             >
-              <span className="block font-mono text-[0.58rem] uppercase tracking-[0.12em]">
-                previous
-              </span>
-              <span className="mt-0.5 block font-medium">{prev.title}</span>
+              <X className="size-3.5" />
             </button>
           ) : (
-            <span />
-          )}
-          {next && (
-            <button
-              onClick={() => select(next.id)}
-              className="text-right text-sm transition-colors hover:text-accent"
-            >
-              <span className="block font-mono text-[0.58rem] uppercase tracking-[0.12em] text-ink-soft">
-                next
-              </span>
-              <span className="mt-0.5 block font-medium">{next.title}</span>
-            </button>
+            // The hint occupies the slot the clear button will take, so
+            // nothing shifts when the first character is typed.
+            <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-rule bg-paper px-1.5 font-mono text-[0.6rem] text-ink-soft lg:block">
+              /
+            </kbd>
           )}
         </div>
       </div>
-    </div>
+
+      <div className="mt-8 gap-14 border-t border-rule pt-12 lg:grid lg:grid-cols-[210px_1fr]">
+        <nav aria-label="Sections" className="mb-10 lg:mb-0">
+          <div className="lg:sticky lg:top-24">
+            {hits && (
+              <p className="mb-2 px-1 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-ink-soft">
+                {hits.length === 0
+                  ? "nothing matched"
+                  : `${hits.length} of ${sections.length} sections`}
+              </p>
+            )}
+
+            <ul className="space-y-0.5 border-l border-rule">
+              {(hits ?? sections.map((s) => ({ section: s, where: null }))).map(
+                ({ section: s, where }) => {
+                  const current = s.id === active.id;
+                  return (
+                    <li key={s.id}>
+                      <a
+                        href={`#${s.id}`}
+                        aria-current={current ? "page" : undefined}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          select(s.id);
+                        }}
+                        className={`-ml-px block border-l py-1.5 pl-4 text-sm transition-colors ${
+                          current
+                            ? "border-accent font-semibold text-ink"
+                            : "border-transparent text-ink-soft hover:border-rule-strong hover:text-ink"
+                        }`}
+                      >
+                        <Highlight text={s.title} q={q} />
+                        {where && (
+                          <span className="mt-0.5 block font-mono text-[0.62rem] leading-snug text-ink-soft">
+                            <Highlight text={where} q={q} />
+                          </span>
+                        )}
+                      </a>
+                    </li>
+                  );
+                },
+              )}
+            </ul>
+          </div>
+        </nav>
+
+        <div className="min-w-0">
+          <article>
+            <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-ink-soft">
+              {String(index + 1).padStart(2, "0")} of{" "}
+              {String(sections.length).padStart(2, "0")}
+            </p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+              <Highlight text={active.title} q={q} />
+            </h2>
+            {active.lede && (
+              <p className="mt-2.5 text-[0.94rem] text-ink-soft">
+                <Highlight text={active.lede} q={q} />
+              </p>
+            )}
+            <Blocks blocks={active.blocks} q={q} />
+          </article>
+
+          {/* Sequence is the point of the ordering, so the way out of a section is
+            the next one rather than a scroll. */}
+          <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-rule pt-6">
+            {prev ? (
+              <button
+                onClick={() => select(prev.id)}
+                className="text-left text-sm text-ink-soft transition-colors hover:text-ink"
+              >
+                <span className="block font-mono text-[0.58rem] uppercase tracking-[0.12em]">
+                  previous
+                </span>
+                <span className="mt-0.5 block font-medium">{prev.title}</span>
+              </button>
+            ) : (
+              <span />
+            )}
+            {next && (
+              <button
+                onClick={() => select(next.id)}
+                className="text-right text-sm transition-colors hover:text-accent"
+              >
+                <span className="block font-mono text-[0.58rem] uppercase tracking-[0.12em] text-ink-soft">
+                  next
+                </span>
+                <span className="mt-0.5 block font-medium">{next.title}</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
