@@ -14,6 +14,7 @@ import { CircuitProver } from "./prover.js";
 import { loadCircuit } from "./artifacts.js";
 import { deriveKeys } from "../crypto/keys.js";
 import { deriveSk } from "../crypto/sk-derivation.js";
+import { addressToField } from "../crypto/address.js";
 import { buildRegisterWitness } from "../witness/register.js";
 import { buildTransferWitness } from "../witness/transfer.js";
 import { H, scalarMul } from "../crypto/grumpkin.js";
@@ -29,7 +30,7 @@ describe("§5.1 derived secret drives the real circuits", () => {
     "registers with a spec-derived sk and self-verifies",
     async () => {
       const { sk, addrF, vk } = deriveSk(ROOT, CONTRACT, ACCOUNT);
-      const keys = deriveKeys(sk, addrF);
+      const keys = deriveKeys(sk, addrF, addressToField(ACCOUNT));
 
       // The standalone derivation and the existing key schedule must agree.
       expect(keys.vk).toBe(vk);

@@ -82,12 +82,14 @@ describe("CircuitProver — keccak transcript", () => {
 describe("witness Noir-input key sets", () => {
   const ADDR_F = 0x2222n;
   const SK = 0x1234_5678_9abc_deffn;
-  const keys = deriveKeys(SK, ADDR_F);
+/** Any field element: no gate reads acct_f, its presence is the binding. */
+const ACCT_F = 0x00ac_c700_0000_0001n;
+  const keys = deriveKeys(SK, ADDR_F, ACCT_F);
 
-  it("register witness has EXACTLY 6 keys", () => {
+  it("register witness has EXACTLY 7 keys", () => {
     const { inputs } = buildRegisterWitness(keys);
     expect(new Set(Object.keys(inputs))).toEqual(
-      new Set(["sk", "y_x", "y_y", "pvk_x", "pvk_y", "addr_f"]),
+      new Set(["sk", "y_x", "y_y", "pvk_x", "pvk_y", "addr_f", "_acct_f"]),
     );
   });
 
@@ -108,7 +110,7 @@ describe("witness Noir-input key sets", () => {
     });
     expect(new Set(Object.keys(inputs))).toEqual(
       new Set([
-        "sk", "v", "r", "v_tx", "r_e",
+        "sk", "v", "r", "v_transfer", "r_e",
         "c_spend_x", "c_spend_y",
         "y_x", "y_y",
         "pvk_b_x", "pvk_b_y",
@@ -116,7 +118,7 @@ describe("witness Noir-input key sets", () => {
         "k_aud_r_x", "k_aud_r_y",
         "k_aud_s_x", "k_aud_s_y",
         "c_spend_new_x", "c_spend_new_y",
-        "c_tx_x", "c_tx_y",
+        "c_transfer_x", "c_transfer_y",
         "r_e_x", "r_e_y",
         "v_tilde", "b_tilde", "sigma",
         "v_tilde_aud_r", "r_tilde_aud_r",

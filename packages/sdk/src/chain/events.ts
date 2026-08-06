@@ -143,10 +143,10 @@ export function buildConfidentialEvent(
         from: addr(1),
         to: addr(2),
         amount: data.i128("amount"),
-        rE: data.point("r_e"),
+        rE: data.point("r_e_point"),
         sigma: data.field("sigma"),
         bTilde: data.field("b_tilde"),
-        bAudS: data.field("b_aud_s"),
+        bAudS: data.field("b_tilde_aud_s"),
       };
     case "transfer":
       return {
@@ -154,14 +154,14 @@ export function buildConfidentialEvent(
         type: "transfer",
         from: addr(1),
         to: addr(2),
-        rE: data.point("r_e"),
+        rE: data.point("r_e_point"),
         vTilde: data.field("v_tilde"),
         sigma: data.field("sigma"),
         bTilde: data.field("b_tilde"),
-        vAudR: data.field("v_aud_r"),
-        rAudR: data.field("r_aud_r"),
-        vAudS: data.field("v_aud_s"),
-        bAudS: data.field("b_aud_s"),
+        vAudR: data.field("v_tilde_aud_r"),
+        rAudR: data.field("r_tilde_aud_r"),
+        vAudS: data.field("v_tilde_aud_s"),
+        bAudS: data.field("b_tilde_aud_s"),
       };
     default:
       return null;

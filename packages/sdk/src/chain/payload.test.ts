@@ -20,6 +20,17 @@ import {
 // ---------------------------------------------------------------------------
 // Byte-for-byte vector gate (Z2.10).
 //
+// PROVENANCE NOTE. `register.hex` still carries the hex agreed with the demo
+// SDK. `withdraw.hex` and `transfer.hex` were regenerated when the verifier was
+// redeployed from post-fix circuits: the ECDH secret became
+// Poseidon2(delta_ecdh, S.x, S.y) and the auditor checkpoint pad moved to the
+// second squeeze, so both payloads carry different field values. The demo SDK
+// still implements the pre-fix forms and can no longer serve as the
+// cross-check. What these vectors gate is unchanged — key names, sort order,
+// flat-Point layout, field encoding — and the values are cross-checked instead
+// by §6.2 circuit parity, which proves the real circuits accept these witnesses
+// and self-verify.
+//
 // The `.hex` fixtures under test/vectors/ were produced by cross-checking OUR
 // encoders against the reference demo SDK
 // (stellar-confidential-token-demo/packages/sdk): the SAME fixed deterministic
@@ -48,7 +59,9 @@ const RE = 0x000000000000000000000000000000000000000000000000000000000badf00dn;
 const PROOF = new Uint8Array(64).fill(7);
 
 const addrF = addressToField(ADDR);
-const keys = deriveKeys(SK, addrF);
+/** Any field element: no gate reads acct_f, its presence is the binding. */
+const ACCT_F = 0x00ac_c700_0000_0001n;
+const keys = deriveKeys(SK, addrF, ACCT_F);
 const kAudS = scalarMul(SK_AUDS, H);
 const kAudR = scalarMul(SK_AUDR, H);
 const pvkB = deriveKeys(SK_R, addrF).PVK;
