@@ -96,10 +96,16 @@ const PRIMITIVES = {
 
 // Documented divergences, reproduced from the DEPLOYED circuits rather than
 // from the current spec. Printed as such, not hidden.
-const KNOWN = {
-  ecdh: "deployed circuits use x-only; spec absorbs both coordinates",
-  encrypt_auditor_sender_balance: "deployed circuits use the first sponge squeeze; spec the second",
-};
+/**
+ * Empty, and it stays empty.
+ *
+ * This once held `ecdh` and `encrypt_auditor_sender_balance` while the deployed
+ * verifier was built from pre-fix circuits. Both were fixed and the contracts
+ * redeployed, so all 17 now reproduce — and an allowlist that outlives its
+ * reason is worse than none: it is the two entries most likely to regress,
+ * pre-approved to exit 0 silently. Anything that diverges now is a failure.
+ */
+const KNOWN = {};
 
 const canon = o => Array.isArray(o) ? o.map(hex)
   : (o && typeof o === "object") ? { x: hex(o.x), y: hex(o.y) } : hex(o);
