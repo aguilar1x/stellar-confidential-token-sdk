@@ -254,7 +254,7 @@ The SDK deliberately does not touch the wallet — the caller supplies the root 
 so `deriveSk` stays pure and testable. → `crypto/sk-derivation.ts`
 
 **Blindings accumulate modulo `p`, not modulo `r`.** The chain adds commitment
-*points*; their scalars reduce mod the group order. This is defect 4, and the
+*points*; their scalars reduce mod the group order. This is defect 1, and the
 fix is two lines with a test that proves the test is not vacuous.
 
 **The compiled circuits ship inside the npm tarball**, and `proveTransfer` takes
@@ -292,8 +292,8 @@ Nothing to install. The two that matter:
   line items; this does not.
 - **[Don't trust your indexer](https://stellar-confidential-token-sdk-web.vercel.app/verify)** —
   that guarantee only holds if the history the wallet replays is the real one.
-  Five archives serve one account's history; three of them lie. The same client
-  reads all five.
+  Five archives serve one account's history; three are refused — two of them
+  lie outright, and one honestly reports a gap it cannot vouch for.
 
 Or run it yourself:
 
@@ -301,7 +301,7 @@ Or run it yourself:
 |---|---|
 | A real confidential payment on testnet, from a single signer | `npm install && node examples/live-payment.mjs` |
 | Break the archive it depends on, watch the client refuse it | `ALICE_SECRET=… node examples/sabotage.mjs` |
-| Compare our primitives against OpenZeppelin's live fixtures | `node examples/drift.mjs` |
+| Compare our primitives against OpenZeppelin's live fixtures | `npm run conformance` |
 | The building's 33 transactions, from scratch | `node examples/condominium.mjs` |
 
 ```
@@ -339,7 +339,7 @@ same way:
 
 ```bash
 curl https://confidential-token-archive.aaguilar1x.workers.dev/v1/health
-# {"latest_ledger":…,"ingested_through":…,"ingested_from":3976100,"lag_seconds":0}
+# {"latest_ledger":…,"ingested_through":…,"ingested_from":3992372,"lag_seconds":0}
 ```
 
 `curl` shows you the health response; what exercises the contract is
@@ -361,7 +361,7 @@ curl -fsSL https://raw.githubusercontent.com/aguilar1x/stellar-confidential-toke
 ```
 
 ```
-installed stellar-confidential-token-sdk@0.1.2
+installed stellar-confidential-token-sdk@0.1.3
 
 1 · OpenZeppelin's published fixtures, byte-for-byte
     17 reproduced exactly
@@ -513,12 +513,16 @@ self-refuting:
   surface, the completeness accounting and the client-side verification are all
   real and independent of the store; persistence is the missing piece, and the
   store interface is the seam it plugs into.
-- **The disclosure domain tags are stale against `DESIGN_cont.md` §13.** It
-  assigns `δ_disc = 16` and `δ_disc_bind = 15`; this client uses 13 and 15.
-  `δ_disc_bind` is reserved and unused, so it was moved. `δ_disc` is absorbed by
-  this project's own disclosure circuits, so moving it means recompiling them —
-  It does not affect the core transfer path, whose tags 1–12 and 14 match the
-  table exactly.
+- **Tag 13 is claimed twice, and the off-chain disclosure layer is why.**
+  `DESIGN_cont.md` §13 assigns `δ_ecdh = 13` and `δ_disc = 16`. The core path
+  uses 13 for `δ_ecdh`, matching the table. The off-chain disclosure layer still
+  uses 13 for `δ_disc`, because this project's own
+  `circuits/disclose_{sender,recipient}.json` absorb 13 and were not rebuilt in
+  the core-circuit redeploy — a client that moved without them would produce
+  disclosure proofs its own circuits reject. Nothing in CI catches it:
+  `disclosure.test.ts` runs a mocked prover. Closing it means recompiling those
+  two circuits. Tags 1–12, 14 and 15 match the table exactly, and the transfer
+  path is unaffected.
 - **Deposits and withdrawals are public by design.** Only transfers hide amounts.
 - **The disclosure receipt is a bearer token** — anyone holding the URL can read
   the disclosed amount.
@@ -546,10 +550,10 @@ self-refuting:
 | | |
 |---|---|
 | `packages/sdk` | The client. Key derivation, witness building, UltraHonk proving, offline state, selective disclosure. Published to npm. **145 tests.** |
-| `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **51 tests.** |
+| `packages/conformance` | The `SDK.md` §6 suite. OpenZeppelin's fixtures are vendored verbatim (their copyright, see [NOTICE](./NOTICE)) and re-fetched by CI, so the copy cannot silently become a fork of the spec. **49 tests.** |
 | `apps/indexer` | An `INDEXER.md` archive as a Web-standard `fetch` handler — C2–C4 required, C1 recommended — with a Node entry and a Workers entry. [Live](https://confidential-token-archive.aaguilar1x.workers.dev/v1/health). **28 tests.** |
 | `apps/web` | The demo. [Live on Vercel](https://stellar-confidential-token-sdk-web.vercel.app). |
-| `examples/` | The live payment, the condominium's 33 transactions, the sabotage, and `drift.mjs` — which compares this client's primitives against OpenZeppelin's fixtures, fetched live, against the real circuits. |
+| `examples/` | The live payment, the condominium's 33 transactions, and the sabotage. Each is a script a reader can run against testnet, not a transcript. |
 | [`DEPLOY.md`](./DEPLOY.md) | How both halves deploy, and the two clean-clone build failures reproduced before being fixed. |
 
 ## Provenance and license
