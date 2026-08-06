@@ -46,13 +46,14 @@ export default async function Landing() {
                   OpenZeppelin Confidential Tokens · Stellar
                 </p>
                 <h1 className="mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl lg:text-[3.4rem]">
-                  An amount nobody can read.
-                  <br />
-                  {/* The second line carries the colour, because it is the half of
-                      the claim that is unusual. Anyone can hide a number; the
-                      argument this project makes is that the total stays auditable
-                      while it is hidden. */}
-                  <span className="text-accent-lift">A total everybody can audit.</span>
+                  {/* Two words carry the colour, not two lines. The claim is an
+                      antithesis and these are its poles: the same ledger is opaque
+                      to everyone and checkable by everyone, which is the part that
+                      sounds contradictory until the page explains it. Colouring
+                      the pair makes the sentence's shape legible before it is
+                      read; colouring a whole line only makes it louder. */}
+                  An amount <span className="text-accent-lift">nobody</span> can read.
+                  <br />A total <span className="text-accent-lift">everybody</span> can audit.
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
                   Three things have to hold: keys that derive identically on every
