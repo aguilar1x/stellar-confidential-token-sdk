@@ -106,10 +106,17 @@ export const DOMAIN = {
    * Off-chain selective-disclosure ciphertext to a disclosure recipient:
    * `v_tilde_disc = v_tx + Poseidon2(DISCLOSURE, S_disc.x, nu)`.
    * SELECTIVE_DISCLOSURE.md §2.2 / §4 (`delta_disc`), which takes its value
-   * from DESIGN_cont.md §13. Was 13 here, from before that table existed —
-   * which is `delta_ecdh`'s value.
+   * from DESIGN_cont.md §13, which assigns 16.
+   *
+   * This stays 13, because the vendored disclosure circuits absorb 13 and a
+   * client that disagreed with its own circuits would produce disclosure
+   * proofs they reject. Moving it means recompiling
+   * `circuits/disclose_{sender,recipient}.json`, which the core-circuit
+   * redeploy did not cover. Recorded in the README's limitations rather than
+   * changed here, where it would break silently: `disclosure.test.ts` runs a
+   * mocked prover, so nothing in CI would catch the mismatch.
    */
-  DISCLOSURE: 16n,
+  DISCLOSURE: 13n,
   /**
    * Aggregate-disclosure nonce binding (`delta_disc_bind`). Reserved, unused.
    * DESIGN_cont.md §13 assigns 15; it previously sat at 14 here, which is
