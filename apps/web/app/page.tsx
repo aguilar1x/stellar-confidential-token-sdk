@@ -42,13 +42,17 @@ export default async function Landing() {
             {/* Left: the claim. */}
             <div>
               <Reveal>
-                <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-accent-lift/85">
+                <p className="font-mono text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-white/50">
                   OpenZeppelin Confidential Tokens · Stellar
                 </p>
                 <h1 className="mt-5 text-[2.3rem] font-bold leading-[1.05] tracking-[-0.02em] text-white sm:text-5xl lg:text-[3.4rem]">
                   An amount nobody can read.
                   <br />
-                  A total everybody can audit.
+                  {/* The second line carries the colour, because it is the half of
+                      the claim that is unusual. Anyone can hide a number; the
+                      argument this project makes is that the total stays auditable
+                      while it is hidden. */}
+                  <span className="text-accent-lift">A total everybody can audit.</span>
                 </h1>
                 <p className="mt-6 max-w-lg text-[0.98rem] leading-relaxed text-white/70">
                   Three things have to hold: keys that derive identically on every
