@@ -44,6 +44,12 @@ import { ArrowRight, Check } from "lucide-react";
 
 const KEY = "ct-demo-steps-done";
 
+/**
+ * Room left above the tab strip when a step change scrolls to it: the fixed nav
+ * plus a little air. Same value the docs shell uses, for the same reason.
+ */
+const HEADER_CLEARANCE = 96;
+
 const StepsContext = createContext<((id: string) => void) | null>(null);
 
 /**
@@ -71,6 +77,7 @@ export function Steps({ steps }: { steps: Step[] }) {
   const [done, setDone] = useState<Set<string>>(() => new Set());
   const base = useId();
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const strip = useRef<HTMLDivElement>(null);
 
   // Read after mount rather than during render: sessionStorage does not exist on
   // the server, and seeding state from it would hydrate against different HTML.
@@ -98,20 +105,43 @@ export function Steps({ steps }: { steps: Step[] }) {
 
   const go = (i: number) => setActive(i);
 
+  /**
+   * Bring the strip back under the header, instantly, and only when it is
+   * already off the top of the viewport.
+   *
+   * The Next button lives at the BOTTOM of a panel that can run several screens
+   * long, and a bare `focus()` on the tab it moves to makes the browser scroll
+   * that tab into view on its own terms. The reader gets hauled upward by an
+   * amount nobody chose, while the panel underneath changes at the same time.
+   *
+   * `preventScroll` takes the movement away from the browser so it can be done
+   * deliberately: no animation, no travel when the strip is already on screen,
+   * and the same clearance the docs use so the tabs do not sit flush under the
+   * fixed nav.
+   */
+  const goAndReveal = (i: number) => {
+    go(i);
+    tabs.current[i]?.focus({ preventScroll: true });
+    const el = strip.current;
+    if (!el) return;
+    const top =
+      el.getBoundingClientRect().top + window.scrollY - HEADER_CLEARANCE;
+    if (window.scrollY > top) window.scrollTo({ top });
+  };
+
   /** Arrow keys move between tabs, which is what a tablist is expected to do. */
   const onKeyDown = (e: React.KeyboardEvent) => {
     const delta = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (!delta) return;
     e.preventDefault();
-    const next = (active + delta + steps.length) % steps.length;
-    go(next);
-    tabs.current[next]?.focus();
+    goAndReveal((active + delta + steps.length) % steps.length);
   };
 
   return (
     <StepsContext.Provider value={mark}>
       <div className="mt-14">
         <div
+          ref={strip}
           role="tablist"
           aria-label="Demo steps"
           onKeyDown={onKeyDown}
@@ -177,7 +207,9 @@ export function Steps({ steps }: { steps: Step[] }) {
             tabIndex={0}
             className="pt-8 outline-none"
           >
-            <p className="max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">{s.blurb}</p>
+            <p className="max-w-2xl text-[0.94rem] leading-relaxed text-ink-soft">
+              {s.blurb}
+            </p>
             <div className="mt-6">{s.content}</div>
 
             {i < steps.length - 1 && (
@@ -190,8 +222,7 @@ export function Steps({ steps }: { steps: Step[] }) {
                     // the tick means the common path leaves it permanently empty,
                     // which reads as a step that failed rather than one finished.
                     mark(s.id);
-                    go(i + 1);
-                    tabs.current[i + 1]?.focus();
+                    goAndReveal(i + 1);
                   }}
                   className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
                 >
