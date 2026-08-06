@@ -182,6 +182,12 @@ describe("§6.1 · known divergences, pinned from both sides", () => {
 });
 
 describe("§4.8 · domain separation", () => {
+  // Empty since the redeploy: every tag now matches DESIGN_cont.md §13. The
+  // suite stays so a reintroduced collision fails here rather than silently.
+  it("no domain tag is claimed by two primitives", () => {
+    expect(DOMAIN_COLLISIONS).toEqual([]);
+  });
+
   for (const c of DOMAIN_COLLISIONS) {
     it(`tag ${c.tag} is claimed by both ${c.specUses.split(" ")[0]} and ${c.weUse}`, () => {
       // Recovered, not assumed: only domain 13 reproduces the ecdh vector, so

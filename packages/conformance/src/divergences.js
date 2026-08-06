@@ -19,59 +19,31 @@
  * shrank, which is precisely the failure §6.1 exists to prevent.
  */
 
-export const KNOWN_DIVERGENCES = {
-  ecdh: {
-    since: "vendored circuits predate the Poseidon2 form",
-    specSays:
-      "ecdh = Poseidon2(delta_ecdh, S.x, S.y) with S = s*P, absorbing BOTH coordinates",
-    weDo: "ecdh = (s*P).x — the x-coordinate alone",
-    whyItMatters:
-      "An x-only shared secret is invariant under point negation: P and -P " +
-      "derive the SAME secret, because they share an x-coordinate. The " +
-      "specification absorbs y precisely to remove that invariance.",
-    blockedBy:
-      "The deployed verifier was compiled from circuits using the x-only form. " +
-      "A client emitting the Poseidon2 form would produce proofs it rejects. " +
-      "Closing this needs regenerated circuits and a redeployed verifier.",
-    expected: "0x105fa0a0e003bf2072dff4e53da5a288bee77e894392ada1ac6ae99bb2b8568b",
-    actual: "0x114ed4fcf2c57014eb678c577aa02f30ef590b713d7a6a5e87702d1c7f71957f",
-  },
-
-  encrypt_auditor_sender_balance: {
-    since: "vendored circuits use the first squeeze slot",
-    specSays:
-      "b_tilde_aud_s = v_new + SpongeSqueeze_2(AUDITOR_SENDER, s_a_s, sigma)[1] — the SECOND squeeze",
-    weDo:
-      "b_tilde_aud_s = v_new + Poseidon2(AUDITOR_SENDER, s_a_s, sigma), which is the FIRST squeeze slot",
-    whyItMatters:
-      "The fixture states the reason outright: the first-squeeze slot is the " +
-      "AMOUNT pad, and it is left unused here 'so the checkpoint pad never " +
-      "coincides with an amount pad, even under (r_e, sigma) reuse'. Using the " +
-      "amount slot reintroduces exactly that collision — two values masked by " +
-      "the same pad differ by their plaintext difference once subtracted.",
-    blockedBy:
-      "The vendored withdraw circuit accepts the first-squeeze form and would " +
-      "reject the second. Verified by proving a withdraw against the real " +
-      "circuit: it self-verifies with the current implementation.",
-    expected: "0x27f3739a132c6353cd5af3edac0ac75faf7fc606acb61367774e4f764ec17f5f",
-    actual: "0x2787d1e01bbca7828e13e9b2b3fa11cfcfe9c3d2b121b9e17543146822fe23d3",
-  },
-};
+/**
+ * Empty, and that is the point.
+ *
+ * Two entries lived here — `ecdh` and `encrypt_auditor_sender_balance` — for as
+ * long as the verifier this project deployed against had been built from
+ * circuits that predate OpenZeppelin's L-03 (#778) and N-07 (#792) fixes. That
+ * deployment was ours, made 2026-07-03, thirteen days before those fixes
+ * merged; the client matched it deliberately and recorded the mismatch rather
+ * than claiming a conformance it did not have.
+ *
+ * The circuits were rebuilt from the post-fix source and the contracts
+ * redeployed, so both primitives now reproduce byte-for-byte and the entries
+ * were deleted — which is exactly what the convergence check below demanded:
+ * a divergence that has closed must not be left standing as a stale excuse.
+ */
+export const KNOWN_DIVERGENCES = {};
 
 /**
- * Domain-tag assignments this implementation uses that the specification
- * assigns elsewhere. Recovered from the fixtures rather than assumed: the
- * `ecdh` vector is only reproducible with domain 13, which pins delta_ecdh.
+ * Domain tags this implementation assigns differently from DESIGN_cont.md §13.
+ *
+ * Empty as of the redeploy. The one entry that lived here recorded tag 13 held
+ * by `DOMAIN.DISCLOSURE`, which is `delta_ecdh`'s value upstream — a fact this
+ * project had inverted, reading its own staleness as a collision caused by
+ * someone else. §13 assigns 13 to delta_ecdh, 14 to delta_eph, 15 to
+ * delta_disc_bind and 16 to delta_disc; tags 1-12 always matched, and all four
+ * now do.
  */
-export const DOMAIN_COLLISIONS = [
-  {
-    tag: 13,
-    specUses: "delta_ecdh (recovered from ecdh.json — no other tag reproduces the vector)",
-    weUse: "DOMAIN.DISCLOSURE",
-    whyItMatters:
-      "Domain separation exists so two primitives can never produce the same " +
-      "hash from the same field elements. This implementation's own comment " +
-      "says the disclosure tag 'continues the on-chain tag list to stay " +
-      "collision-free' — the intent was right, the tag was already taken.",
-  },
-];
+export const DOMAIN_COLLISIONS = [];

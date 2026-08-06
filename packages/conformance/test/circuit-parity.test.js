@@ -24,6 +24,7 @@ import {
   buildRegisterWitness,
   buildTransferWitness,
   buildWithdrawWitness,
+  addressToField,
 } from "stellar-confidential-token-sdk";
 import { loadCircuit } from "stellar-confidential-token-sdk/node";
 
@@ -37,7 +38,7 @@ const ROOT = new Uint8Array(64).map((_, i) => (i * 7 + 13) & 0xff);
 /** Keys derived through §5.1, so parity is checked on realistic inputs. */
 const alice = (() => {
   const { sk, addrF } = deriveSk(ROOT, CONTRACT, SENDER);
-  return { keys: deriveKeys(sk, addrF), addrF };
+  return { keys: deriveKeys(sk, addrF, addressToField(SENDER)), addrF };
 })();
 const bob = (() => {
   const { sk } = deriveSk(ROOT, CONTRACT, RECIPIENT);
@@ -139,7 +140,7 @@ describe("§6.2 · tamper cases — the circuits reject perturbed witnesses", ()
     { circuit: "register", field: "sk", why: "a spending key that does not match the published Y" },
     { circuit: "transfer", field: "v", why: "a pre-transfer balance that does not open C_spend" },
     { circuit: "transfer", field: "r", why: "a blinding that does not open C_spend" },
-    { circuit: "transfer", field: "v_tx", why: "an amount inconsistent with C_tx" },
+    { circuit: "transfer", field: "v_transfer", why: "an amount inconsistent with C_transfer" },
     { circuit: "withdraw", field: "v", why: "a balance that does not open the commitment" },
   ];
 
